@@ -19,7 +19,7 @@ def dimensions(d, V, th):   # inner diameter, maximal volume
     }
 
 
-def stresses(M, g_a, g_l, dims):    # s/c mass, axial load, lateral load, dimensions
+def stresses(M, g_a, g_l, dims, p, th):    # s/c mass, axial load, lateral load, dimensions
     A = dims["Cross Sectional Area"]
     h = dims["Height"]
     r = dims["Outer Radius"]
@@ -28,17 +28,20 @@ def stresses(M, g_a, g_l, dims):    # s/c mass, axial load, lateral load, dimens
     V = M * g_l                                 # [N] lateral load
     sigma_a = (P_a / A) * 1e-6                  # [MPa] axial stress
     sigma_l = (V * (h / 2) * r / I_a) * 1e-6    # [MPa] bending stress
-    sigma_n = sigma_a + sigma_l                 # [MPa] maximal normal stress
     tau_av = (V / A) * 1e-6                     # [MPa] average shear stress
+    # sigma_hoop = p * r / th                   # [MPa] hoop stress
+    sigma_long = (p * r / (2 * th)) * 1e-6      # [MPa] longitudinal stress
+    sigma_n = sigma_a + sigma_l + sigma_long    # [MPa] maximal normal stress !!!!CHECKKKK
+    tau_max = tau_av                            # [MPa] maximal shear stress
     return {
         "Max Normal Stress": round(sigma_n, 1),
-        "Average Shear Stress": round(tau_av, 1)
+        "Max Shear Stress": round(tau_max, 1)
     }
 
 
 def strains(strss, E, G):       # stresses, elastic modulus, shear modulus
     sigma_n = strss["Max Normal Stress"]
-    tau_av = strss["Average Shear Stress"]
+    tau_av = strss["Max Shear Stress"]
     epsilon = sigma_n / E       # [mm] normal strain
     gamma = tau_av / G          # [mm] shear strain
     return {
@@ -61,13 +64,18 @@ dt = 0.0001     # [m] change in thickness per iteration
 while True:
     Dimensions = dimensions(i.d, i.V, t)    # compute dimensions
 
-    Stresses = stresses(i.M, i.g_axial, i.g_lateral, Dimensions)    # compute stresses
-    if (Stresses["Max Normal Stress"] or Stresses["Average Shear Stress"]) > i.sigma_y:
+    Stresses = stresses(i.M, i.g_axial, i.g_lateral, Dimensions, i.p, t)    # compute stresses
+    if (Stresses["Max Normal Stress"] or Stresses["Max Shear Stress"]) > i.sigma_y:
         t += dt     # if stresses too high increase thickness and iterate again
         continue
 
     Strains = strains(Stresses, i.E, i.G)       # compute strains
-    m = mass(Dimensions, i.rho, t)     # compute structure mass
+    # if (Strains["Normal Strain"] or Strains["Shear Strain"]) > 10:
+    #    t += dt  # if strains too high increase thickness and iterate again
+    #    continue
+    Structure_Mass = mass(Dimensions, i.rho, t)     # compute structure mass
     break
 
-print(m, t)
+print(Stresses)
+print(Strains)
+print(Structure_Mass, round(t, 4))
