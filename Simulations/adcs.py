@@ -17,7 +17,7 @@ stabilityDueToCamera = atan(pixelGroundWidth/orbitingAltitude)*orbitalVelocity/p
 
 #Gravity
 
-massSC = 2000
+massSC = 6000
 lengthSC = 8
 radiusSC = 1.8
 
@@ -29,18 +29,18 @@ Iz = 1/4*massSC*radiusSC**2+1/12*massSC*lengthSC**2
 
 perturbationGravity = (3/2*n2*(Iz-Iy)*pi/180)*sqrt(2) #s
 
-#print(perturbationGravity)
+# print(perturbationGravity)
 
 #Aerodynamic torque
 
 orbitalDensity = 5.432e-12
 surfaceDrag = pi*radiusSC**2
-cD = 1.17 #Flat frontal area
+cD = 2.7 #Flat frontal area
 cPcG = pi/180*4 #corresponds to 1 degree misalignement of the frontal area
 
 perturbationDrag = cPcG*1/2*orbitalDensity*orbitalVelocity**2*surfaceDrag*cD 
 
-#print(perturbationDrag)
+# print(perturbationDrag)
 
 #Solar pressure
 
@@ -51,7 +51,45 @@ centreSolar = 1
 
 perturbationSolar = centreSolar*(1+sailReflectivity)*solarPressure*surfaceSolar
 
-print(perturbationSolar)
+# print(perturbationSolar)
+
+#Magnetic disturbances
+
+residualMagneticDipole = 0.1
+maxMagneticField = 1e-4
+
+perturbationMagnetic = maxMagneticField *residualMagneticDipole
+
+# print(perturbationMagnetic)
+
+
+##Sizing of thrusters
+
+totalInstantenousDisturbances = (perturbationGravity+perturbationDrag+perturbationSolar+perturbationMagnetic)*1.2
+orbitalPeriod = 2*pi*orbitalRadius/orbitalVelocity
+disturbancesPerOrbit = totalInstantenousDisturbances*orbitalPeriod
+totalOrbitsToCompleteMission = 4*366*24*3600/orbitalPeriod
+totalAngularImpulse = totalOrbitsToCompleteMission*disturbancesPerOrbit
+
+thrusterForce = 4
+ISPthrusters = 220
+armLengthPairThrusters = 8
+coupleThrusters = armLengthPairThrusters*thrusterForce
+
+propellantMassADCS = thrusterForce*totalAngularImpulse/(ISPthrusters*9.81*coupleThrusters)
+
+print(propellantMassADCS)
+
+# print(totalInstantenousDisturbances)
+# print(disturbancesPerOrbit)
+# print(totalAngularImpulse)
+
+#Sing of reaction wheel
+
+timeToRotate90 = 15*60
+wheelTorque = 4*Iy*pi/2/timeToRotate90**2
+
+# print(wheelTorque)
 
 #Main camera datarate calculation
 
