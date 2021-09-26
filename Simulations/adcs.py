@@ -2,9 +2,9 @@ from math import *
 
 #ADCS jitter calculation
 
-orbitingAltitude = 3520e3 #m
-orbitalVelocity = 14338 #m/s
-cameraResolutionPanSpecs = 1.4/500e3 #In m ground divided by orbital height
+orbitingAltitude = 4.343e3 #m
+orbitalVelocity = 14011 #m/s
+cameraResolutionPanSpecs = 0.7/500e3 #In m ground divided by orbital height
 
 pixelGroundWidth = cameraResolutionPanSpecs*orbitingAltitude
 
@@ -33,7 +33,7 @@ perturbationGravity = (3/2*n2*(Iz-Iy)*pi/180)*sqrt(2) #s
 
 #Aerodynamic torque
 
-orbitalDensity = 5.432e-12
+orbitalDensity = 8.417e-13
 surfaceDrag = pi*radiusSC**2
 cD = 2.7 #Flat frontal area
 cPcG = pi/180*4 #corresponds to 1 degree misalignement of the frontal area
