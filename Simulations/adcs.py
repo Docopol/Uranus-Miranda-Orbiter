@@ -93,15 +93,15 @@ wheelTorque = 4*Iy*pi/2/timeToRotate90**2
 
 #Main camera datarate calculation
 
-cameraImageLengthPixel = 20e3/1.4
+cameraImageLengthPixel = 11e3/0.7
 cameraImageWidthPixel = 1 #
 colourDepth = 16 #bits
 
 imageSizeInBits = cameraImageWidthPixel*cameraImageLengthPixel*colourDepth
 imageBackupSafetyFactor = 1
-picturesPerSecond = orbitalVelocity/1.4*imageBackupSafetyFactor
+picturesPerSecond = orbitalVelocity/0.7*imageBackupSafetyFactor
 
 dataRateCamera	= imageSizeInBits*picturesPerSecond #in bits/s
 
-# print(dataRateCamera/10e6)
+print(dataRateCamera/10e6)
 
