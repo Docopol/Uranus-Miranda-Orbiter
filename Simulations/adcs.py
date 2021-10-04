@@ -65,11 +65,13 @@ perturbationMagnetic = maxMagneticField *residualMagneticDipole
 
 ##Sizing of thrusters
 
-totalInstantenousDisturbances = (perturbationGravity+perturbationDrag+perturbationSolar+perturbationMagnetic)*1.2
+totalInstantenousDisturbances = (perturbationGravity+perturbationDrag+perturbationSolar+perturbationMagnetic)
 orbitalPeriod = 2*pi*orbitalRadius/orbitalVelocity
 disturbancesPerOrbit = totalInstantenousDisturbances*orbitalPeriod
 totalOrbitsToCompleteMission = 4*366*24*3600/orbitalPeriod
-totalAngularImpulse = totalOrbitsToCompleteMission*disturbancesPerOrbit
+totalAngularImpulse = totalOrbitsToCompleteMission*disturbancesPerOrbit+20499
+
+print(totalAngularImpulse)
 
 thrusterForce = 4
 ISPthrusters = 220
