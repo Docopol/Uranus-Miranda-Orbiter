@@ -3,7 +3,7 @@ import numpy as np
 
 
 def COM(masses):
-    mass_array = masses['Mass1']
+    mass_array = [0, 0, 0, 0]
     for k, v in masses.items():
         mass_array = np.vstack((mass_array, v))
     c_mass = np.average(mass_array[:, :3], axis=0, weights=mass_array[:, 3])
@@ -13,7 +13,7 @@ def COM(masses):
 
 
 def COP(areas):
-    area_array = areas['Area1']
+    area_array = [0, 0, 0, 0]
     for k, v in areas.items():
         area_array = np.vstack((area_array, v))
     c_pressure = np.average(area_array[:, :3], axis=0, weights=area_array[:, 3])
@@ -36,12 +36,13 @@ def gravity_torque(I_x, I_y, I_z, phi, theta):
     }
 
 
-masses = {"Mass1": [0, 0, 0, 1],
-          "Mass2": [1, 2, 3, 4]}
+def aerodynamic_torque(r, S):
+    F_a = 0.5 * rho * v**2 * S * C_d
+    torque = np.vector(r, F_a)
+    return {
+        "Aerodynamic torque": torque
+    }
 
-areas = {"Area1": [0, 0, 0, 1],
-         "Area2": [1, 2, 3, 4]}
 
-print(masses.values())
-print(COM(masses))
-print(COP(areas))
+print(COM(i.masses))
+print(COP(i.areas))
