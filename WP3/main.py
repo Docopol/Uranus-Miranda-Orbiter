@@ -23,9 +23,8 @@ def COP(areas):
 
 
 def gravity_torque(I_x, I_y, I_z, phi, theta):
-    n_sq = (i.g_param / (i.r_orbit + i.r_uranus) ** 3)
-    grav_tor_x = 3 / 2 * n_sq * ((I_y - I_z) * np.sin(2 * phi))  # Torque in x direction
-    grav_tor_y = 3 / 2 * n_sq * ((I_x - I_z) * np.sin(2 * theta))  # Torque in y direction
+    grav_tor_x = 3 / 2 * i.n_sq * ((I_y - I_z) * np.sin(2 * phi))  # Torque in x direction
+    grav_tor_y = 3 / 2 * i.n_sq * ((I_x - I_z) * np.sin(2 * theta))  # Torque in y direction
     grav_tor_z = 0  # Torque in z direction
     torque = [grav_tor_x, grav_tor_y, grav_tor_z]
     return {
@@ -36,11 +35,26 @@ def gravity_torque(I_x, I_y, I_z, phi, theta):
     }
 
 
-def aerodynamic_torque(r, S):
+def aerodynamic_torque(r_m, S):
     F_a = 0.5 * rho * v**2 * S * C_d
-    torque = np.vector(r, F_a)
+    torque = np.cross(r_m, F_a)
     return {
         "Aerodynamic torque": torque
+    }
+
+
+def solar_torque(r_p, S):
+    F_s = (1 + rho) * P_s * S
+    torque = np.cross(r_p, F_s)
+    return{
+        "Solar radiation torque": torque
+    }
+
+
+def magnetic_torque(M, B):
+    torque = np.cross(M, B)
+    return {
+        "Magnetic Torque": torque
     }
 
 
