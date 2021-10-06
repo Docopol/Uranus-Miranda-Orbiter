@@ -1,5 +1,6 @@
-# # # natural constants # # #
 import numpy as np
+# # # natural constants # # #
+
 g_param = 5.793939 * 1e6    # [km^3/s^2] Gravitational Parameter
 r_uranus = 25362            # [km] Radius of Uranus
 rho = 8.417 * 1e-13         # [km/m^3] Density at orbit height
