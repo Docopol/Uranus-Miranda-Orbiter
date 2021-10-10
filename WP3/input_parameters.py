@@ -1,4 +1,3 @@
-# # # natural constants # # #
 import numpy as np
 
 g_param = 5.793939 * 1e6  # [km^3/s^2] Gravitational Parameter
