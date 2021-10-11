@@ -59,6 +59,16 @@ def T_ae_z(x):
     return k1 * np.square(np.sin(omega * x)) - k2 * np.square(np.cos(omega * x))
 
 
+def T_s_z(x):
+    cm_array_init = COM(i.masses_init)
+    cm_array_fin = COM(i.masses_fin)
+    cm_array_avg = (cm_array_init + cm_array_fin) / 2
+    k1 = (1 + i.rho_opt) * i.P_s * i.S[1]
+    k2 = (1 + i.rho_opt) * i.P_s * i.S[0]
+    omega = 2 * np.pi / i.t_orbit
+    return k1 * np.sin(omega * x) - k2 * np.cos(omega * x)
+
+
 def impulse_all():
     cm_array_init = COM(i.masses_init)
     cm_array_fin = COM(i.masses_fin)
@@ -69,9 +79,13 @@ def impulse_all():
     impulse_ae_mission = ae_T_mission * i.t_orbit * 3 / 4
     impulse_solar_sending = solar_T_sending * i.t_orbit * 1 / 4
     impulse_ae_sending = quad(T_ae_z, 0, i.t_orbit/4)
+    impulse_solar_mission_day = quad(T_s_z, i.t_orbit/4, i.t_orbit/2)
 
     ang_impulse_sending = i.I[1] * np.pi/2 / i.t_orbit/4
-    return impulse_ae_sending
+    return {
+        "Impulse due to aerodynamics": impulse_ae_sending,
+        "Impulse due to solar": impulse_solar_mission_day
+    }
 
 # def calculations():
 #     cm_array_init = COM(i.masses_init)
