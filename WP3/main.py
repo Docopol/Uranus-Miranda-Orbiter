@@ -16,9 +16,7 @@ def COP(areas):
     for k, v in areas.items():
         area_array = np.vstack((area_array, v))
     c_pressure = np.average(area_array[:, :3], axis=0, weights=area_array[:, 3])
-    return {
-        "Centre of Pressure": c_pressure
-    }
+    return c_pressure
 
 
 def gravity_torque(I_x, I_y, I_z, phi, theta):
@@ -34,58 +32,69 @@ def gravity_torque(I_x, I_y, I_z, phi, theta):
     }
 
 
-def aerodynamic_torque(r_m, S, v):
-    F_a = 0.5 * i.rho * i.C_d * np.square(v) * S
+def aerodynamic_torque(r_m, v):
+    F_a = 0.5 * i.rho * i.C_d * np.square(v) * i.S
     torque = np.cross(r_m, F_a)
     return torque
 
 
-def solar_torque(r_p, S):
-    F_s = (1 + rho) * P_s * S
+def solar_torque(r_p):
+    F_s = (1 + i.rho_opt) * i.P_s * i.S
     torque = np.cross(r_p, F_s)
-    return {
-        "Solar radiation torque": torque
-    }
+    return torque
 
 
 def magnetic_torque(M, B):
     torque = np.cross(M, B)
-    return {
-        "Magnetic Torque": torque
-    }
+    return torque
 
 
-def sin(x):
-    return np.sin(x)
+def T_ae_z(x):
+    cm_array_init = COM(i.masses_init)
+    cm_array_fin = COM(i.masses_fin)
+    cm_array_avg = (cm_array_init + cm_array_fin)/2
+    k1 = cm_array_avg[0] * 0.5 * i.C_d * i.rho * np.square(i.v_orbit) * i.S[1]
+    k2 = cm_array_avg[1] * 0.5 * i.C_d * i.rho * np.square(i.v_orbit) * i.S[0]
+    omega = 2*np.pi/i.t_orbit
+    return k1 * np.square(np.sin(omega * x)) - k2 * np.square(np.cos(omega * x))
 
 
-def ang_impulse(S, v, angle):
-    av_sin = quad(sin, 0, angle)
-    F_a = 0.5 * i.rho * i.C_d * np.square(v) * (S[0] + S[1]) * av_sin
-
-
-def calculations():
+def impulse_all():
     cm_array_init = COM(i.masses_init)
     cm_array_fin = COM(i.masses_fin)
     cm_array_avg = (cm_array_init + cm_array_fin)/2
 
-    aero_torque_mission = aerodynamic_torque(cm_array_avg, i.S, v_mission)
-    aero_torque_sending = aerodynamic_torque(cm_array_avg, i.S, v_sending)
-    impulse_mission = aero_torque_mission * i.t_mission * 3 / 4
-    impulse_sending = aero_torque_sending * i.t_mission * 1 / 4
-    impulse_mission_orbit = aero_torque_mission * i.t_orbit * 3 / 4
-    impulse_sending_orbit = aero_torque_sending * i.t_orbit * 1 / 4
+    ae_T_mission = aerodynamic_torque(cm_array_avg, v_mission)
+    solar_T_sending = solar_torque(cm_array_avg)
+    impulse_ae_mission = ae_T_mission * i.t_orbit * 3 / 4
+    impulse_solar_sending = solar_T_sending * i.t_orbit * 1 / 4
+    impulse_ae_sending = quad(T_ae_z, 0, i.t_orbit/4)
 
     ang_impulse_sending = i.I[1] * np.pi/2 / i.t_orbit/4
+    return impulse_ae_sending
 
-    return {
-        "Impulse total: ": impulse_mission + impulse_sending,
-        "Impulse 1 orbit Total: ": impulse_mission_orbit + impulse_sending_orbit + ang_impulse_sending
-    }
+# def calculations():
+#     cm_array_init = COM(i.masses_init)
+#     cm_array_fin = COM(i.masses_fin)
+#     cm_array_avg = (cm_array_init + cm_array_fin)/2
+#
+#     aero_torque_mission = aerodynamic_torque(cm_array_avg, i.S, v_mission)
+#     aero_torque_sending = aerodynamic_torque(cm_array_avg, i.S, v_sending)
+#     impulse_mission = aero_torque_mission * i.t_mission * 3 / 4
+#     impulse_sending = aero_torque_sending * i.t_mission * 1 / 4
+#     impulse_mission_orbit = aero_torque_mission * i.t_orbit * 3 / 4
+#     impulse_sending_orbit = aero_torque_sending * i.t_orbit * 1 / 4
+#
+#     ang_impulse_sending = i.I[1] * np.pi/2 / i.t_orbit/4
+#
+#     return {
+#         "Impulse total: ": impulse_mission + impulse_sending,
+#         "Impulse 1 orbit Total: ": impulse_mission_orbit + impulse_sending_orbit + ang_impulse_sending
+#     }
 
 
 v_mission = np.array([i.v_orbit, 0, 0])
 v_sending = np.array([0, i.v_orbit, 0])
 
 print(COM(i.masses_init))
-print(calculations())
+print(impulse_all())

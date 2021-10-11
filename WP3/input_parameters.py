@@ -37,9 +37,9 @@ areas = {"Area1": [0, 0, 0, 1],  # [m^2] x, y, z, area
 n_sq = (g_param / (r_orbit + r_uranus) ** 3)  # [rad/s]parameter for Gravity torque
 
 C_d = 2.6  # [-] drag coefficient for Aerodynamic torque
-S = [9.17, s_proj * h_cylinder, s_proj * h_cylinder]  # [m^2] surface area for Aerodynamic torque
+S = np.array([9.17, s_proj * h_cylinder, s_proj * h_cylinder])  # [m^2] surface area for Aerodynamic torque
 
-rho_r = 0.84  # [-] reflectivity of sail for solar radiation torque
+rho_opt = 0.84  # [-] reflectivity of sail for solar radiation torque
 S_eff = 28.8  # [m^2] effective area of of the S/C for solar radiation torque
 
 M_d = 0.1  # [A*m^2] residual magnetic dipole
