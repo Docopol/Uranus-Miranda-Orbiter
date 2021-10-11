@@ -5,27 +5,43 @@ r_uranus = 25170  # [km] Radius of Uranus
 rho = 8.417 * 1e-13  # [km/m^3] Density at orbit height
 P_s = 2.468 * 1e-8  # [N/m^2] Solar pressure around Uranus
 
-# # # required parameters # # #
+# # # Mission parameters # # #
 
-m_cylinder = 157.8  # [kg] mass of structure
+t_mission = 4 * 365.25 * 24 * 3600
+
+# # # SC parameters # # #
+
+m_dry_SC = 1517.24  # [kg] mass of structure
 r_cylinder = 1.8  # [m] radius of circular cylinder
 h_cylinder = 8.235  # [m] length of cylinder
-r_orbit = 4343  # [km] Altitude of circular orbit
-a_orbit = 2 * (r_uranus + r_orbit)  # Semi Major Axis of orbit
-v_orbit = np.sqrt(g_param / (r_orbit + r_uranus)) * 1e3  # [m/s] Orbital velocity
-t_orbit = 2 * np.pi * np.sqrt(np.power(a_orbit, 3, dtype="int64") / g_param)  # orbital time period
-t_mission = 4*365.25*24*3600
 a = 1.378  # [m] side length of octagon
 s_proj = a * (1 + np.sqrt(2))  # projected side length
-I = np.array([(0.345 * m_cylinder * r_cylinder ** 4) / (a * r_cylinder), 0, 0])  # [kg*m^2] Moment of Inertia along x axis
-
-# # # masses # # #
 
 masses_init = {"Mass of System": [0, 0, 0, 1517.24],  # [kg] x, y, z, mass
                "Mass of Fuel": [0.702, 0, 0, 180.73 * 1.2]}
 
 masses_fin = {"Mass of System": [0, 0, 0, 1517.24],  # [kg] x, y, z, mass
               "Mass of Fuel": [0.702, 0, 0, (180.73 * (1 - 1 / 1.02) * 1.2)]}  # removing 2% residual
+
+V_proptank = 182.69 * 1e-3
+r_proptank = np.cbrt(V_proptank/(4/3*np.pi))
+m_proptank_av = (180.73 * 1.2 + 180.73 * (1 - 1 / 1.02) * 1.2) / 2
+r_to_COM = 0.702
+
+I_xx = (0.345 * m_dry_SC * np.power(r_cylinder, 4)) / (a * r_cylinder)
+I_yy = 1/4 * m_dry_SC * np.square(r_cylinder) + 1/12 * m_dry_SC * np.square(h_cylinder) + 2/5 * m_proptank_av * np.square(r_proptank) + m_proptank_av * np.square(r_to_COM)
+I_zz = I_yy
+I_SC = np.array([I_xx, I_yy, I_zz])  # [kg*m^2] Moment of Inertia along x axis
+
+
+# # # Orbit parameters # # #
+
+r_orbit = 4343  # [km] Altitude of circular orbit
+a_orbit = 2 * (r_uranus + r_orbit)  # Semi Major Axis of orbit
+v_orbit = np.sqrt(g_param / (r_orbit + r_uranus)) * 1e3  # [m/s] Orbital velocity
+t_orbit = 2 * np.pi * np.sqrt(np.power(a_orbit, 3, dtype="int64") / g_param)  # orbital time period
+
+
 
 # # # areas # # #
 

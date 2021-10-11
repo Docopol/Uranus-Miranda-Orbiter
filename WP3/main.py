@@ -76,12 +76,13 @@ def impulse_all():
 
     ae_T_mission = aerodynamic_torque(cm_array_avg, v_mission)
     solar_T_sending = solar_torque(cm_array_avg)
+
     impulse_ae_mission = ae_T_mission * i.t_orbit * 3 / 4
     impulse_solar_sending = solar_T_sending * i.t_orbit * 1 / 4
     impulse_ae_sending = quad(T_ae_z, 0, i.t_orbit/4)
     impulse_solar_mission_day = quad(T_s_z, i.t_orbit/4, i.t_orbit/2)
 
-    ang_impulse_sending = i.I[1] * np.pi/2 / i.t_orbit/4
+    ang_impulse_sending = i.I[2] * np.pi/2
     return {
         "Impulse due to aerodynamics": impulse_ae_sending,
         "Impulse due to solar": impulse_solar_mission_day
