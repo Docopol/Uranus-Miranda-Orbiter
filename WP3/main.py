@@ -24,12 +24,7 @@ def gravity_torque(I_x, I_y, I_z, phi, theta):
     grav_tor_y = 3 / 2 * i.n_sq * ((I_x - I_z) * np.sin(2 * theta))  # Torque in y direction
     grav_tor_z = 0  # Torque in z direction
     torque = [grav_tor_x, grav_tor_y, grav_tor_z]
-    return {
-        "Gravity torque x": grav_tor_x,
-        "Gravity torque y": grav_tor_y,
-        "Gravity torque z": grav_tor_z,
-        "Gravity torque": torque
-    }
+    return torque
 
 
 def aerodynamic_torque(r_m, v):
@@ -82,10 +77,14 @@ def impulse_all():
     impulse_ae_sending = quad(T_ae_z, 0, i.t_orbit/4)
     impulse_solar_mission_day = quad(T_s_z, i.t_orbit/4, i.t_orbit/2)
 
-    ang_impulse_sending = i.I[2] * np.pi/2
+    ang_impulse_sending = (4 * i.I_SC[2] * np.pi/2) / (5*60)
+
     return {
-        "Impulse due to aerodynamics": impulse_ae_sending,
-        "Impulse due to solar": impulse_solar_mission_day
+        "Impulse due to aerodynamics during mission": impulse_ae_mission,
+        "Impulse due to aerodynamics during sending": impulse_ae_sending[0],
+        "Impulse due to solar during mission day": impulse_solar_mission_day[0],
+        "Impulse due to solar during sending": impulse_solar_sending,
+        "Impulse due to rotation after sending": ang_impulse_sending
     }
 
 # def calculations():
