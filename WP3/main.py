@@ -58,8 +58,8 @@ def T_s_z(x):
     cm_array_init = COM(i.masses_init)
     cm_array_fin = COM(i.masses_fin)
     cm_array_avg = (cm_array_init + cm_array_fin) / 2
-    k1 = (1 + i.rho_opt) * i.P_s * i.S[1]
-    k2 = (1 + i.rho_opt) * i.P_s * i.S[0]
+    k1 = cm_array_avg[0] * (1 + i.rho_opt) * i.P_s * i.S[1]
+    k2 = cm_array_avg[1] * (1 + i.rho_opt) * i.P_s * i.S[0]
     omega = 2 * np.pi / i.t_orbit
     return k1 * np.sin(omega * x) - k2 * np.cos(omega * x)
 
