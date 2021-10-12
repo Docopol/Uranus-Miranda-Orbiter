@@ -121,7 +121,7 @@ def impulse_all():
     impulse_solar_mission_day = np.array([quad(impulse_s_x_var, i.t_orbit / 4, i.t_orbit / 2)[0], quad(impulse_s_y_var, i.t_orbit/4, i.t_orbit/2)[0], quad(impulse_s_z_var, i.t_orbit/4, i.t_orbit/2)[0]])
     impulse_solar = np.linalg.norm(impulse_solar_mission_day) + np.linalg.norm(impulse_solar_sending)
 
-    impulse_grav_mission = gravity_torque(i.I_xx, i.I_yy, i.I_zz, i.theta_misalignment, i.phi_misalignment) * i.t_orbit
+    impulse_grav_mission = gravity_torque(i.I_xx, i.I_yy, i.I_zz, i.theta_misalignment, i.phi_misalignment) * i.t_orbit * 3/4
     impulse_grav_sending = np.array([quad(impulse_grav_x_var, 0, i.t_orbit/4)[0], quad(impulse_grav_y_var, 0, i.t_orbit/4)[0], quad(impulse_grav_z_var, 0, i.t_orbit/4)[0]])
     impulse_grav = np.linalg.norm(impulse_grav_mission) + np.linalg.norm(impulse_grav_sending)
 
