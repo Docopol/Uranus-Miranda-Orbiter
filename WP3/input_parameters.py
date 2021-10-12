@@ -7,7 +7,17 @@ P_s = 2.468 * 1e-8  # [N/m^2] Solar pressure around Uranus
 
 # # # Mission parameters # # #
 
-t_mission = 4 * 365.25 * 24 * 3600
+t_mission_yr = 4  # Years in mission
+t_mission = t_mission_yr * 365.25 * 24 * 3600
+
+# # # Orbit parameters # # #
+
+r_orbit = 4343  # [km] Altitude of circular orbit
+a_orbit = 2 * (r_uranus + r_orbit)  # [km] Semi Major Axis of orbit
+v_orbit = np.sqrt(g_param / (r_orbit + r_uranus)) * 1e3  # [m/s] Orbital velocity
+t_orbit = 2 * np.pi * np.sqrt(np.power(a_orbit, 3, dtype="int64") / g_param)  # [s] orbital time period
+n_sq = g_param / np.power((r_orbit + r_uranus), 3, dtype="int64")  # [rad/s^2]parameter for Gravity torque
+n_orbits = t_mission/t_orbit
 
 # # # SC parameters # # #
 
@@ -33,23 +43,10 @@ I_yy = 1/4 * m_dry_SC * np.square(r_cylinder) + 1/12 * m_dry_SC * np.square(h_cy
 I_zz = I_yy
 I_SC = np.array([I_xx, I_yy, I_zz])  # [kg*m^2] Moment of Inertia along x axis
 
-
-# # # Orbit parameters # # #
-
-r_orbit = 4343  # [km] Altitude of circular orbit
-a_orbit = 2 * (r_uranus + r_orbit)  # Semi Major Axis of orbit
-v_orbit = np.sqrt(g_param / (r_orbit + r_uranus)) * 1e3  # [m/s] Orbital velocity
-t_orbit = 2 * np.pi * np.sqrt(np.power(a_orbit, 3, dtype="int64") / g_param)  # orbital time period
-
-
-# # # areas # # #
-
 areas = {"Area1": [0, 0, 0, 1],  # [m^2] x, y, z, area
          "Area2": [0, 1, 0, 1]}
 
 # # # Disturbance Torques # # #
-
-n_sq = (g_param / (r_orbit + r_uranus) ** 3)  # [rad/s]parameter for Gravity torque
 
 C_d = 2.6  # [-] drag coefficient for Aerodynamic torque
 S = np.array([9.17, s_proj * h_cylinder, s_proj * h_cylinder])  # [m^2] surface area for Aerodynamic torque
@@ -62,6 +59,15 @@ B = 1e-5  # [N*m] intensity of magnetic field
 
 # # # Uncertainties # # #
 
-theta_misalignment = np.pi/180  # 1deg
-phi_misalignment = np.pi/180  # 1deg
+theta_misalignment = np.pi/180  # 1 deg
+phi_misalignment = np.pi/180  # 1 deg
 CG_uncertainty = 0.02  # 2cm is uncertainty SMAD[p. 574]
+angle_thrust_misalignment = 0.3 * np.pi/180  # 0.3 deg
+
+arm_thrust_misalignment = h_cylinder/2 * np.sin(angle_thrust_misalignment)  # from geometric center in both y and z-axis
+
+# # # Other # # #
+
+thrust_mainengine = 560  # N (WP2)
+burn_time_mainengine = 1048.74  # s (WP2)
+

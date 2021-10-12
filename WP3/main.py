@@ -37,7 +37,6 @@ def gravity_torque(I_x, I_y, I_z, phi, theta):
 def aerodynamic_torque(r_m, v):
     F_a = 0.5 * i.rho * i.C_d * np.square(v) * i.S
     torque = np.cross(r_m, F_a)
-    print(F_a)
     return torque
 
 
@@ -109,7 +108,17 @@ def impulse_grav_z_var(t):
     return k1 * np.square(np.sin(omega * t))
 
 
-def impulse_all():
+def impulse_thrust_misalignment():
+    torque = i.thrust_mainengine * i.arm_thrust_misalignment
+    impulse_x = 0
+    impulse_y = torque * i.burn_time_mainengine
+    impulse_z = impulse_y
+    impulse_array = np.array([impulse_x, impulse_y, impulse_z])
+    impulse = np.linalg.norm(impulse_array)
+    return impulse
+
+
+def impulse_all_orbit():
     ae_T_mission = aerodynamic_torque(cm_array_avg, v_mission)
     solar_T_sending = solar_torque(cm_array_avg)
 
@@ -140,7 +149,7 @@ def impulse_all():
         "Impulse due to gravity during mission": impulse_grav_mission,
         "Impulse due to gravity during sending": impulse_grav_sending,
         "Total impulse": sum_impulses
-    }
+    }, sum_impulses
 
 # def calculations():
 #     cm_array_init = COM(i.masses_init)
@@ -166,4 +175,6 @@ v_mission = np.array([i.v_orbit, 0, 0])
 v_sending = np.array([0, i.v_orbit, 0])
 
 print(COM(i.masses_init))
-print(impulse_all())
+print(impulse_all_orbit()[1])
+print(impulse_thrust_misalignment())
+print(impulse_all_orbit()[1] * i.n_orbits + impulse_thrust_misalignment())
