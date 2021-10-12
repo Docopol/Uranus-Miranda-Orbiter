@@ -20,9 +20,9 @@ def COP(areas):
 
 
 def gravity_torque(I_x, I_y, I_z, phi, theta):
-    grav_tor_x = 3 / 2 * i.n_sq * (abs(0.99*I_y - I_z) * np.sin(2 * phi))  # Torque in x direction
-    grav_tor_y = 3 / 2 * i.n_sq * (abs(I_x - I_z) * np.sin(2 * theta))  # Torque in y direction
-    grav_tor_z = 0  # Torque in z direction
+    grav_tor_x = 3 / 2 * i.n_sq * (abs(0.99*I_y - I_z) * np.sin(2 * phi) * np.square(np.cos(theta)))  # Torque in x direction
+    grav_tor_y = 3 / 2 * i.n_sq * (abs(I_x - I_z) * np.sin(2 * theta) * np.cos(phi))  # Torque in y direction
+    grav_tor_z = 3 / 2 * i.n_sq * (abs(I_x - I_y) * np.sin(phi) * np.sin(2 * theta))  # Torque in z direction
     torque = np.array([grav_tor_x, grav_tor_y, grav_tor_z])
     return torque
 
@@ -73,13 +73,15 @@ def impulse_all():
     solar_T_sending = solar_torque(cm_array_avg)
 
     impulse_ae_mission = ae_T_mission * i.t_orbit * 3 / 4
-    impulse_solar_sending = solar_T_sending * i.t_orbit * 1 / 4
     impulse_ae_sending = quad(T_ae_z, 0, i.t_orbit/4)
+
+    impulse_solar_sending = solar_T_sending * i.t_orbit * 1 / 4
     impulse_solar_mission_day = quad(T_s_z, i.t_orbit/4, i.t_orbit/2)
-    impulse_grav_orbit = gravity_torque(i.I_xx, i.I_yy, i.I_zz, np.pi/180, np.pi/180) * i.t_orbit
+
+    impulse_grav_mission = gravity_torque(i.I_xx, i.I_yy, i.I_zz, np.pi/180, np.pi/180) * i.t_orbit
+    impulse_grav_sending = ...
 
     ang_impulse_sending = (4 * i.I_SC[2] * np.pi/2) / (5*60)
-
 
     return {
         "Impulse due to aerodynamics during mission": impulse_ae_mission,
@@ -87,7 +89,8 @@ def impulse_all():
         "Impulse due to solar during mission day": impulse_solar_mission_day[0],
         "Impulse due to solar during sending": impulse_solar_sending,
         "Impulse due to rotation after sending": ang_impulse_sending,
-        "Impulse due to gravity": impulse_grav_orbit
+        "Impulse due to gravity during sending": impulse_grav_mission,
+        "Impulse due to gravity during mission": impulse_grav_sending
     }
 
 # def calculations():
