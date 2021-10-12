@@ -19,6 +19,12 @@ def COP(areas):
     return c_pressure
 
 
+omega = 2*np.pi/i.t_orbit
+cm_array_init = COM(i.masses_init)
+cm_array_fin = COM(i.masses_fin)
+cm_array_avg = (cm_array_init + cm_array_fin) / 2
+
+
 def gravity_torque(I_x, I_y, I_z, phi, theta):
     grav_tor_x = 3 / 2 * i.n_sq * (abs(0.99*I_y - I_z) * np.sin(2 * phi) * np.square(np.cos(theta)))  # Torque in x direction
     grav_tor_y = 3 / 2 * i.n_sq * (abs(I_x - I_z) * np.sin(2 * theta) * np.cos(phi))  # Torque in y direction
@@ -41,27 +47,46 @@ def solar_torque(r_p):
 
 def magnetic_torque(M, B):
     torque = np.cross(M, B)
+
     return torque
 
 
-def T_ae_z(x):
-    cm_array_init = COM(i.masses_init)
-    cm_array_fin = COM(i.masses_fin)
-    cm_array_avg = (cm_array_init + cm_array_fin)/2
+def impulse_ae_x(t):
+    k2 = cm_array_avg[2] * 0.5 * i.C_d * i.rho * np.square(i.v_orbit) * i.S[1]
+
+    return - k2 * np.square(np.sin(omega * t))
+
+
+def impulse_ae_y(t):
+    k1 = cm_array_avg[2] * 0.5 * i.C_d * i.rho * np.square(i.v_orbit) * i.S[0]
+
+    return k1 * np.square(np.cos(omega * t))
+
+
+def impulse_ae_z(t):
     k1 = cm_array_avg[0] * 0.5 * i.C_d * i.rho * np.square(i.v_orbit) * i.S[1]
     k2 = cm_array_avg[1] * 0.5 * i.C_d * i.rho * np.square(i.v_orbit) * i.S[0]
-    omega = 2*np.pi/i.t_orbit
-    return k1 * np.square(np.sin(omega * x)) - k2 * np.square(np.cos(omega * x))
+
+    return k1 * np.square(np.sin(omega * t)) - k2 * np.square(np.cos(omega * t))
 
 
-def T_s_z(x):
-    cm_array_init = COM(i.masses_init)
-    cm_array_fin = COM(i.masses_fin)
-    cm_array_avg = (cm_array_init + cm_array_fin) / 2
+def impulse_s_x(t):
+    k2 = cm_array_avg[2] * (1 + i.rho_opt) * i.P_s * i.S[1]
+
+    return - k2 * np.cos(omega * t)
+
+
+def impulse_s_y(t):
+    k1 = cm_array_avg[2] * (1 + i.rho_opt) * i.P_s * i.S[0]
+
+    return k1 * np.sin(omega * t)
+
+
+def impulse_s_z(t):
     k1 = cm_array_avg[0] * (1 + i.rho_opt) * i.P_s * i.S[1]
     k2 = cm_array_avg[1] * (1 + i.rho_opt) * i.P_s * i.S[0]
-    omega = 2 * np.pi / i.t_orbit
-    return k1 * np.sin(omega * x) - k2 * np.cos(omega * x)
+
+    return k1 * np.sin(omega * t) - k2 * np.cos(omega * t)
 
 
 def impulse_all():
@@ -73,10 +98,10 @@ def impulse_all():
     solar_T_sending = solar_torque(cm_array_avg)
 
     impulse_ae_mission = ae_T_mission * i.t_orbit * 3 / 4
-    impulse_ae_sending = quad(T_ae_z, 0, i.t_orbit/4)
+    impulse_ae_sending = np.array([quad(impulse_ae_x, 0, i.t_orbit/4), quad(impulse_ae_y, 0, i.t_orbit/4), quad(impulse_ae_z, 0, i.t_orbit/4)])
 
     impulse_solar_sending = solar_T_sending * i.t_orbit * 1 / 4
-    impulse_solar_mission_day = quad(T_s_z, i.t_orbit/4, i.t_orbit/2)
+    impulse_solar_mission_day = np.array([quad(impulse_s_x, i.t_orbit/4, i.t_orbit/2), quad(impulse_s_y, i.t_orbit/4, i.t_orbit/2), quad(impulse_s_z, i.t_orbit/4, i.t_orbit/2)])
 
     impulse_grav_mission = gravity_torque(i.I_xx, i.I_yy, i.I_zz, np.pi/180, np.pi/180) * i.t_orbit
     impulse_grav_sending = ...
