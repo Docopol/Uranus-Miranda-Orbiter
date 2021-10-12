@@ -17,11 +17,11 @@ h_cylinder = 8.235  # [m] length of cylinder
 a = 1.378  # [m] side length of octagon
 s_proj = a * (1 + np.sqrt(2))  # projected side length
 
-masses_init = {"Mass of System": [0, 0, 0, 1517.24],  # [kg] x, y, z, mass
-               "Mass of Fuel": [0.702, 0, 0, 180.73 * 1.2]}
+masses_init = [[0, 0, 0, 1517.24],  # System  # [kg] x, y, z, mass
+               [0.702, 0, 0, 180.73 * 1.2]]  # Fuel
 
-masses_fin = {"Mass of System": [0, 0, 0, 1517.24],  # [kg] x, y, z, mass
-              "Mass of Fuel": [0.702, 0, 0, (180.73 * (1 - 1 / 1.02) * 1.2)]}  # removing 2% residual
+masses_fin = [[0.02, 0.02, 0.02, 1517.24],  # System  # [kg] x, y, z, mass
+              [0.702, 0, 0, (180.73 * (1 - 1 / 1.02) * 1.2)]]  # Fuel  # removing 2% residual
 
 V_proptank = 182.69 * 1e-3
 r_proptank = np.cbrt(V_proptank/(4/3*np.pi))
@@ -60,3 +60,4 @@ S_eff = 28.8  # [m^2] effective area of of the S/C for solar radiation torque
 
 M_d = 0.1  # [A*m^2] residual magnetic dipole
 B = 1e-5  # [N*m] intensity of magnetic field
+

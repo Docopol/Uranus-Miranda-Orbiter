@@ -4,16 +4,17 @@ from scipy.integrate import quad
 
 
 def COM(masses):
-    mass_array = [0, 0, 0, 0]
-    for k, v in masses.items():
+    mass_array = np.array([0, 0, 0, 0])
+    for v in masses:
         mass_array = np.vstack((mass_array, v))
     c_mass = np.average(mass_array[:, :3], axis=0, weights=mass_array[:, 3])
+    c_mass[:3] += 0.02  # 2cm is uncertainty SMAD[p. 574]
     return c_mass
 
 
 def COP(areas):
-    area_array = [0, 0, 0, 0]
-    for k, v in areas.items():
+    area_array = np.array([0, 0, 0, 0])
+    for v in areas:
         area_array = np.vstack((area_array, v))
     c_pressure = np.average(area_array[:, :3], axis=0, weights=area_array[:, 3])
     return c_pressure
@@ -36,6 +37,7 @@ def gravity_torque(I_x, I_y, I_z, phi, theta):
 def aerodynamic_torque(r_m, v):
     F_a = 0.5 * i.rho * i.C_d * np.square(v) * i.S
     torque = np.cross(r_m, F_a)
+    print(F_a)
     return torque
 
 
@@ -90,18 +92,14 @@ def impulse_s_z(t):
 
 
 def impulse_all():
-    cm_array_init = COM(i.masses_init)
-    cm_array_fin = COM(i.masses_fin)
-    cm_array_avg = (cm_array_init + cm_array_fin)/2
-
     ae_T_mission = aerodynamic_torque(cm_array_avg, v_mission)
     solar_T_sending = solar_torque(cm_array_avg)
 
     impulse_ae_mission = ae_T_mission * i.t_orbit * 3 / 4
-    impulse_ae_sending = np.array([quad(impulse_ae_x, 0, i.t_orbit/4), quad(impulse_ae_y, 0, i.t_orbit/4), quad(impulse_ae_z, 0, i.t_orbit/4)])
+    impulse_ae_sending = np.array([quad(impulse_ae_x, 0, i.t_orbit/4)[0], quad(impulse_ae_y, 0, i.t_orbit/4)[0], quad(impulse_ae_z, 0, i.t_orbit/4)[0]])
 
     impulse_solar_sending = solar_T_sending * i.t_orbit * 1 / 4
-    impulse_solar_mission_day = np.array([quad(impulse_s_x, i.t_orbit/4, i.t_orbit/2), quad(impulse_s_y, i.t_orbit/4, i.t_orbit/2), quad(impulse_s_z, i.t_orbit/4, i.t_orbit/2)])
+    impulse_solar_mission_day = np.array([quad(impulse_s_x, i.t_orbit / 4, i.t_orbit / 2)[0], quad(impulse_s_y, i.t_orbit/4, i.t_orbit/2)[0], quad(impulse_s_z, i.t_orbit/4, i.t_orbit/2)[0]])
 
     impulse_grav_mission = gravity_torque(i.I_xx, i.I_yy, i.I_zz, np.pi/180, np.pi/180) * i.t_orbit
     impulse_grav_sending = ...
@@ -110,12 +108,12 @@ def impulse_all():
 
     return {
         "Impulse due to aerodynamics during mission": impulse_ae_mission,
-        "Impulse due to aerodynamics during sending": impulse_ae_sending[0],
-        "Impulse due to solar during mission day": impulse_solar_mission_day[0],
+        "Impulse due to aerodynamics during sending": impulse_ae_sending,
+        "Impulse due to solar during mission day": impulse_solar_mission_day,
         "Impulse due to solar during sending": impulse_solar_sending,
         "Impulse due to rotation after sending": ang_impulse_sending,
-        "Impulse due to gravity during sending": impulse_grav_mission,
-        "Impulse due to gravity during mission": impulse_grav_sending
+        "Impulse due to gravity during mission": impulse_grav_mission,
+        "Impulse due to gravity during sending": impulse_grav_sending
     }
 
 # def calculations():
