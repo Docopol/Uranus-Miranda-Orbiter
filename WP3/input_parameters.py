@@ -42,7 +42,6 @@ v_orbit = np.sqrt(g_param / (r_orbit + r_uranus)) * 1e3  # [m/s] Orbital velocit
 t_orbit = 2 * np.pi * np.sqrt(np.power(a_orbit, 3, dtype="int64") / g_param)  # orbital time period
 
 
-
 # # # areas # # #
 
 areas = {"Area1": [0, 0, 0, 1],  # [m^2] x, y, z, area
@@ -61,3 +60,8 @@ S_eff = 28.8  # [m^2] effective area of of the S/C for solar radiation torque
 M_d = 0.1  # [A*m^2] residual magnetic dipole
 B = 1e-5  # [N*m] intensity of magnetic field
 
+# # # Uncertainties # # #
+
+theta_misalignment = np.pi/180  # 1deg
+phi_misalignment = np.pi/180  # 1deg
+CG_uncertainty = 0.02  # 2cm is uncertainty SMAD[p. 574]
