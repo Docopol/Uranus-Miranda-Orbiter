@@ -104,14 +104,15 @@ def impulse_all():
     impulse_grav_mission = gravity_torque(i.I_xx, i.I_yy, i.I_zz, np.pi/180, np.pi/180) * i.t_orbit
     impulse_grav_sending = ...
 
-    ang_impulse_sending = (4 * i.I_SC[2] * np.pi/2) / (5*60)
+    ang_impulse_rotation_sending = i.I_yy * np.pi/2 / (i.t_orbit/4)
+    ang_impulse_stop_rotation = ang_impulse_rotation_sending
 
     return {
         "Impulse due to aerodynamics during mission": impulse_ae_mission,
         "Impulse due to aerodynamics during sending": impulse_ae_sending,
         "Impulse due to solar during mission day": impulse_solar_mission_day,
         "Impulse due to solar during sending": impulse_solar_sending,
-        "Impulse due to rotation after sending": ang_impulse_sending,
+        "Impulse due to rotation to rotate for sending": ang_impulse_rotation_sending,
         "Impulse due to gravity during mission": impulse_grav_mission,
         "Impulse due to gravity during sending": impulse_grav_sending
     }
