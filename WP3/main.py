@@ -46,8 +46,8 @@ def solar_torque(r_p):
     return torque
 
 
-def magnetic_torque(M, B):
-    torque = np.cross(M, B)
+def magnetic_torque(D, B):
+    torque = D * B
 
     return torque
 
@@ -55,7 +55,7 @@ def magnetic_torque(M, B):
 def torque_ae_x_var(t):
     k2 = cm_array_avg[2] * 0.5 * i.C_d * i.rho * np.square(i.v_orbit) * i.S[1]
 
-    return k2 * np.square(np.sin(omega * t))
+    return - k2 * np.square(np.sin(omega * t))
 
 
 def torque_ae_y_var(t):
@@ -134,11 +134,13 @@ def impulse_all_orbit():
     impulse_grav_sending = np.array([quad(torque_grav_x_var, 0, i.t_orbit/4)[0], quad(torque_grav_y_var, 0, i.t_orbit/4)[0], quad(torque_grav_z_var, 0, i.t_orbit/4)[0]])
     impulse_grav = np.abs(impulse_grav_mission) + np.abs(impulse_grav_sending)
 
+    impulse_magnetic_mission = magnetic_torque(i.D, i.B_uranus) * i.t_orbit
+
     ang_impulse_rotation_sending = i.I_yy * np.pi/2 / (i.t_orbit/4)
     ang_impulse_stop_rotation = ang_impulse_rotation_sending
     ang_impulse_rotation = np.abs(ang_impulse_stop_rotation) + np.abs(ang_impulse_stop_rotation)
 
-    sum_impulses = np.sum(impulse_ae + impulse_solar + impulse_grav)
+    sum_impulses = np.sum(impulse_ae + impulse_solar + impulse_grav + impulse_magnetic_mission)
 
     return {
         "Impulse due to aerodynamics during mission": impulse_ae_mission,
@@ -148,34 +150,16 @@ def impulse_all_orbit():
         "Impulse due to rotation to rotate for sending": ang_impulse_rotation,
         "Impulse due to gravity during mission": impulse_grav_mission,
         "Impulse due to gravity during sending": impulse_grav_sending,
+        "Impulse due to magnetic field during mission": impulse_magnetic_mission,
         "Total impulse": sum_impulses
     }, sum_impulses
-
-# def calculations():
-#     cm_array_init = COM(i.masses_init)
-#     cm_array_fin = COM(i.masses_fin)
-#     cm_array_avg = (cm_array_init + cm_array_fin)/2
-#
-#     aero_torque_mission = aerodynamic_torque(cm_array_avg, i.S, v_mission)
-#     aero_torque_sending = aerodynamic_torque(cm_array_avg, i.S, v_sending)
-#     impulse_mission = aero_torque_mission * i.t_mission * 3 / 4
-#     impulse_sending = aero_torque_sending * i.t_mission * 1 / 4
-#     impulse_mission_orbit = aero_torque_mission * i.t_orbit * 3 / 4
-#     impulse_sending_orbit = aero_torque_sending * i.t_orbit * 1 / 4
-#
-#     ang_impulse_sending = i.I[1] * np.pi/2 / i.t_orbit/4
-#
-#     return {
-#         "Impulse total: ": impulse_mission + impulse_sending,
-#         "Impulse 1 orbit Total: ": impulse_mission_orbit + impulse_sending_orbit + ang_impulse_sending
-#     }
 
 
 v_mission = np.array([i.v_orbit, 0, 0])
 v_sending = np.array([0, i.v_orbit, 0])
 
 # print(COM(i.masses_init))
-print("All impulses:", impulse_all_orbit())
-print("Impulse per orbit:", impulse_all_orbit()[1])
+print("All separate impulses per orbit:", impulse_all_orbit())
+print("Total impulse per orbit:", impulse_all_orbit()[1])
 print("Impulse due to thruster misalignment:", impulse_thrust_misalignment())
-print("Impulse total:", impulse_all_orbit()[1] * i.n_orbits + impulse_thrust_misalignment())
+print("Total impulse during mission:", impulse_all_orbit()[1] * i.n_orbits + impulse_thrust_misalignment())
