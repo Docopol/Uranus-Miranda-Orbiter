@@ -155,6 +155,11 @@ def impulse_all_orbit():
     }, sum_impulses
 
 
+def propellant_mass():
+    m_p = ...
+
+    return m_p
+
 # print(COM(i.masses_init))
 print("All separate impulses per orbit:", impulse_all_orbit())
 print("Total impulse per orbit:", impulse_all_orbit()[1])

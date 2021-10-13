@@ -71,6 +71,8 @@ arm_thrust_misalignment = h_cylinder/2 * np.sin(angle_thrust_misalignment)  # fr
 
 # # # ADCS # # #
 
+thrust_adcs = 5  # [N]
+ISP_adcs = 230  # [s]
 
 # # # Other # # #
 
