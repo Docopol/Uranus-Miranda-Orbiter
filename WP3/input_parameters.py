@@ -5,7 +5,7 @@ g0 = 9.80665
 g_param = 5.793939 * 1e6  # [km^3/s^2] Gravitational Parameter  [NASA: Uranus Fact Sheet]
 r_uranus = 25265.0  # [km] Radius of Uranus = average between polar and equatorial radius  [NASA: Uranus Fact Sheet]
 rho = 8.417 * 1e-13  # [kg/m^3] Density at orbit height  [WP2]
-distance_uranus_to_sun_av = 19.2185  #[AU]
+distance_uranus_to_sun_av = 19.2185  # [AU]
 c = 299792458.0  # [m/s] speed of light
 J_s_earth = 1366.0  # [W/m^2] Solar pressure around Uranus  [ADSEE READER]
 J_s_uranus = J_s_earth * np.square(1/distance_uranus_to_sun_av)  # [WP2]
