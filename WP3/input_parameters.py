@@ -27,7 +27,7 @@ n_orbits = t_mission/t_orbit
 
 # # # Magnetic parameters # # #
 
-l_constant = 1.0 + np.sin((90-58.6) * np.pi/180)  # Approximation, Range: [1-2] (min at equator and max at poles) [SMAD]
+l_constant = 1.0 + np.cos(60 * np.pi/180)  # Approximation, Range: [1-2] (min at equator and max at poles) [SMAD]
 M_earth = 7.8 * 1e15  # [A/m^2] Magnetic dipole moment Earth [SMAD]
 M_uranus = 50.0 * M_earth  # [A/m^2] Magnetic dipole moment Uranus [Book: Spacecraft Systems Engineering]
 B_uranus = M_uranus/(np.power(a_orbit*1000, 3, dtype="float64")) * l_constant  # [A/m^2] Magnetic field Uranus [SMAD]
