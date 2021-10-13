@@ -12,12 +12,12 @@ def COM(masses):
     return c_mass
 
 
-def COP(areas):
-    area_array = np.array([0, 0, 0, 0])
-    for v in areas:
-        area_array = np.vstack((area_array, v))
-    c_pressure = np.average(area_array[:, :3], axis=0, weights=area_array[:, 3])
-    return c_pressure
+# def COP(areas):
+#     area_array = np.array([0, 0, 0, 0])
+#     for v in areas:
+#         area_array = np.vstack((area_array, v))
+#     c_pressure = np.average(area_array[:, :3], axis=0, weights=area_array[:, 3])
+#     return c_pressure
 
 
 omega = 2*np.pi/i.t_orbit
@@ -154,9 +154,6 @@ def impulse_all_orbit():
         "Total impulse": sum_impulses
     }, sum_impulses
 
-
-v_mission = np.array([i.v_orbit, 0, 0])
-v_sending = np.array([0, i.v_orbit, 0])
 
 # print(COM(i.masses_init))
 print("All separate impulses per orbit:", impulse_all_orbit())
