@@ -13,7 +13,7 @@ P_s_uranus = J_s_uranus/c
 
 # # # Mission parameters # # #
 
-t_mission_yr = 4  # Years in mission  [WP1]
+t_mission_yr = 4.0  # Years in mission  [WP1]
 t_mission = t_mission_yr * 365.25 * 24 * 3600
 
 # # # Orbit parameters # # #
@@ -27,9 +27,9 @@ n_orbits = t_mission/t_orbit
 
 # # # Magnetic parameters # # #
 
-l_constant = 1 + np.sin((90-58.6) * np.pi/180)  # Approximation, Range: [1-2] (min at equator and max at poles) [SMAD]
+l_constant = 1.0 + np.sin((90-58.6) * np.pi/180)  # Approximation, Range: [1-2] (min at equator and max at poles) [SMAD]
 M_earth = 7.8 * 1e15  # [A/m^2] Magnetic dipole moment Earth [SMAD]
-M_uranus = 50 * M_earth  # [A/m^2] Magnetic dipole moment Uranus [Book: Spacecraft Systems Engineering]
+M_uranus = 50.0 * M_earth  # [A/m^2] Magnetic dipole moment Uranus [Book: Spacecraft Systems Engineering]
 B_uranus = M_uranus/(np.power(a_orbit*1000, 3, dtype="float64")) * l_constant  # [A/m^2] Magnetic field Uranus [SMAD]
 
 # # # SC parameters # # #
@@ -85,4 +85,7 @@ distance_thrusters_to_cm = np.array([h_cylinder/2, r_cylinder/2, r_cylinder/2]) 
 
 thrust_mainengine = 560  # [N] [WP2]
 burn_time_mainengine = 1048.74  # [s] [WP2]
+
+
+omega = 2*np.pi/t_orbit
 

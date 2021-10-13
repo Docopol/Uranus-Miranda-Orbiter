@@ -20,7 +20,6 @@ def COM(masses):
 #     return c_pressure
 
 
-omega = 2*np.pi/i.t_orbit
 cm_array_init = COM(i.masses_init)
 cm_array_fin = COM(i.masses_fin)
 cm_array_avg = (cm_array_init + cm_array_fin) / 2
@@ -62,43 +61,43 @@ def magnetic_torque(D, B):
 def torque_ae_x_var(t):
     k2 = cm_array_avg[2] * 0.5 * i.C_d * i.rho * np.square(i.v_orbit) * i.S[1]
 
-    return - k2 * np.square(np.sin(omega * t))
+    return - k2 * np.square(np.sin(i.omega * t))
 
 
 def torque_ae_y_var(t):
     k1 = cm_array_avg[2] * 0.5 * i.C_d * i.rho * np.square(i.v_orbit) * i.S[0]
 
-    return k1 * np.square(np.cos(omega * t))
+    return k1 * np.square(np.cos(i.omega * t))
 
 
 def torque_ae_z_var(t):
     k1 = cm_array_avg[0] * 0.5 * i.C_d * i.rho * np.square(i.v_orbit) * i.S[1]
     k2 = cm_array_avg[1] * 0.5 * i.C_d * i.rho * np.square(i.v_orbit) * i.S[0]
 
-    return k1 * np.square(np.sin(omega * t)) - k2 * np.square(np.cos(omega * t))
+    return k1 * np.square(np.sin(i.omega * t)) - k2 * np.square(np.cos(i.omega * t))
 
 
 def torque_s_x_var(t):
     k2 = cm_array_avg[2] * (1 + i.rho_opt) * i.P_s_uranus * i.S[1]
 
-    return - k2 * np.cos(omega * t)
+    return - k2 * np.cos(i.omega * t)
 
 
 def torque_s_y_var(t):
     k1 = cm_array_avg[2] * (1 + i.rho_opt) * i.P_s_uranus * i.S[0]
 
-    return k1 * np.sin(omega * t)
+    return k1 * np.sin(i.omega * t)
 
 
 def torque_s_z_var(t):
     k1 = cm_array_avg[0] * (1 + i.rho_opt) * i.P_s_uranus * i.S[1]
     k2 = cm_array_avg[1] * (1 + i.rho_opt) * i.P_s_uranus * i.S[0]
 
-    return k1 * np.sin(omega * t) - k2 * np.cos(omega * t)
+    return k1 * np.sin(i.omega * t) - k2 * np.cos(i.omega * t)
 
 
 def torque_grav_x_var(t):
-    k1 = 3 / 2 * i.n_sq * abs(0.99*i.I_yy - i.I_zz) * np.square(np.cos(omega * t))
+    k1 = 3 / 2 * i.n_sq * abs(0.99*i.I_yy - i.I_zz) * np.square(np.cos(i.omega * t))
 
     return k1 * np.sin(2*i.phi_misalignment)
 
@@ -106,13 +105,13 @@ def torque_grav_x_var(t):
 def torque_grav_y_var(t):
     k1 = 3 / 2 * i.n_sq * abs(i.I_xx - i.I_zz) * np.cos(i.phi_misalignment)
 
-    return k1 * np.sin(2 * omega * t)
+    return k1 * np.sin(2 * i.omega * t)
 
 
 def torque_grav_z_var(t):
     k1 = 3 / 2 * i.n_sq * abs(i.I_xx - i.I_yy) * np.sin(i.phi_misalignment)
 
-    return k1 * np.square(np.sin(omega * t))
+    return k1 * np.square(np.sin(i.omega * t))
 
 
 # # # Base Equations Internal Disturbances # # #
@@ -180,7 +179,7 @@ def impulse_all_per_orbit():
         "Impulse due to magnetic field during mission": impulse_magnetic_mission,
         "Impulse due to thrust misalignment during mission": impulse_thrust_mainengine,
         "Total impulse (internal and external)": sum_impulse_tot_array
-    }, sum_impulse_tot_array
+    }, np.array(sum_impulse_tot_array)
 
 
 def propellant_mass(impulse_array):
@@ -195,7 +194,7 @@ t_b_axis = propellant_mass(impulse_all_per_orbit()[1])[1] * i.n_orbits
 print("Total propellant mass for ADCS:", m_p_tot)
 print("Burn time per axis:", t_b_axis)
 
-# print(COM(i.masses_init))
+# print(COM(i.masses_av))
 print("All separate impulses per orbit:", impulse_all_per_orbit())
 print("Total impulse per orbit:", impulse_all_per_orbit()[1])
 print("Total impulse during mission:", impulse_all_per_orbit()[1] * i.n_orbits)
