@@ -97,9 +97,9 @@ def torque_s_z_var(t):
 
 
 def torque_grav_x_var(t):
-    k1 = 3 / 2 * i.n_sq * abs(0.99*i.I_yy - i.I_zz) * np.square(np.cos(i.omega * t))
+    k1 = 3 / 2 * i.n_sq * abs(0.99*i.I_yy - i.I_zz) * np.sin(2*i.phi_misalignment)
 
-    return k1 * np.sin(2*i.phi_misalignment)
+    return k1 * np.square(np.cos(i.omega * t))
 
 
 def torque_grav_y_var(t):
