@@ -1,10 +1,15 @@
 import numpy as np
 import math as m
 
+g0 = 9.80665
 g_param = 5.793939 * 1e6  # [km^3/s^2] Gravitational Parameter  [NASA: Uranus Fact Sheet]
 r_uranus = 25265.0  # [km] Radius of Uranus = average between polar and equatorial radius  [NASA: Uranus Fact Sheet]
 rho = 8.417 * 1e-13  # [kg/m^3] Density at orbit height  [WP2]
-P_s = 2.468 * 1e-8  # [N/m^2] Solar pressure around Uranus  [WP2]
+distance_uranus_to_sun_av = ...  #[AU]
+c = 299792458.0  # [m/s] speed of light
+J_s_earth = 1366.0  # [W/m^2] Solar pressure around Uranus  [ADSEE READER]
+J_s_uranus = J_s_earth * np.square(1/19.2185)  # [WP2]
+P_s_uranus = J_s_uranus/c
 
 # # # Mission parameters # # #
 
@@ -37,7 +42,6 @@ s_proj = a * (1 + m.sqrt(2))  # projected side length  [WP1]
 
 masses_init = [[0.0, 0.0, 0.0, 1517.24],  # System  # [kg] x, y, z, mass  [WP2]
                [0.702, 0.0, 0.0, 180.73 * 1.2]]  # Fuel  [WP2]
-
 masses_fin = [[0.0, 0.0, 0.0, 1517.24],  # System  # [kg] x, y, z, mass  [WP2]
               [0.702, 0.0, 0.0, (180.73 * (1 - 1 / 1.02) * 1.2)]]  # Fuel  # removing 2% residual  [WP2]
 
@@ -71,8 +75,11 @@ arm_thrust_misalignment = h_cylinder/2 * np.sin(angle_thrust_misalignment)  # fr
 
 # # # ADCS # # #
 
-thrust_adcs = 5  # [N]
-ISP_adcs = 230  # [s]
+thrust_adcs = 1.5  # [N]
+ISP_adcs = 239  # [s]
+v_exh_adcs = ISP_adcs*g0
+m_dot_adcs = thrust_adcs/v_exh_adcs
+distance_thrusters_to_cm = np.array([h_cylinder/2, r_cylinder/2, r_cylinder/2])  # [m] simplification
 
 # # # Other # # #
 
