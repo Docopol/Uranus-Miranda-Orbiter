@@ -77,7 +77,7 @@ arm_thrust_misalignment = h_cylinder/2 * np.sin(angle_thrust_misalignment)  # fr
 
 thrust_adcs = 1.5  # [N]
 ISP_adcs = 239  # [s]
-v_exh_adcs = ISP_adcs*g0
+v_exh_adcs = ISP_adcs * g0
 m_dot_adcs = thrust_adcs/v_exh_adcs
 distance_thrusters_to_cm = np.array([h_cylinder/2, r_cylinder/2, r_cylinder/2])  # [m] simplification
 
