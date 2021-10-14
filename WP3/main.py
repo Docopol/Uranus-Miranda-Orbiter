@@ -127,32 +127,43 @@ def impulse_thrust_misalignment():
 
 def impulse_all_per_orbit():
 
-    # # # External Momentum # # #
+    # # # External Angular Impulses # # #
 
-    ae_T_mission = aerodynamic_torque(cm_array_avg, v_mission)
-    solar_T_sending = solar_torque(cm_array_avg)
-
-    impulse_ae_mission = ae_T_mission * i.t_orbit * 3 / 4
-    impulse_ae_sending = np.array([quad(torque_ae_x_var, 0, i.t_orbit/4)[0], quad(torque_ae_y_var, 0, i.t_orbit/4)[0], quad(torque_ae_z_var, 0, i.t_orbit/4)[0]])
+    # # Aerodynamic Angular Impulse # #
+    impulse_ae_mission = aerodynamic_torque(cm_array_avg, v_mission) * (3/4*i.t_orbit - i.t_orbit_before_90deg_sun)
+    impulse_ae_sending_x = np.abs(quad(torque_ae_x_var, i.t_orbit_before_90deg_sun, 0)[0]) + np.abs(quad(torque_ae_x_var, 0, i.t_orbit/4)[0])
+    impulse_ae_sending_y = np.abs(quad(torque_ae_y_var, i.t_orbit_before_90deg_sun, 0)[0]) + np.abs(quad(torque_ae_y_var, 0, i.t_orbit/4)[0])
+    impulse_ae_sending_z = np.abs(quad(torque_ae_z_var, i.t_orbit_before_90deg_sun, 0)[0]) + np.abs(quad(torque_ae_z_var, 0, i.t_orbit/4)[0])
+    impulse_ae_sending = np.array([impulse_ae_sending_x, impulse_ae_sending_y, impulse_ae_sending_z])
     impulse_ae = np.abs(impulse_ae_mission) + np.abs(impulse_ae_sending)
 
-    impulse_solar_sending = solar_T_sending * i.t_orbit * 1 / 4
-    impulse_solar_mission_day = np.array([quad(torque_s_x_var, i.t_orbit / 4, i.t_orbit / 2)[0], quad(torque_s_y_var, i.t_orbit/4, i.t_orbit/2)[0], quad(torque_s_z_var, i.t_orbit/4, i.t_orbit/2)[0]])
+    # # Solar Angular Impulse # #
+    impulse_solar_sending = solar_torque(cm_array_avg) * (i.t_orbit_before_90deg_sun + i.t_orbit/4)
+    impulse_solar_mission_day_x = np.abs(quad(torque_s_x_var, i.t_orbit/4, i.t_orbit/2)[0]) + np.abs(quad(torque_s_x_var, i.t_orbit/2, i.t_orbit/2+i.t_orbit_before_90deg_sun)[0])
+    impulse_solar_mission_day_y = np.abs(quad(torque_s_y_var, i.t_orbit/4, i.t_orbit/2)[0]) + np.abs(quad(torque_s_y_var, i.t_orbit/2, i.t_orbit/2+i.t_orbit_before_90deg_sun)[0])
+    impulse_solar_mission_day_z = np.abs(quad(torque_s_z_var, i.t_orbit/4, i.t_orbit/2)[0]) + np.abs(quad(torque_s_z_var, i.t_orbit/2, i.t_orbit/2+i.t_orbit_before_90deg_sun)[0])
+    impulse_solar_mission_day = np.array([impulse_solar_mission_day_x, impulse_solar_mission_day_y, impulse_solar_mission_day_z])
     impulse_solar = np.abs(impulse_solar_mission_day) + np.abs(impulse_solar_sending)
 
-    impulse_grav_mission = gravity_torque(i.I_xx, i.I_yy, i.I_zz, i.theta_misalignment, i.phi_misalignment) * i.t_orbit * 3/4
-    impulse_grav_sending = np.array([quad(torque_grav_x_var, 0, i.t_orbit/4)[0], quad(torque_grav_y_var, 0, i.t_orbit/4)[0], quad(torque_grav_z_var, 0, i.t_orbit/4)[0]])
+    # # Gravity Angular Impulse # #
+    impulse_grav_mission = gravity_torque(i.I_xx, i.I_yy, i.I_zz, i.theta_misalignment, i.phi_misalignment) * (3/4*i.t_orbit - i.t_orbit_before_90deg_sun)
+    impulse_grav_sending_x = np.abs(quad(torque_grav_x_var, i.t_orbit_before_90deg_sun, 0)[0]) + np.abs(
+        quad(torque_grav_y_var, 0, i.t_orbit/4)[0])
+    impulse_grav_sending_y = np.abs(quad(torque_grav_y_var, i.t_orbit_before_90deg_sun, 0)[0]) + np.abs(
+        quad(torque_grav_y_var, 0, i.t_orbit/4)[0])
+    impulse_grav_sending_z = np.abs(quad(torque_grav_z_var, i.t_orbit_before_90deg_sun, 0)[0]) + np.abs(
+        quad(torque_grav_z_var, 0, i.t_orbit/4)[0])
+    impulse_grav_sending = np.array([impulse_grav_sending_x, impulse_grav_sending_y, impulse_grav_sending_z])
     impulse_grav = np.abs(impulse_grav_mission) + np.abs(impulse_grav_sending)
 
     impulse_magnetic_mission = magnetic_torque(i.D, i.B_uranus) * i.t_orbit
 
-    # # # Repositioning Momentum # # #
-
-    impulse_rotation_sending = i.I_yy * np.pi/2 / (i.t_orbit/4)
+    # # # Repositioning Angular Momentum # # #
+    impulse_rotation_sending = i.I_yy * i.omega
     impulse_stop_rotation = impulse_rotation_sending
     impulse_rotation = np.abs(impulse_stop_rotation) + np.abs(impulse_stop_rotation)
 
-    # # # Internal Momentum # # #
+    # # # Internal Angular Impulse # # #
 
     impulse_thrust_mainengine = impulse_thrust_misalignment()/i.n_orbits
 
