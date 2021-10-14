@@ -148,9 +148,9 @@ def impulse_all_per_orbit():
 
     # # # Repositioning Momentum # # #
 
-    ang_impulse_rotation_sending = i.I_yy * np.pi/2 / (i.t_orbit/4)
-    ang_impulse_stop_rotation = ang_impulse_rotation_sending
-    ang_impulse_rotation = np.abs(ang_impulse_stop_rotation) + np.abs(ang_impulse_stop_rotation)
+    impulse_rotation_sending = i.I_yy * np.pi/2 / (i.t_orbit/4)
+    impulse_stop_rotation = impulse_rotation_sending
+    impulse_rotation = np.abs(impulse_stop_rotation) + np.abs(impulse_stop_rotation)
 
     # # # Internal Momentum # # #
 
@@ -172,7 +172,7 @@ def impulse_all_per_orbit():
         "Impulse due to aerodynamics during sending": impulse_ae_sending,
         "Impulse due to solar during mission day": impulse_solar_mission_day,
         "Impulse due to solar during sending": impulse_solar_sending,
-        "Impulse due to rotation to rotate for sending": ang_impulse_rotation,
+        "Impulse due to rotation to rotate for sending": impulse_rotation,
         "Impulse due to gravity during mission": impulse_grav_mission,
         "Impulse due to gravity during sending": impulse_grav_sending,
         "Impulse due to magnetic field during mission": impulse_magnetic_mission,
