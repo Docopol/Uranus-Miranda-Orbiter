@@ -50,10 +50,10 @@ r_proptank = np.cbrt(V_proptank/(4/3*np.pi))
 m_proptank_av = (180.73 * 1.2 + 180.73 * (1 - 1 / 1.02) * 1.2) / 2
 r_to_COM = 0.702  # [WP2]
 
-I_xx = (0.345 * m_dry_SC * np.power(r_cylinder, 4)) / (a * r_cylinder)  # [WP1]
+I_xx = (1/3 + np.sqrt(2)/12) * m_dry_SC * np.square(r_cylinder) + 2/5 * m_proptank_av * np.square(r_proptank)  # [WP1]
 I_yy = 1/4 * m_dry_SC * np.square(r_cylinder) + 1/12 * m_dry_SC * np.square(h_cylinder) + 2/5 * m_proptank_av * np.square(r_proptank) + m_proptank_av * np.square(r_to_COM)  # [WP1]&[WP2]&[REFERENCE STRUCTURES BOOK]
 I_zz = I_yy  # (assumption) [WP2]
-I_SC = np.array([I_xx, I_yy, I_zz])  # [kg*m^2] Moment of Inertia along x axis
+I_SC_dry = np.array([I_xx, I_yy, I_zz])  # [kg*m^2] Moment of Inertia along x axis
 
 # # # Disturbance Torques # # #
 

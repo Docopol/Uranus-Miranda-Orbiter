@@ -198,3 +198,4 @@ print("All separate impulses per orbit:", impulse_all_per_orbit())
 print("Total impulse per orbit:", impulse_all_per_orbit()[1])
 print("Total impulse during mission:", impulse_all_per_orbit()[1] * i.n_orbits)
 
+print("Internal impulses:", impulse_thrust_misalignment())
