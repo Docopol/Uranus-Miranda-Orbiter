@@ -197,7 +197,7 @@ def impulse_all_per_orbit():
         "Impulse due to magnetic field during mission": impulse_magnetic_mission,
         "Impulse due to thrust misalignment during mission": impulse_thrust_mainengine,
         "Total impulse (internal and external)": sum_impulse_tot_array
-    }, np.array(sum_impulse_tot_array)
+    }, np.array(sum_impulse_tot_array), sum_impulse_tot
 
 
 def propellant_mass(impulse_array):
@@ -228,9 +228,8 @@ print("Torque created by misalignment of main thruster:", thrust_misal_torque, "
 print("\n")
 # # Print Impulses: # #
 print("All separate angular impulses per orbit:", impulse_all_per_orbit()[0])
-print("Total angular impulse per orbit:", impulse_all_per_orbit()[1])
-print("Total angular impulse during mission:", impulse_all_per_orbit()[1] * i.n_orbits)
-print("Internal angular impulses:", thrust_misalignment()[1])
+print("Total angular impulse per orbit:", impulse_all_per_orbit()[2])
+print("Total angular impulse during mission:", impulse_all_per_orbit()[2] * i.n_orbits)
 
 print("\n")
 # # Print total propellant mass and burn time per axis (of thruster pair)
