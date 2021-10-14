@@ -218,18 +218,21 @@ t_b_axis = propellant_mass(impulse_all_per_orbit()[1])[1] * i.n_orbits
 # print(COM(i.masses_av))
 
 # # Print all torques: # #
-print("Aerodynamic torque is:", ae_torque, " (non-variable)")
-print("Solar torque is:", s_torque, " (non-variable)")
-print("Gravity gradient torque is:", grav_torque, " (non-variable)")
-print("Gravity gradient torque is:", m_torque, " (non-variable)")
-print("Torque created by misalignment of the main thruster is:", thrust_misal_torque, " (non-variable)")
+print("The torques are:")
+print("Aerodynamic torque:", ae_torque, " (non-variable)")
+print("Solar torque:", s_torque, " (non-variable)")
+print("Gravity gradient torque:", grav_torque, " (non-variable)")
+print("Gravity gradient torque:", m_torque, " (non-variable)")
+print("Torque created by misalignment of main thruster:", thrust_misal_torque, " (non-variable)")
 
+print("\n")
 # # Print Impulses: # #
-print("All separate impulses per orbit:", impulse_all_per_orbit()[0])
-print("Total impulse per orbit:", impulse_all_per_orbit()[1])
-print("Total impulse during mission:", impulse_all_per_orbit()[1] * i.n_orbits)
-print("Internal impulses:", thrust_misalignment()[1])
+print("All separate angular impulses per orbit:", impulse_all_per_orbit()[0])
+print("Total angular impulse per orbit:", impulse_all_per_orbit()[1])
+print("Total angular impulse during mission:", impulse_all_per_orbit()[1] * i.n_orbits)
+print("Internal angular impulses:", thrust_misalignment()[1])
 
+print("\n")
 # # Print total propellant mass and burn time per axis (of thruster pair)
 print("Total propellant mass for ADCS:", m_p_tot)
 print("Burn time per axis:", t_b_axis)
