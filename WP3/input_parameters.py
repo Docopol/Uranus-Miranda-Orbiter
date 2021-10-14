@@ -61,7 +61,7 @@ C_d = 2.6  # [-] drag coefficient for Aerodynamic torque  [WP2]
 S_x = 2*np.sqrt(2)*np.square(r_SC)
 S_y = s_proj * h_SC
 S_z = S_y
-S = np.array([S_x, S_y, S_z])*1.1  # [m^2] surface area for Aerodynamic torque  [WP2] + 10% margin for extrusions
+S = np.array([S_x, S_y, S_z])*1.05  # [m^2] surface area for Aerodynamic torque  [WP2] + 5% margin for extrusions
 
 rho_opt = 0.84  # [-] reflectivity of sail for solar radiation torque  [WP2]
 
