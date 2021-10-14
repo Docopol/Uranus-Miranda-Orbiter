@@ -116,11 +116,11 @@ def torque_grav_z_var(t):
 
 # # # Base Equations Internal Disturbances # # #
 
-def impulse_thrust_misalignment():
+def thrust_misalignment():
     torque = np.array([0, i.thrust_mainengine * i.arm_thrust_misalignment, i.thrust_mainengine * i.arm_thrust_misalignment])
     impulse_array = torque * i.burn_time_mainengine
 
-    return impulse_array
+    return torque, impulse_array
 
 
 # # # Main Function All Disturbances # # #
@@ -169,10 +169,11 @@ def impulse_all_per_orbit():
     impulse_rotation_sending = i.I_yy * i.omega
     impulse_stop_rotation = impulse_rotation_sending
     impulse_rotation = np.abs(impulse_stop_rotation) + np.abs(impulse_stop_rotation)
+    # Not included in sum because rotation wheel can initialize the rotation and end it without needing the thrusters
 
     # # # Internal Angular Impulse # # #
 
-    impulse_thrust_mainengine = impulse_thrust_misalignment()/i.n_orbits
+    impulse_thrust_mainengine = thrust_misalignment()[1]/i.n_orbits
 
     # # # Sum # # #
 
@@ -205,15 +206,30 @@ def propellant_mass(impulse_array):
     return m_p_array, t_b_array
 
 
+ae_torque = aerodynamic_torque(cm_array_avg, v_mission)
+s_torque = solar_torque(cm_array_avg)
+grav_torque = gravity_torque(i.I_xx, i.I_yy, i.I_zz, i.theta_misalignment, i.phi_misalignment)
+m_torque = magnetic_torque(i.D, i.B_uranus)
+thrust_misal_torque = thrust_misalignment()[0]
+
 m_p_tot = np.sum(propellant_mass(impulse_all_per_orbit()[1])[0] * i.n_orbits)
 t_b_axis = propellant_mass(impulse_all_per_orbit()[1])[1] * i.n_orbits
 
-print("Total propellant mass for ADCS:", m_p_tot)
-print("Burn time per axis:", t_b_axis)
-
 # print(COM(i.masses_av))
-print("All separate impulses per orbit:", impulse_all_per_orbit())
+
+# # Print all torques: # #
+print("Aerodynamic torque is:", ae_torque, " (non-variable)")
+print("Solar torque is:", s_torque, " (non-variable)")
+print("Gravity gradient torque is:", grav_torque, " (non-variable)")
+print("Gravity gradient torque is:", m_torque, " (non-variable)")
+print("Torque created by misalignment of the main thruster is:", thrust_misal_torque, " (non-variable)")
+
+# # Print Impulses: # #
+print("All separate impulses per orbit:", impulse_all_per_orbit()[0])
 print("Total impulse per orbit:", impulse_all_per_orbit()[1])
 print("Total impulse during mission:", impulse_all_per_orbit()[1] * i.n_orbits)
+print("Internal impulses:", thrust_misalignment()[1])
 
-print("Internal impulses:", impulse_thrust_misalignment())
+# # Print total propellant mass and burn time per axis (of thruster pair)
+print("Total propellant mass for ADCS:", m_p_tot)
+print("Burn time per axis:", t_b_axis)
