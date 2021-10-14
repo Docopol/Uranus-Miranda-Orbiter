@@ -35,10 +35,10 @@ B_uranus = M_uranus/(np.power(a_orbit*1000, 3, dtype="float64")) * l_constant  #
 # # # SC parameters # # #
 
 m_dry_SC = 1517.24  # [kg] mass of structure  [WP2]
-r_cylinder = 1.8  # [m] radius of circular cylinder  [WP2]
-h_cylinder = 8.235  # [m] length of cylinder  [WP2]
-a = 1.378  # [m] side length of octagon  [WP1]
-s_proj = a * (1 + m.sqrt(2))  # projected side length  [WP1]
+r_SC = 1.8  # [m] circumcircle radius of octagon cylinder  [WP2]
+h_SC = 8.235  # [m] height of SC  [WP2]
+a_octagon = 1.378  # [m] side length of octagon  [WP1]
+s_proj = a_octagon * (1 + m.sqrt(2))  # projected side length  [WP1]
 
 masses_init = [[0.0, 0.0, 0.0, 1517.24],  # System  # [kg] x, y, z, mass  [WP2]
                [0.702, 0.0, 0.0, 180.73 * 1.2]]  # Fuel  [WP2]
@@ -50,15 +50,18 @@ r_proptank = np.cbrt(V_proptank/(4/3*np.pi))
 m_proptank_av = (180.73 * 1.2 + 180.73 * (1 - 1 / 1.02) * 1.2) / 2
 r_to_COM = 0.702  # [WP2]
 
-I_xx = (1/3 + np.sqrt(2)/12) * m_dry_SC * np.square(r_cylinder) + 2/5 * m_proptank_av * np.square(r_proptank)  # [WP1]
-I_yy = 1/4 * m_dry_SC * np.square(r_cylinder) + 1/12 * m_dry_SC * np.square(h_cylinder) + 2/5 * m_proptank_av * np.square(r_proptank) + m_proptank_av * np.square(r_to_COM)  # [WP1]&[WP2]&[REFERENCE STRUCTURES BOOK]
+I_xx = (1/3 + np.sqrt(2)/12) * m_dry_SC * np.square(r_SC) + 2/5 * m_proptank_av * np.square(r_proptank)  # [WP1]
+I_yy = 1/12 * m_dry_SC * (3*np.square(r_SC) + np.square(h_SC)) + 2/5 * m_proptank_av * np.square(r_proptank) + m_proptank_av * np.square(r_to_COM)  # Structures book
 I_zz = I_yy  # (assumption) [WP2]
 I_SC_dry = np.array([I_xx, I_yy, I_zz])  # [kg*m^2] Moment of Inertia along x axis
 
 # # # Disturbance Torques # # #
 
 C_d = 2.6  # [-] drag coefficient for Aerodynamic torque  [WP2]
-S = np.array([9.17, s_proj * h_cylinder, s_proj * h_cylinder])  # [m^2] surface area for Aerodynamic torque  [WP2]
+S_x = 2*np.sqrt(2)*np.square(r_SC)
+S_y = s_proj * h_SC
+S_z = S_y
+S = np.array([S_x, S_y, S_z])  # [m^2] surface area for Aerodynamic torque  [WP2]
 
 rho_opt = 0.84  # [-] reflectivity of sail for solar radiation torque  [WP2]
 
@@ -71,7 +74,7 @@ phi_misalignment = np.pi/180  # 1 deg
 CG_uncertainty = 0.02  # 2cm is uncertainty [SMAD][p. 574]
 angle_thrust_misalignment = 0.3 * np.pi/180  # 0.3 deg  [SMAD][p. 574]
 
-arm_thrust_misalignment = h_cylinder/2 * np.sin(angle_thrust_misalignment)  # from geometric center in both y and z-axis
+arm_thrust_misalignment = h_SC/2 * np.sin(angle_thrust_misalignment)  # from geometric center in both y and z-axis
 
 # # # ADCS # # #
 
@@ -79,13 +82,12 @@ thrust_adcs = 1.5  # [N]
 ISP_adcs = 239  # [s]
 v_exh_adcs = ISP_adcs * g0
 m_dot_adcs = thrust_adcs/v_exh_adcs
-distance_thrusters_to_cm = np.array([h_cylinder/2, r_cylinder/2, r_cylinder/2])  # [m] simplification
+distance_thrusters_to_cm = np.array([h_SC/2, s_proj/2, s_proj/2])  # [m] simplification
 
 # # # Other # # #
 
 thrust_mainengine = 560  # [N] [WP2]
 burn_time_mainengine = 1048.74  # [s] [WP2]
-
 
 omega = 2*np.pi/t_orbit
 
