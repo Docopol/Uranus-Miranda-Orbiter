@@ -24,7 +24,7 @@ v_orbit = m.sqrt(g_param / a_orbit) * 1e3  # [m/s] Orbital velocity  [WP2]
 t_orbit = 2 * np.pi * m.sqrt(np.power(a_orbit, 3, dtype="float64") / g_param)  # [s] orbital time period  [WP2]
 ratio_orbit_eclipse = 1/np.pi * np.arcsin(r_uranus/a_orbit)  # Ratio of orbital period vs orbital time
 t_orbit_eclipse = ratio_orbit_eclipse * t_orbit  # [s] orbital time period in eclipse  [WP2]
-frac_orbit_before_90deg_sun = (0.5 - ratio_orbit_eclipse)/2  # fraction of orbit before and after sun and orbit radius have 90deg angle
+frac_orbit_before_90deg_sun = 0.25 - ratio_orbit_eclipse/2  # fraction of orbit before and after sun and orbit radius have 90deg angle
 t_orbit_before_90deg_sun = t_orbit * frac_orbit_before_90deg_sun  # [s] time of orbit before and after sun and orbit radius have 90deg angle
 
 n_sq = g_param / np.power(a_orbit, 3, dtype="float64")  # [1/s^2] parameter for Gravity torque  [WP2]
