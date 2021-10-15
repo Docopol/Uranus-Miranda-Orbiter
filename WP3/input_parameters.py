@@ -94,6 +94,7 @@ distance_thrusters_to_cm = np.array([h_SC/2, s_proj/2, s_proj/2])  # [m] simplif
 
 thrust_mainengine = 560  # [N] [WP2]
 burn_time_mainengine = 1048.74  # [s] [WP2]
+burn_time_mainengine_per_orbit = burn_time_mainengine/n_orbits
 
 omega = 2*np.pi/t_orbit
 
