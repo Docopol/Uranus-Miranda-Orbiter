@@ -52,8 +52,8 @@ def gravity_torque(I_x, I_y, I_z, phi, theta):
 
 def magnetic_torque(D, B):
     torque = D * B
-
-    return torque
+    torque_array = np.array([1/3, 1/3, 1/3])*torque
+    return torque_array
 
 
 # # # Variable Equations External Disturbances # # #
