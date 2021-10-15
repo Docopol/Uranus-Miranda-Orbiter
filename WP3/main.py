@@ -53,7 +53,7 @@ def gravity_torque(I_x, I_y, I_z, phi, theta):
 def magnetic_torque(D, B):
     torque = D * B
     torque_array = np.array([1/3, 1/3, 1/3])*torque
-    return torque_array
+    return torque_array, torque
 
 
 # # # Variable Equations External Disturbances # # #
@@ -163,7 +163,7 @@ def impulse_all_per_orbit():
     impulse_grav_sending = np.array([impulse_grav_sending_x, impulse_grav_sending_y, impulse_grav_sending_z])
     impulse_grav = np.abs(impulse_grav_mission) + np.abs(impulse_grav_sending)
 
-    impulse_magnetic_mission = magnetic_torque(i.D, i.B_uranus) * i.t_orbit
+    impulse_magnetic_mission = magnetic_torque(i.D, i.B_uranus)[1] * i.t_orbit
 
     # # # Repositioning Angular Momentum # # #
     impulse_rotation_sending = i.I_yy * i.omega
@@ -173,7 +173,7 @@ def impulse_all_per_orbit():
 
     # # # Internal Angular Impulse # # #
 
-    impulse_thrust_mainengine = thrust_misalignment()[1]/i.n_orbits
+    impulse_thrust_mainengine = thrust_misalignment()[0]/i.n_orbits
 
     # # # Sum # # #
 
@@ -228,6 +228,7 @@ print("Torque created by misalignment of main thruster:", thrust_misal_torque, "
 print("\n")
 # # Print Impulses: # #
 print("All separate angular impulses per orbit:", impulse_all_per_orbit()[0])
+print("Total angular impulse per orbit array", impulse_all_per_orbit()[1])
 print("Total angular impulse per orbit:", impulse_all_per_orbit()[2])
 print("Total angular impulse during mission:", impulse_all_per_orbit()[2] * i.n_orbits)
 
