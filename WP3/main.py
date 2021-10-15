@@ -131,11 +131,11 @@ def impulse_all_per_orbit():
 
     # # Aerodynamic Angular Impulse # #
     impulse_ae_mission = aerodynamic_torque(cm_array_avg, v_mission) * (3/4*i.t_orbit - i.t_orbit_before_90deg_sun)
-    impulse_ae_sending_x = np.abs(quad(torque_ae_x_var, i.t_orbit_before_90deg_sun, 0)[0]) + \
+    impulse_ae_sending_x = np.abs(quad(torque_ae_x_var, -i.t_orbit_before_90deg_sun, 0)[0]) + \
                            np.abs(quad(torque_ae_x_var, 0, i.t_orbit/4)[0])
-    impulse_ae_sending_y = np.abs(quad(torque_ae_y_var, i.t_orbit_before_90deg_sun, 0)[0]) + \
+    impulse_ae_sending_y = np.abs(quad(torque_ae_y_var, -i.t_orbit_before_90deg_sun, 0)[0]) + \
                            np.abs(quad(torque_ae_y_var, 0, i.t_orbit/4)[0])
-    impulse_ae_sending_z = np.abs(quad(torque_ae_z_var, i.t_orbit_before_90deg_sun, 0)[0]) + \
+    impulse_ae_sending_z = np.abs(quad(torque_ae_z_var, -i.t_orbit_before_90deg_sun, 0)[0]) + \
                            np.abs(quad(torque_ae_z_var, 0, i.t_orbit/4)[0])
     impulse_ae_sending = np.array([impulse_ae_sending_x, impulse_ae_sending_y, impulse_ae_sending_z])
     impulse_ae = np.abs(impulse_ae_mission) + np.abs(impulse_ae_sending)
@@ -154,11 +154,11 @@ def impulse_all_per_orbit():
     # # Gravity Angular Impulse # #
     impulse_grav_mission = gravity_torque(i.I_xx, i.I_yy, i.I_zz, i.theta_misalignment, i.phi_misalignment) * \
                            (3/4*i.t_orbit - i.t_orbit_before_90deg_sun)
-    impulse_grav_sending_x = np.abs(quad(torque_grav_x_var, i.t_orbit_before_90deg_sun, 0)[0]) + \
+    impulse_grav_sending_x = np.abs(quad(torque_grav_x_var, -i.t_orbit_before_90deg_sun, 0)[0]) + \
                              np.abs(quad(torque_grav_y_var, 0, i.t_orbit/4)[0])
-    impulse_grav_sending_y = np.abs(quad(torque_grav_y_var, i.t_orbit_before_90deg_sun, 0)[0]) + \
+    impulse_grav_sending_y = np.abs(quad(torque_grav_y_var, -i.t_orbit_before_90deg_sun, 0)[0]) + \
                              np.abs(quad(torque_grav_y_var, 0, i.t_orbit/4)[0])
-    impulse_grav_sending_z = np.abs(quad(torque_grav_z_var, i.t_orbit_before_90deg_sun, 0)[0]) + \
+    impulse_grav_sending_z = np.abs(quad(torque_grav_z_var, -i.t_orbit_before_90deg_sun, 0)[0]) + \
                              np.abs(quad(torque_grav_z_var, 0, i.t_orbit/4)[0])
     impulse_grav_sending = np.array([impulse_grav_sending_x, impulse_grav_sending_y, impulse_grav_sending_z])
     impulse_grav = np.abs(impulse_grav_mission) + np.abs(impulse_grav_sending)

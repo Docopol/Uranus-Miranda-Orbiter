@@ -55,9 +55,9 @@ r_proptank = np.cbrt(V_proptank/(4/3*np.pi))
 m_proptank_av = (180.73 * 1.2 + 180.73 * (1 - 1 / 1.02) * 1.2) / 2
 r_to_COM = 0.702  # [WP2]
 
-I_xx = (1/3 + np.sqrt(2)/12) * m_dry_SC * np.square(r_SC) + 2/5 * m_proptank_av * np.square(r_proptank)  # [WP1]
+I_xx = (1/3 + np.sqrt(2)/12) * m_dry_SC * np.square(r_SC) + 2/5 * m_proptank_av * np.square(r_proptank)  # [Omni calculator][Statics book]
 I_yy = 1/12 * m_dry_SC * (3*np.square(r_SC) + np.square(h_SC)) + \
-       2/5 * m_proptank_av * np.square(r_proptank) + m_proptank_av * np.square(r_to_COM)  # Structures book
+       2/5 * m_proptank_av * np.square(r_proptank) + m_proptank_av * np.square(r_to_COM)  # [Statics book]
 I_zz = I_yy  # (assumption) [WP2]
 I_SC_dry = np.array([I_xx, I_yy, I_zz])  # [kg*m^2] Moment of Inertia along x axis
 
