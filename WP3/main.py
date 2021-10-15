@@ -163,7 +163,7 @@ def impulse_all_per_orbit():
     impulse_grav_sending = np.array([impulse_grav_sending_x, impulse_grav_sending_y, impulse_grav_sending_z])
     impulse_grav = np.abs(impulse_grav_mission) + np.abs(impulse_grav_sending)
 
-    impulse_magnetic_mission = magnetic_torque(i.D, i.B_uranus)[1] * i.t_orbit
+    impulse_magnetic_mission = magnetic_torque(i.D, i.B_uranus)[0] * i.t_orbit
 
     # # # Repositioning Angular Momentum # # #
     impulse_rotation_sending = i.I_yy * i.omega
@@ -173,7 +173,7 @@ def impulse_all_per_orbit():
 
     # # # Internal Angular Impulse # # #
 
-    impulse_thrust_mainengine = thrust_misalignment()[0]/i.n_orbits
+    impulse_thrust_mainengine = thrust_misalignment()[1]/i.n_orbits
 
     # # # Sum # # #
 
