@@ -55,19 +55,19 @@ r_proptank = np.cbrt(V_proptank/(4/3*np.pi))
 m_proptank_av = (180.73 * 1.2 + 180.73 * (1 - 1 / 1.02) * 1.2) / 2
 r_to_COM = 0.702  # [WP2]
 
-I_xx = (1/3 + np.sqrt(2)/12) * m_dry_SC * np.square(r_SC) + 2/5 * m_proptank_av * np.square(r_proptank)  # [Omni calculator][Statics book]
-I_yy = 1/12 * m_dry_SC * (3*np.square(r_SC) + np.square(h_SC)) + \
+I_xx = 1.05 * (1/3 + np.sqrt(2)/12) * m_dry_SC * np.square(r_SC) + 2/5 * m_proptank_av * np.square(r_proptank)  # [Omni calculator][Statics book]
+I_yy = 1.05 * 1/12 * m_dry_SC * (3*np.square(r_SC) + np.square(h_SC)) + \
        2/5 * m_proptank_av * np.square(r_proptank) + m_proptank_av * np.square(r_to_COM)  # [Statics book]
 I_zz = I_yy  # (assumption) [WP2]
-I_SC_dry = np.array([I_xx, I_yy, I_zz])  # [kg*m^2] Moment of Inertia along x axis
+I_SC = np.array([I_xx, I_yy, I_zz])  # [kg*m^2] Moment of Inertia along x axis
 
 # # # Disturbance Torques # # #
 
 C_d = 2.6  # [-] drag coefficient for Aerodynamic torque  [WP2]
-S_x = 2*np.sqrt(2)*np.square(r_SC)
-S_y = s_proj * h_SC
+S_x = 1.05 * 2*np.sqrt(2)*np.square(r_SC)
+S_y = 1.05 * s_proj * h_SC
 S_z = S_y
-S = np.array([S_x, S_y, S_z]) * 1.05  # [m^2] surface area for Aerodynamic torque  [WP2] + 5% margin for extrusions
+S = np.array([S_x, S_y, S_z])  # [m^2] surface area for Aerodynamic torque  [WP2] + 5% margin for extrusions
 
 rho_opt = 0.84  # [-] reflectivity of sail for solar radiation torque  [WP2]
 

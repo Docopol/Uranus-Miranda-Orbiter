@@ -222,7 +222,7 @@ print("The torques are:")
 print("Aerodynamic torque:", ae_torque, " (non-variable)")
 print("Solar torque:", s_torque, " (non-variable)")
 print("Gravity gradient torque:", grav_torque, " (non-variable)")
-print("Gravity gradient torque:", m_torque, " (non-variable)")
+print("Magnetic torque:", m_torque, " (non-variable)")
 print("Torque created by misalignment of main thruster:", thrust_misal_torque, " (non-variable)")
 
 print("\n")
