@@ -244,7 +244,7 @@ print("Torque created by misalignment of main thruster:", thrust_misal_torque, "
 print("\n")
 # # Print Impulses: # #
 print("All separate angular impulses per orbit:", impulse_all_per_orbit()[0])
-print("Total angular impulse per orbit array", impulse_all_per_orbit()[1])
+print("Total angular impulse per orbit array:", impulse_all_per_orbit()[1])
 print("Total angular impulse per orbit:", impulse_all_per_orbit()[2])
 print("Total angular impulse during mission:", impulse_all_per_orbit()[2] * ip.n_orbits)
 
