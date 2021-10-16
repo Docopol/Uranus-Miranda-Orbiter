@@ -73,7 +73,7 @@ rho_opt = 0.84  # [-] reflectivity of sail for solar radiation torque  [WP2]
 
 D = 0.1  # [A*m^2] residual magnetic dipole [ADSEE READER]
 
-# # # Uncertainties # # #
+# # # Uncertainties and misalignments # # #
 
 theta_misalignment = np.pi/180  # 1 deg
 phi_misalignment = np.pi/180  # 1 deg
@@ -81,7 +81,7 @@ CG_uncertainty = 0.02  # 2cm is uncertainty [SMAD][p. 574]
 angle_thrust_misalignment = 0.3 * np.pi/180  # 0.3 deg  [SMAD][p. 574]
 
 arm_thrust_misalignment = h_SC/2 * np.sin(angle_thrust_misalignment)  # from geometric center in both y and z-axis
-
+arm_thrust_misalignment_array = np.array([0, arm_thrust_misalignment, arm_thrust_misalignment])
 # # # ADCS # # #
 
 thrust_adcs = 1.5  # [N]

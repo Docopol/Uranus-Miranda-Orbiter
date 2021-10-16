@@ -117,7 +117,7 @@ def torque_grav_z_var(t):
 # # # Base Equations Internal Disturbances # # #
 
 def thrust_misalignment():
-    torque = np.array([0, ip.thrust_mainengine * ip.arm_thrust_misalignment, ip.thrust_mainengine * ip.arm_thrust_misalignment])
+    torque = ip.arm_thrust_misalignment_array * ip.thrust_mainengine
     impulse_array = torque * ip.burn_time_mainengine
 
     return torque, impulse_array
