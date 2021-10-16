@@ -203,7 +203,9 @@ def impulse_all_per_orbit():
 def propellant_mass(thrust, mdot, impulse_array):
     t_b_array = impulse_array/(thrust * 2*ip.distance_thrusters_to_cm)
     m_p_array = mdot * t_b_array
-    return m_p_array, t_b_array
+    t_b_array_margin = ip.propmargin * t_b_array
+    m_p_array_margin = ip.propmargin * m_p_array
+    return m_p_array, t_b_array, m_p_array_margin, t_b_array_margin
 
 
 ae_torque = aerodynamic_torque(cm_array_avg, v_mission)
@@ -213,7 +215,11 @@ m_torque = magnetic_torque(ip.D, ip.B_uranus)
 thrust_misal_torque = thrust_misalignment()[0]
 
 m_p_tot = np.sum(propellant_mass(ip.thrust_adcs, ip.m_dot_adcs, impulse_all_per_orbit()[1])[0] * ip.n_orbits)
-t_b_axis = propellant_mass(ip.thrust_adcs, ip.m_dot_adcs, impulse_all_per_orbit()[1])[1] * ip.n_orbits
+t_b_axis_orbit = propellant_mass(ip.thrust_adcs, ip.m_dot_adcs, impulse_all_per_orbit()[1])[1]
+
+m_p_tot_margin = np.sum(propellant_mass(ip.thrust_adcs, ip.m_dot_adcs, impulse_all_per_orbit()[1])[2] * ip.n_orbits)
+t_b_axis_orbit_margin = propellant_mass(ip.thrust_adcs, ip.m_dot_adcs, impulse_all_per_orbit()[1])[3]
+V_p_margin = m_p_tot_margin/ip.propdensity
 
 # mp_array = []
 # tb_array = []
@@ -244,5 +250,8 @@ print("Total angular impulse during mission:", impulse_all_per_orbit()[2] * ip.n
 
 print("\n")
 # # Print total propellant mass and burn time per axis (of thruster pair)
-print("Total propellant mass for ADCS:", m_p_tot)
-print("Burn time per axis:", t_b_axis)
+print("Propellant mass for ADCS:", m_p_tot)
+print("Burn time array per orbit:", t_b_axis_orbit)
+print("Total propellant mass for ADCS with margin:", m_p_tot_margin)
+print("Burn time array with margin per orbit:", t_b_axis_orbit_margin)
+print("Total propellant volume for ADCS with margin", V_p_margin)
