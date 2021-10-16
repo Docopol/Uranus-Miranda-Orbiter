@@ -90,11 +90,20 @@ v_exh_adcs = ISP_adcs * g0
 m_dot_adcs = thrust_adcs/v_exh_adcs
 distance_thrusters_to_cm = np.array([h_SC/2, s_proj/2, s_proj/2])  # [m] simplification
 
+
+ft = np.array([1.5, 5.5, 4, 1.1, 0.1])
+isp = np.array([239, 253, 229, 231, 209])
+vexh = isp*g0
+mdot = ft/vexh
+
 # # # Other # # #
 
 thrust_mainengine = 560  # [N] [WP2]
 burn_time_mainengine = 1048.74  # [s] [WP2]
 burn_time_mainengine_per_orbit = burn_time_mainengine/n_orbits
+
+
+
 
 omega = 2*np.pi/t_orbit
 
