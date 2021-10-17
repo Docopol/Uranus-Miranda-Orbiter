@@ -64,35 +64,55 @@ for i in t:
 
 sum_torques = np.array(a_torque) + np.array(s_torque) + np.array(g_torque) + np.array(m_torque)
 
-plt.subplot(3, 2, 1)
-plt.title("Aerodynamic torque")
-plt.xlabel("t/t_orbit")
-plt.ylabel("Torque [Nm]")
-plt.plot(t, a_torque)
 
-plt.subplot(3, 2, 2)
-plt.title("Solar torque")
-plt.xlabel("t/t_orbit")
-plt.ylabel("Torque [Nm]")
-plt.plot(t, s_torque)
+def aero_graph():
+    plt.title("Aerodynamic torque")
+    plt.xlabel("t/t_orbit")
+    plt.ylabel("Torque [Nm]")
+    plt.plot(t, a_torque)
+    plt.savefig("aero_graph.png")
+    plt.show()
 
-plt.subplot(3, 2, 3)
-plt.title("Gravity torque")
-plt.xlabel("t/t_orbit")
-plt.ylabel("Torque [Nm]")
-plt.plot(t, g_torque)
 
-plt.subplot(3, 2, 4)
-plt.title("Magnetic torque")
-plt.xlabel("t/t_orbit")
-plt.ylabel("Torque [Nm]")
-plt.plot(t, m_torque)
+def solar_graph():
+    plt.title("Solar torque")
+    plt.xlabel("t/t_orbit")
+    plt.ylabel("Torque [Nm]")
+    plt.plot(t, s_torque)
+    plt.savefig("solar_graph.png")
+    plt.show()
 
-plt.subplot(3, 2, 5)
-plt.title("Total torque")
-plt.xlabel("t/t_orbit")
-plt.ylabel("Torque [Nm]")
-plt.plot(t, sum_torques)
-plt.tight_layout()
-plt.show()
+
+def grav_graph():
+    plt.title("Gravity torque")
+    plt.xlabel("t/t_orbit")
+    plt.ylabel("Torque [Nm]")
+    plt.plot(t, g_torque)
+    plt.savefig("grav_graph.png")
+    plt.show()
+
+
+def mag_graph():
+    plt.title("Magnetic torque")
+    plt.xlabel("t/t_orbit")
+    plt.ylabel("Torque [Nm]")
+    plt.plot(t, m_torque)
+    plt.savefig("mag_graph.png")
+    plt.show()
+
+
+def tot_graph():
+    plt.title("Total torque")
+    plt.xlabel("t/t_orbit")
+    plt.ylabel("Torque [Nm]")
+    plt.plot(t, sum_torques)
+    plt.savefig("total_graph.png")
+    plt.show()
+
+
+aero_graph()
+solar_graph()
+grav_graph()
+mag_graph()
+tot_graph()
 
