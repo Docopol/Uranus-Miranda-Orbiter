@@ -20,6 +20,7 @@ for i in t:
     if 0 <= i <= 1/4:
         ae_torque = np.sqrt(np.square(main.torque_ae_x_var(i * To)) + np.square(main.torque_ae_y_var(i * To)) + np.square(main.torque_ae_z_var(i * To)))
         a_torque.append(ae_torque)
+
         x = main.torque_ae_x_var(i * To)
         y = main.torque_ae_y_var(i * To)
         z = main.torque_ae_z_var(i * To)
@@ -103,9 +104,9 @@ def aero_graph():
     plt.title("Aerodynamic torque")
     plt.xlabel("t/t_orbit")
     plt.ylabel("Torque [Nm]")
-    plt.plot(t, ae_x, 'r', label='x-axis')
-    plt.plot(t, ae_y, 'b', label='y-axis')
-    plt.plot(t, ae_z, 'g', label='z-axis')
+    plt.plot(t, ae_x, 'r--', label='x-axis')
+    plt.plot(t, ae_y, 'b--', label='y-axis')
+    plt.plot(t, ae_z, 'g--', label='z-axis')
     plt.legend()
     plt.savefig("aero_graph.svg", format="svg")
     plt.show()
