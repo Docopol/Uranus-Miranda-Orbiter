@@ -113,6 +113,7 @@ def aero_graph():
     plt.plot(t, ae_T_y, 'b--', label='y-axis')
     plt.plot(t, ae_T_z, 'g--', label='z-axis')
     plt.legend()
+    plt.tight_layout()
     plt.savefig("aero_graph.svg", format="svg")
     plt.show()
 
@@ -122,7 +123,7 @@ def solar_graph():
     plt.xlabel("t/t_orbit")
     plt.ylabel("Torque [Nm]")
     plt.plot(t, s_torque)
-    plt.savefig("solar_graph.png")
+    plt.savefig("solar_graph.svg", format="svg")
     plt.show()
 
 
