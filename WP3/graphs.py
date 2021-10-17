@@ -11,14 +11,13 @@ s_torque = []
 g_torque = []
 m_torque = []
 sum_torques = []
+a_x = []
 
 for i in t:
     if 0 <= i <= 1/4:
         ae_torque = np.sqrt(np.square(main.torque_ae_x_var(i * To)) + np.square(main.torque_ae_y_var(i * To)) + np.square(main.torque_ae_z_var(i * To)))
         a_torque.append(ae_torque)
         x = main.torque_ae_x_var(i * To)
-        print(x)
-        print(i * To)
         a_x.append(x)
 
         sol_torque = norm(main.solar_torque(main.cm_array_avg))
