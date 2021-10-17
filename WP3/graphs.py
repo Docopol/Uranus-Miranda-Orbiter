@@ -108,6 +108,7 @@ def aero_graph():
     plt.plot(t, a_x, 'r', label = 'x-axis')
     plt.plot(t, a_y, 'b', label = 'y-axis')
     plt.plot(t, a_z, 'g', label = 'z-axis')
+    plt.legend()
     plt.savefig("aero_graph.png")
     plt.show()
 
