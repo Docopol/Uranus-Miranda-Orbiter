@@ -16,6 +16,18 @@ ae_T_x = []
 ae_T_y = []
 ae_T_z = []
 
+s_T_x = []
+s_T_y = []
+s_T_z = []
+
+grav_T_x = []
+grav_T_y = []
+grav_T_z = []
+
+mag_T_x = []
+mag_T_y = []
+mag_T_z = []
+
 for i in t:
     if 0 <= i <= 1/4:
         ae_torque = np.sqrt(np.square(main.torque_ae_x_var(i * To)) + np.square(main.torque_ae_y_var(i * To)) + np.square(main.torque_ae_z_var(i * To)))
