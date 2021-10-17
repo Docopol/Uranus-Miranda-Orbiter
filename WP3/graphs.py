@@ -11,11 +11,15 @@ s_torque = []
 g_torque = []
 m_torque = []
 sum_torques = []
-
+a_x =[]
 for i in t:
     if 0 <= i <= 1/4:
         ae_torque = np.sqrt(np.square(main.torque_ae_x_var(i * To)) + np.square(main.torque_ae_y_var(i * To)) + np.square(main.torque_ae_z_var(i * To)))
         a_torque.append(ae_torque)
+        x = main.torque_ae_x_var(i * To)
+        print(x)
+        print(i * To)
+        a_x.append(x)
 
         sol_torque = norm(main.solar_torque(main.cm_array_avg))
         s_torque.append(sol_torque)
@@ -28,6 +32,8 @@ for i in t:
     if 1/4 < i <= (1/2 + ip.frac_orbit_before_90deg_sun):
         ae_torque = norm(main.aerodynamic_torque(main.cm_array_avg, main.v_mission))
         a_torque.append(ae_torque)
+        x = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[0]
+        a_x.append(x)
 
         sol_torque = np.sqrt(np.square(main.torque_s_x_var(i * To)) + np.square(main.torque_s_y_var(i * To)) + np.square(main.torque_s_z_var(i * To)))
         s_torque.append(sol_torque)
@@ -40,6 +46,8 @@ for i in t:
     if (1/2 + ip.frac_orbit_before_90deg_sun) < i <= (1-ip.frac_orbit_before_90deg_sun):
         ae_torque = norm(main.aerodynamic_torque(main.cm_array_avg, main.v_mission))
         a_torque.append(ae_torque)
+        x = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[0]
+        a_x.append(x)
 
         sol_torque = 0
         s_torque.append(sol_torque)
@@ -52,6 +60,8 @@ for i in t:
     if (1-ip.frac_orbit_before_90deg_sun) < i <= 1:
         ae_torque = np.sqrt(np.square(main.torque_ae_x_var(i * To)) + np.square(main.torque_ae_y_var(i * To)) + np.square(main.torque_ae_z_var(i * To)))
         a_torque.append(ae_torque)
+        x = main.torque_ae_x_var(i * To)
+        a_x.append(x)
 
         sol_torque = norm(main.solar_torque(main.cm_array_avg))
         s_torque.append(sol_torque)
@@ -93,6 +103,8 @@ plt.title("Total torque")
 plt.xlabel("t/t_orbit")
 plt.ylabel("Torque [Nm]")
 plt.plot(t, sum_torques)
+plt.subplot(3, 2, 6)
+plt.plot(t, a_x)
 plt.tight_layout()
 plt.show()
 
