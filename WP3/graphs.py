@@ -11,7 +11,7 @@ s_torque = []
 g_torque = []
 m_torque = []
 sum_torques = []
-a_x =[]
+
 for i in t:
     if 0 <= i <= 1/4:
         ae_torque = np.sqrt(np.square(main.torque_ae_x_var(i * To)) + np.square(main.torque_ae_y_var(i * To)) + np.square(main.torque_ae_z_var(i * To)))
@@ -74,37 +74,60 @@ for i in t:
 
 sum_torques = np.array(a_torque) + np.array(s_torque) + np.array(g_torque) + np.array(m_torque)
 
-plt.subplot(3, 2, 1)
-plt.title("Aerodynamic torque")
-plt.xlabel("t/t_orbit")
-plt.ylabel("Torque [Nm]")
-plt.plot(t, a_torque)
 
-plt.subplot(3, 2, 2)
-plt.title("Solar torque")
-plt.xlabel("t/t_orbit")
-plt.ylabel("Torque [Nm]")
-plt.plot(t, s_torque)
+def aero_graph():
+    plt.title("Aerodynamic torque")
+    plt.xlabel("t/t_orbit")
+    plt.ylabel("Torque [Nm]")
+    plt.plot(t, a_torque)
+    plt.savefig("aero_graph.png")
+    plt.show()
 
-plt.subplot(3, 2, 3)
-plt.title("Gravity torque")
-plt.xlabel("t/t_orbit")
-plt.ylabel("Torque [Nm]")
-plt.plot(t, g_torque)
 
-plt.subplot(3, 2, 4)
-plt.title("Magnetic torque")
-plt.xlabel("t/t_orbit")
-plt.ylabel("Torque [Nm]")
-plt.plot(t, m_torque)
+def solar_graph():
+    plt.title("Solar torque")
+    plt.xlabel("t/t_orbit")
+    plt.ylabel("Torque [Nm]")
+    plt.plot(t, s_torque)
+    plt.savefig("solar_graph.png")
+    plt.show()
 
-plt.subplot(3, 2, 5)
-plt.title("Total torque")
-plt.xlabel("t/t_orbit")
-plt.ylabel("Torque [Nm]")
-plt.plot(t, sum_torques)
+
+def grav_graph():
+    plt.title("Gravity torque")
+    plt.xlabel("t/t_orbit")
+    plt.ylabel("Torque [Nm]")
+    plt.plot(t, g_torque)
+    plt.savefig("grav_graph.png")
+    plt.show()
+
+
+def mag_graph():
+    plt.title("Magnetic torque")
+    plt.xlabel("t/t_orbit")
+    plt.ylabel("Torque [Nm]")
+    plt.plot(t, m_torque)
+    plt.savefig("mag_graph.png")
+    plt.show()
+
+
+def tot_graph():
+    plt.title("Total torque")
+    plt.xlabel("t/t_orbit")
+    plt.ylabel("Torque [Nm]")
+    plt.plot(t, sum_torques)
+    plt.savefig("total_graph.png")
+    plt.show()
+
 plt.subplot(3, 2, 6)
 plt.plot(t, a_x)
 plt.tight_layout()
 plt.show()
+
+
+aero_graph()
+solar_graph()
+grav_graph()
+mag_graph()
+tot_graph()
 
