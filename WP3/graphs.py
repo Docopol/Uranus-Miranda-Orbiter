@@ -83,4 +83,4 @@ plt.title("Total torque")
 plt.plot(t, sum_torques)
 plt.tight_layout()
 plt.show()
-plt.subplot(3, 2, 1)
+
