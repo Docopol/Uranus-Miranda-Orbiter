@@ -66,7 +66,7 @@ sum_torques = np.array(a_torque) + np.array(s_torque) + np.array(g_torque) + np.
 
 plt.subplot(3, 2, 1)
 plt.title("Aerodynamic torque")
-plt.xlabel("t [s]")
+plt.xlabel("t/t_orbit")
 plt.ylabel("Torque [Nm]")
 plt.plot(t, a_torque)
 plt.subplot(3, 2, 2)
