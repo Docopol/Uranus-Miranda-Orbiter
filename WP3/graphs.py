@@ -10,7 +10,7 @@ g_torque = []
 m_torque = []
 sum_torques = []
 
-for i in range(len(t)):
+for i in t:
     if 0 <= i <= ip.t_orbit/4:
         ae_torque = main.torque_ae_x_var(i) + main.torque_ae_y_var(i) + main.torque_ae_z_var(i)
         a_torque.append(ae_torque)
@@ -63,7 +63,12 @@ for i in range(len(t)):
 sum_torques = np.array(a_torque) + np.array(s_torque) + np.array(g_torque) + np.array(m_torque)
 
 plt.subplot(3, 2, 1)
+
+plt.title("Aerodynamic Torque")
+plt.xlabel("t [s]")
+plt.ylabel("Torque [Nm]")
 plt.plot(t, a_torque)
+
 plt.subplot(3, 2, 2)
 plt.plot(t, s_torque)
 plt.subplot(3, 2, 3)
