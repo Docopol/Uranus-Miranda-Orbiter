@@ -12,21 +12,20 @@ g_torque = []
 m_torque = []
 sum_torques = []
 
-ae_x = []
-ae_y = []
-ae_z = []
+ae_T_x = []
+ae_T_y = []
+ae_T_z = []
 
 for i in t:
     if 0 <= i <= 1/4:
         ae_torque = np.sqrt(np.square(main.torque_ae_x_var(i * To)) + np.square(main.torque_ae_y_var(i * To)) + np.square(main.torque_ae_z_var(i * To)))
         a_torque.append(ae_torque)
-
-        x = main.torque_ae_x_var(i * To)
-        y = main.torque_ae_y_var(i * To)
-        z = main.torque_ae_z_var(i * To)
-        ae_x.append(x)
-        ae_y.append(y)
-        ae_z.append(z)
+        ae_x = main.torque_ae_x_var(i * To)
+        ae_y = main.torque_ae_y_var(i * To)
+        ae_z = main.torque_ae_z_var(i * To)
+        ae_T_x.append(ae_x)
+        ae_T_y.append(ae_y)
+        ae_T_z.append(ae_z)
 
         sol_torque = norm(main.solar_torque(main.cm_array_avg))
         s_torque.append(sol_torque)
@@ -39,14 +38,12 @@ for i in t:
     if 1/4 < i <= (1/2 + ip.frac_orbit_before_90deg_sun):
         ae_torque = norm(main.aerodynamic_torque(main.cm_array_avg, main.v_mission))
         a_torque.append(ae_torque)
-
-        x = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[0]
-        y = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[1]
-        z = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[2]
-
-        ae_x.append(x)
-        ae_y.append(y)
-        ae_z.append(z)
+        ae_x = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[0]
+        ae_y = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[1]
+        ae_z = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[2]
+        ae_T_x.append(ae_x)
+        ae_T_y.append(ae_y)
+        ae_T_z.append(ae_z)
 
         sol_torque = np.sqrt(np.square(main.torque_s_x_var(i * To)) + np.square(main.torque_s_y_var(i * To)) + np.square(main.torque_s_z_var(i * To)))
         s_torque.append(sol_torque)
@@ -59,14 +56,12 @@ for i in t:
     if (1/2 + ip.frac_orbit_before_90deg_sun) < i <= (1-ip.frac_orbit_before_90deg_sun):
         ae_torque = norm(main.aerodynamic_torque(main.cm_array_avg, main.v_mission))
         a_torque.append(ae_torque)
-
-        x = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[0]
-        y = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[1]
-        z = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[2]
-
-        ae_x.append(x)
-        ae_y.append(y)
-        ae_z.append(z)
+        ae_x = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[0]
+        ae_y = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[1]
+        ae_z = main.aerodynamic_torque(main.cm_array_avg, main.v_mission)[2]
+        ae_T_x.append(ae_x)
+        ae_T_y.append(ae_y)
+        ae_T_z.append(ae_z)
 
         sol_torque = 0
         s_torque.append(sol_torque)
@@ -79,14 +74,12 @@ for i in t:
     if (1-ip.frac_orbit_before_90deg_sun) < i <= 1:
         ae_torque = np.sqrt(np.square(main.torque_ae_x_var(i * To)) + np.square(main.torque_ae_y_var(i * To)) + np.square(main.torque_ae_z_var(i * To)))
         a_torque.append(ae_torque)
-
-        x = main.torque_ae_x_var(i * To)
-        y = main.torque_ae_y_var(i * To)
-        z = main.torque_ae_z_var(i * To)
-
-        ae_x.append(x)
-        ae_y.append(y)
-        ae_z.append(z)
+        ae_x = main.torque_ae_x_var(i * To)
+        ae_y = main.torque_ae_y_var(i * To)
+        ae_z = main.torque_ae_z_var(i * To)
+        ae_T_x.append(ae_x)
+        ae_T_y.append(ae_y)
+        ae_T_z.append(ae_z)
 
         sol_torque = norm(main.solar_torque(main.cm_array_avg))
         s_torque.append(sol_torque)
