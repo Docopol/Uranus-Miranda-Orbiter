@@ -1,0 +1,17 @@
+Index: Simulations/adcs.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from math import *\r\n\r\n#ADCS jitter calculation\r\n\r\norbitingAltitude = 4.343e3 #m\r\norbitalVelocity = 14011 #m/s\r\ncameraResolutionPanSpecs = 0.7/500e3 #In m ground divided by orbital height\r\n\r\npixelGroundWidth = cameraResolutionPanSpecs*orbitingAltitude\r\n\r\nstabilityDueToCamera = atan(pixelGroundWidth/orbitingAltitude)*orbitalVelocity/pixelGroundWidth #rad/s\r\n\r\n#print(stabilityDueToCamera) \r\n\r\n\r\n##ADCS disturbances calculations\r\n\r\n#Gravity\r\n\r\nmassSC = 6000\r\nlengthSC = 8\r\nradiusSC = 1.8\r\n\r\nmu = 5.7940*10**15\r\norbitalRadius = orbitingAltitude + 25166e3\r\nn2 = mu/orbitalRadius**3 \r\nIy = 1/2*massSC*radiusSC**2 \t\t\t\t\t\t\t\t#Assuming S/C is a sausage of 8m x 3.6m diameter with uniform density\r\nIz = 1/4*massSC*radiusSC**2+1/12*massSC*lengthSC**2\r\n\r\nperturbationGravity = (3/2*n2*(Iz-Iy)*pi/180)*sqrt(2) #s\r\n\r\n# print(perturbationGravity)\r\n\r\n#Aerodynamic torque\r\n\r\norbitalDensity = 8.417e-13\r\nsurfaceDrag = pi*radiusSC**2\r\ncD = 2.7 #Flat frontal area\r\ncPcG = pi/180*4 #corresponds to 1 degree misalignement of the frontal area\r\n\r\nperturbationDrag = cPcG*1/2*orbitalDensity*orbitalVelocity**2*surfaceDrag*cD \r\n\r\n# print(perturbationDrag)\r\n\r\n#Solar pressure\r\n\r\nsailReflectivity = 0.84\r\nsolarPressure = 2.468e-8\r\nsurfaceSolar = 2*radiusSC*lengthSC\r\ncentreSolar = 1\r\n\r\nperturbationSolar = centreSolar*(1+sailReflectivity)*solarPressure*surfaceSolar\r\n\r\n# print(perturbationSolar)\r\n\r\n#Magnetic disturbances\r\n\r\nresidualMagneticDipole = 0.1\r\nmaxMagneticField = 1e-4\r\n\r\nperturbationMagnetic = maxMagneticField *residualMagneticDipole\r\n\r\n# print(perturbationMagnetic)\r\n\r\n\r\n##Sizing of thrusters\r\n\r\ntotalInstantenousDisturbances = (perturbationGravity+perturbationDrag+perturbationSolar+perturbationMagnetic)*1.2\r\norbitalPeriod = 2*pi*orbitalRadius/orbitalVelocity\r\ndisturbancesPerOrbit = totalInstantenousDisturbances*orbitalPeriod\r\ntotalOrbitsToCompleteMission = 4*366*24*3600/orbitalPeriod\r\ntotalAngularImpulse = totalOrbitsToCompleteMission*disturbancesPerOrbit\r\n\r\nthrusterForce = 4\r\nISPthrusters = 220\r\narmLengthPairThrusters = 8\r\ncoupleThrusters = armLengthPairThrusters*thrusterForce\r\n\r\npropellantMassADCS = thrusterForce*totalAngularImpulse/(ISPthrusters*9.81*coupleThrusters)\r\n\r\nprint(propellantMassADCS)\r\n\r\n# print(totalInstantenousDisturbances)\r\n# print(disturbancesPerOrbit)\r\n# print(totalAngularImpulse)\r\n\r\n#Sing of reaction wheel\r\n\r\ntimeToRotate90 = 15*60\r\nwheelTorque = 4*Iy*pi/2/timeToRotate90**2\r\n\r\n# print(wheelTorque)\r\n\r\n#Main camera datarate calculation\r\n\r\ncameraImageLengthPixel = 11e3/0.7\r\ncameraImageWidthPixel = 1 #\r\ncolourDepth = 16 #bits\r\n\r\nimageSizeInBits = cameraImageWidthPixel*cameraImageLengthPixel*colourDepth\r\nimageBackupSafetyFactor = 1\r\npicturesPerSecond = orbitalVelocity/0.7*imageBackupSafetyFactor\r\n\r\ndataRateCamera\t= imageSizeInBits*picturesPerSecond #in bits/s\r\n\r\nprint(dataRateCamera/10e6)\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Simulations/adcs.py b/Simulations/adcs.py
+--- a/Simulations/adcs.py	
++++ b/Simulations/adcs.py	
+@@ -1,5 +1,6 @@
+ from math import *
+ 
++
+ #ADCS jitter calculation
+ 
+ orbitingAltitude = 4.343e3 #m
