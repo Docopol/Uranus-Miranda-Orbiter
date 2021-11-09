@@ -7,8 +7,8 @@ class Lug:
 
 
 class multi_Lug:  # Assumes lug separation will be the same and lugs will be identical
-    def __init__(self, width, lug_thickness, hinge_diameter, material, separation, number):
-        lug = Lug(width, lug_thickness, hinge_diameter, material)
+    def __init__(self, lug, separation, number):
+        self.l = lug
         self.n = number
         self.h = separation
 
