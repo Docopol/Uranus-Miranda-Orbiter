@@ -23,3 +23,9 @@ class Material:
     def __init__(self, Youngs_Modulus, critical_stress):
         self.e = Youngs_Modulus
         self.cr = critical_stress
+
+    def get_stress(self):
+        return self.cr
+
+    def get_E(self):
+        return self.E
