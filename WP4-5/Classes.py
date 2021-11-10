@@ -4,6 +4,7 @@ class Lug:
         self.t = lug_thickness
         self.d = hinge_diameter
         self.m = material
+        
 
 
 class multi_Lug:  # Assumes lug separation will be the same and lugs will be identical
