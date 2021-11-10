@@ -1,7 +1,7 @@
 import math
 
 class Lug:
-    def __init__(self, width, length, lug_thickness, hinge_diameter, material):
+    def __init__(self, width, lug_thickness, hinge_diameter, material, length=0):
         self.w = width
         self.t = lug_thickness
         self.d = hinge_diameter
