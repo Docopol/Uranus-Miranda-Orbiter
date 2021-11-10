@@ -165,5 +165,3 @@ class Plate:
             tot += i
         centre = tot / len(coords)
         return centre
-
-    def get_
