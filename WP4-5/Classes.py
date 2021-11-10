@@ -31,27 +31,73 @@ class Lug:
         thickness = sorted([t1, t2, t3])
         return thickness[2]
 
+    def minimum_d(self, load):
+        fx, fy, fz = load
 
-class multi_Lug:  # Assumes lug separation will be the same and lugs will be identical
+        # Failure due to tensile forces - Extracted from Bruhn
+        def t_yield_z():
+            return fz /(self.m.get_stress() * self.t) + self.w
+
+        def t_bearing():
+            safety_margin = 1.5
+            return safety_margin * fz / (self.m.get_bear() * self.t)
+
+        def t_shear():
+            return math.sqrt(self.w**2 - 4*(fz/self.m.get_shear)**2)
+
+        d1 = t_yield_z()
+        d2 = t_bearing()
+        d3 = t_shear()
+
+        diameters = sorted([t1, t2, t3])
+        return diameters[2]
+
+    def mass(self):  # Only calculates the mass of the ring since the rest will be constant for a given value of w
+        area = math.pi * ((self.w/2)**2 - (self.d/2)**2)
+        volume = area * self.t
+        return volume * self.m.get_density()
+
+class multi_Lug:  # Assumes flange separation will be the same and flanges will be identical
     def __init__(self, lug, separation, number):
         self.l = lug
         self.n = number
         self.h = separation
 
+    def min_t(self, loads):
+        fx, fy, fz = load
+        fx = fx/self.n
+        fy = fy/self.n
+        fz = fz/self.n
+        return self.l.minimum_t((fx, fy, fz))
 
-class D_lug:
+    def mass(self):
+        return self.l.mass() * self.n
+
+
+class D_lug:   # A double lug
     def __init__(self, lug, separation):
         self.l = lug
         self.h = separation
 
+    def min_t(self, loads):
+        fx, fy, fz = load
+        fx = fx/2
+        fy = fy/2
+        fz = fz/2
+        return self.l.minimum_t((fx, fy, fz))
+
+    def mass(self):
+        return self.l.mass() * 2
+
 
 class Material:
-    def __init__(self, Youngs_Modulus, critical_stress, shear_modulus, maximum_shear, max_bearing_stress):
+    def __init__(self, Youngs_Modulus, critical_stress, shear_modulus, maximum_shear, max_bearing_stress, density):
         self.e = Youngs_Modulus
         self.cr = critical_stress
         self.g = shear_modulus
         self.sh = maximum_shear
         self.bear = max_bearing_stress
+        self.d = density
 
     def get_stress(self):
         return self.cr
@@ -66,7 +112,10 @@ class Material:
         return self.sh
 
     def get_bear(self):
-        return self.bear  # maximum bearing stress is assumed to be a material property
+        return self.bear
+
+    def get_density(self):
+        return self.d
 
 
 class Plate:
