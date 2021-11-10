@@ -17,7 +17,8 @@ class Lug:
             return fz / (self.m.get_stress() * area)
 
         def t_bearing():
-            return fz / (self.m.get_bear() * self.d)
+            safety_margin = 1.5
+            return safety_margin * fz / (self.m.get_bear() * self.d)
 
         def t_shear():
             area = 2*math.sqrt((self.w/2)**2 + (self.d/2)**2)  # conservative estimate - per unit thickness
@@ -65,4 +66,11 @@ class Material:
         return self.sh
 
     def get_bear(self):
-        return self.bear
+        return self.bear  # maximum bearing stress is assumed to be a material property
+
+
+class Plate:
+    def __init__(self, number_fasteners, fastener_diameter, plate_thickness):
+        self.n = number_fasteners
+        self.d = fastener_diameter
+        self.t = plate_thickness
