@@ -1,5 +1,6 @@
 import math
 
+
 class Lug:
     def __init__(self, width, lug_thickness, hinge_diameter, material, length=0):
         self.w = width
@@ -7,6 +8,16 @@ class Lug:
         self.d = hinge_diameter
         self.m = material
         self.l = length
+
+    def K_br(self):
+        k = round(self.d/self.t)
+        if k<2:
+            k = 2
+        elif k>10:
+            k = 5*round(k/5)
+
+        c = self.w / (2 * self.d)
+        # Nested ifs for the functions and then return value
 
 
     def minimum_t(self, load):
