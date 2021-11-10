@@ -63,7 +63,7 @@ class multi_Lug:  # Assumes flange separation will be the same and flanges will 
         self.n = number
         self.h = separation
 
-    def min_t(self, loads):
+    def minimum_t(self, loads):
         fx, fy, fz = load
         fx = fx/self.n
         fy = fy/self.n
