@@ -70,6 +70,13 @@ class multi_Lug:  # Assumes flange separation will be the same and flanges will 
         fz = fz/self.n
         return self.l.minimum_t((fx, fy, fz))
 
+    def minimum_d(self, loads):
+        fx, fy, fz = load
+        fx = fx / self.n
+        fy = fy / self.n
+        fz = fz / self.n
+        return self.l.minimum_d((fx, fy, fz))
+
     def mass(self):
         return self.l.mass() * self.n
 
@@ -85,6 +92,13 @@ class D_lug:   # A double lug
         fy = fy/2
         fz = fz/2
         return self.l.minimum_t((fx, fy, fz))
+
+    def min_d(self, loads):
+        fx, fy, fz = load
+        fx = fx/2
+        fy = fy/2
+        fz = fz/2
+        return self.l.minimum_d((fx, fy, fz))
 
     def mass(self):
         return self.l.mass() * 2
