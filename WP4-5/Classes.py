@@ -9,9 +9,9 @@ class Lug:
     def minimum_t(self, load):
         fx, fy, fz = load
 
-        def t_yield_z():
+        def t_yield_z():  # Extracted from Bruhn
             area = (self.w-self.d)  # per unit thickness
-            stress_concentration= 2
+            stress_concentration= 1.25
             return stress_concentration * fz / (self.m.get_stress() * area)
 
         def t_yield_y():
