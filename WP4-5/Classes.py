@@ -1,11 +1,12 @@
 import math
 
 class Lug:
-    def __init__(self, width, lug_thickness, hinge_diameter, material):
+    def __init__(self, width, length, lug_thickness, hinge_diameter, material):
         self.w = width
         self.t = lug_thickness
         self.d = hinge_diameter
         self.m = material
+        self.l = length
 
 
     def minimum_t(self, load):
@@ -28,8 +29,11 @@ class Lug:
         t2 = t_bearing()
         t3 = t_shear()
 
-        thickness = sorted([t1, t2, t3])
-        return thickness[2]
+        # Failure due to vertical forces - assuming bending is negligible
+        t4 = (6 * self.l * fy / self.m.get_stress())**(1/3)
+
+        thickness = sorted([t1, t2, t3, t4])
+        return thickness[3]
 
     def minimum_d(self, load):
         fx, fy, fz = load
@@ -49,13 +53,14 @@ class Lug:
         d2 = t_bearing()
         d3 = t_shear()
 
-        diameters = sorted([t1, t2, t3])
+        diameters = sorted([d1, d2, d3])
         return diameters[2]
 
-    def mass(self):  # Only calculates the mass of the ring since the rest will be constant for a given value of w
-        area = math.pi * ((self.w/2)**2 - (self.d/2)**2)
+    def mass(self):
+        area = math.pi * ((self.w/2)**2 - (self.d/2)**2) + self.w * self.l
         volume = area * self.t
         return volume * self.m.get_density()
+
 
 class multi_Lug:  # Assumes flange separation will be the same and flanges will be identical
     def __init__(self, lug, separation, number):
