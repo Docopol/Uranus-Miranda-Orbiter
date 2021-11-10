@@ -51,7 +51,7 @@ class Lug:
 
         # Failure due to tensile forces - Extracted from Bruhn
         def t_yield_z():
-            return fz /(self.m.get_stress() * self.t) + self.w
+            return fz / (self.m.get_stress() * self.t) + self.w
 
         def t_bearing():
             safety_margin = 1.5
@@ -73,7 +73,7 @@ class Lug:
         return volume * self.m.get_density()
 
 
-class multi_Lug:  # Assumes flange separation will be the same and flanges will be identical
+class Multi_lug:  # Assumes flange separation will be the same and flanges will be identical
     def __init__(self, lug, separation, number):
         self.l = lug
         self.n = number
@@ -146,8 +146,6 @@ class Material:
 
     def get_density(self):
         return self.d
-
-#yeee
 
 
 class Plate:
