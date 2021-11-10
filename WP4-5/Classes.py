@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 
 class Lug:
@@ -153,3 +154,16 @@ class Plate:
         self.n = number_fasteners
         self.d = fastener_diameter
         self.t = plate_thickness
+
+#Assuming the fastener diameters (D1) are the same
+
+    def get_cg(self, coords):
+        # coords format: [np.array([1, 2]), np.array([2, 3])]
+        p = coords
+        tot = np.array([0, 0])
+        for i in coords:
+            tot += i
+        centre = tot / len(coords)
+        return centre
+
+    def get_
