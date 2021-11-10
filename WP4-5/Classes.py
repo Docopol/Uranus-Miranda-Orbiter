@@ -2,7 +2,7 @@ import math
 import numpy as np
 
 
-class Lug:
+class Flange:
     def __init__(self, width, lug_thickness, hinge_diameter, material, length=0):
         self.w = width
         self.t = lug_thickness
@@ -74,7 +74,7 @@ class Lug:
         return volume * self.m.get_density()
 
 
-class Multi_lug:  # Assumes flange separation will be the same and flanges will be identical
+class Lug:  # Assumes flange separation will be the same and flanges will be identical
     def __init__(self, lug, separation, number):
         self.l = lug
         self.n = number
@@ -98,9 +98,9 @@ class Multi_lug:  # Assumes flange separation will be the same and flanges will 
         return self.l.mass() * self.n
 
 
-class D_lug:   # A double lug
-    def __init__(self, lug, separation):
-        self.l = lug
+class Double_lug:   # A double lug
+    def __init__(self, flange, separation):
+        self.f = flange
         self.h = separation
 
     def min_t(self, loads):
@@ -108,17 +108,17 @@ class D_lug:   # A double lug
         fx = fx/2
         fy = fy/2
         fz = fz/2
-        return self.l.minimum_t((fx, fy, fz))
+        return self.f.minimum_t((fx, fy, fz))
 
     def min_d(self, loads):
         fx, fy, fz = load
         fx = fx/2
         fy = fy/2
         fz = fz/2
-        return self.l.minimum_d((fx, fy, fz))
+        return self.f.minimum_d((fx, fy, fz))
 
     def mass(self):
-        return self.l.mass() * 2
+        return self.f.mass() * 2
 
 
 class Material:
