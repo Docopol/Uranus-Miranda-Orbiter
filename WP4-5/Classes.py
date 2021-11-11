@@ -17,8 +17,33 @@ class Flange:
         elif k>10:
             k = 5*round(k/5)
 
-        c = self.w / (2 * self.d)
-        # Nested ifs for the functions and then return value
+        x = self.w / (2 * self.d)
+        if k == 2:
+            return -0.0065*x**6 + 0.099*x**5 - 0.6121*x**4 + 1.9956*x**3 - 3.8136*x**2 + 5.0505*x - 1.8379
+        elif k == 3:
+            return -0.0113*x**6 + 0.167*x**5 - 0.9829*x**4 + 2.9662*x**3 - 5.0921*x**2 + 5.85*x - 2.0225
+        elif k == 4:
+            return -0.012*x**6 + 0.1681*x**5 - 0.9298*x**4 + 2.6434*x**3 - 4.42*x**2 + 5.2851*x - 1.861
+        elif k == 5:
+            return -0.0053*x**6 + 0.073*x**5 - 0.4008*x**4 + 1.203*x**3 - 2.4694*x**2 + 4.0522*x - 1.5765
+        elif k == 6:
+            return -0.0025*x**6 + 0.0362*x**5 - 0.221*x**4 + 0.8136*x**3 - 2.1579*x**2 + 4.0147*x - 1.6038
+        elif k == 7:
+            return 0.0021*x**6 - 0.0227*x**5 + 0.0579*x**4 + 0.2253*x**3 - 1.6628*x**2 + 3.889*x - 1.6119
+        elif k == 8:
+            return 0.0087*x**6 - 0.1071*x**5 + 0.4641*x**4 - 0.6625*x**3 - 0.8352*x**2 + 3.5981*x - 1.5915
+        elif k == 9:
+            return 0.0029*x**6 - 0.0233*x**5 - 0.0226*x**4 + 0.7597*x**3 - 2.9987*x**2 + 5.0998*x - 1.9599
+        elif k == 10:
+            return -0.001*x**6 + 0.04*x**5 - 0.4264*x**4 + 2.047*x**3 - 5.0972*x**2 + 6.6263*x - 2.3538
+        elif k == 15:
+            return -0.0246*x**6 + 0.3572*x**5 - 2.069*x**4 + 6.1293*x**3 - 9.9355*x**2 + 8.6779*x - 2.5356
+        elif k == 20:
+            return -0.0092*x**6 + 0.1363*x**5 - 0.8148*x**4 + 2.5231*x**3 - 4.3542*x**2 + 4.1361*x - 1.2611
+        elif k == 25:
+            return -0.0092*x**6 + 0.1363*x**5 - 0.8148*x**4 + 2.5231*x**3 - 4.3542*x**2 + 4.1361*x - 1.2611
+        elif k == 30:
+            return -0.0076*x**6 + 0.1131*x**5 - 0.6773*x**4 + 2.0967*x**3 - 3.6146*x**2 + 3.4374*x - 1.0535
 
 
     def minimum_t(self, load):
@@ -155,13 +180,9 @@ class Plate:
         self.d = fastener_diameter
         self.t = plate_thickness
 
-#Assuming the fastener diameters (D1) are the same
+    # Assuming the fastener diameters (D1) are the same
 
-    def get_cg(self, coords):
-        # coords format: [np.array([1, 2]), np.array([2, 3])]
-        p = coords
-        tot = np.array([0, 0])
-        for i in coords:
-            tot += i
+    def get_cg(self, coords):  # coords format: [np.array([1, 2]), np.array([2, 3])
+        tot = sum(coords)
         centre = tot / len(coords)
         return centre
