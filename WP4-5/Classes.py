@@ -18,6 +18,7 @@ class Flange:
             k = 5*round(k/5)
 
         x = self.w / (2 * self.d)
+        # Polynomials are wrong, need to be changed.
         if k == 2:
             return -0.0065*x**6 + 0.099*x**5 - 0.6121*x**4 + 1.9956*x**3 - 3.8136*x**2 + 5.0505*x - 1.8379
         elif k == 3:
