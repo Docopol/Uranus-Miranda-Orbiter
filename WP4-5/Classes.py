@@ -183,7 +183,10 @@ class Plate:
 
     # Assuming the fastener diameters (D1) are the same
 
-    def get_cg(self, coords):  # coords format: [np.array([1, 2]), np.array([2, 3])
-        tot = sum(coords)
-        centre = tot / len(coords)
-        return centre
+    def get_cg(self, coords):  # coords format: [[x1,y1],[x2,y2]]
+        copy = []
+        for i in coords:
+            copy.append(np.asarray(i))
+        coords = copy
+        return list(sum(coords) / len(coords)) # the output format: [x,y]
+
