@@ -10,6 +10,12 @@ class Flange:
         self.m = material
         self.l = length
 
+    def get_dimensions(self):
+        return [self.w, self.t, self.d, self.l]
+
+    def get_material(self):
+        return self.m
+
     def K_br(self):
         k = self.t / self.d
 
@@ -69,7 +75,7 @@ class Flange:
         t4 = (6 * self.l * fy / self.m.get_stress())**(1/3)
 
         thickness = sorted([t1, t2, t3, t4])
-        return thickness[3]
+        return thickness[-1]
 
     def minimum_d(self, load):
         fx, fy, fz = load  # works both with lists and arrays
@@ -110,6 +116,9 @@ class Lug:  # Assumes flange separation will be the same and flanges will be ide
         self.f = flange
         self.n = number
         self.h = separation
+
+    def get_flange(self):
+        return self.f
 
     def minimum_t(self, loads):
         fx, fy, fz = loads
