@@ -202,10 +202,15 @@ class Material:
 
 #test
 class Plate:
-    def __init__(self, number_fasteners, fastener_diameter, plate_thickness):
+    def __init__(self, number_fasteners, fastener_diameter, plate_thickness, plate_width, plate_height):
         self.n = number_fasteners
         self.d = fastener_diameter
         self.t = plate_thickness
+        self.w = plate_width
+        self.h = plate_height
+
+    def get_mass(self, material):
+        return self.w*self.h*self.t*material.d
 
     # Assuming the fastener diameters (D1) are the same
 
@@ -323,7 +328,7 @@ class Loads:
 def Min_Fastener_Diameter_Tension (Loads, Material, n, width, height, gap):
     Sigma_yield = Material.y
     M_x_plate = Loads.F_y * gap
-    F_z_max = Loads.F_z + Loads.M_y*2/width + M_x_plate*2/height
+    F_z_max = Loads.F_z/n + Loads.M_y*2/width + M_x_plate*2/height
     A_total = F_z_max / Sigma_yield
     A = A_total/n
     D = math.sqrt(4*A/math.pi)
