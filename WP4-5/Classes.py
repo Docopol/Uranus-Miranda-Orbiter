@@ -72,7 +72,7 @@ class Flange:
         return thickness[3]
 
     def minimum_d(self, load):
-        fx, fy, fz = load
+        fx, fy, fz = load  # works both with lists and arrays
 
         # Failure due to tensile forces - Extracted from Bruhn
         def t_yield_z():
@@ -165,19 +165,19 @@ class Double_lug:   # A double lug
 
 
 class Material:
-    def __init__(self, Youngs_Modulus, critical_stress, shear_modulus, maximum_shear, max_bearing_stress, density):
+    def __init__(self, Youngs_Modulus, yield_stress, shear_modulus, maximum_shear, max_bearing_stress, density):
         self.e = Youngs_Modulus
-        self.cr = critical_stress
+        self.y = yield_stress
         self.g = shear_modulus
         self.sh = maximum_shear
         self.bear = max_bearing_stress
         self.d = density
 
     def get_stress(self):
-        return self.cr
+        return self.y
 
     def get_E(self):
-        return self.E
+        return self.e
 
     def get_G(self):
         return self.g
@@ -191,7 +191,7 @@ class Material:
     def get_density(self):
         return self.d
 
-
+#test
 class Plate:
     def __init__(self, number_fasteners, fastener_diameter, plate_thickness):
         self.n = number_fasteners
@@ -222,7 +222,7 @@ class Plate:
         m = sum(components_moments)     # moment around cg of the plate
         return m
 
-    def force_due_to_moment(self):
+    def force_due_to_moment(self, coords, cg_coords, m):
         distances = []
         angles = []
 
@@ -232,11 +232,15 @@ class Plate:
             distances.append(d)
             angles.append(a) # * 180 / math.pi)
 
-            moments = []
-            for i in distances:
-                m1 = m / i * math.cos(angles[distances.index(i)] * math.pi / 180)
-                m2 = m / i * math.sin(angles[distances.index(i)] * math.pi / 180)
-                moments.append([m1, m2])
+        force_due_moments = []
+
+        n = 0
+        while n < len(distances):
+            i = distances[n]
+            mx = m / i * math.cos(angles[n]) #* math.pi / 180)
+            my = m / i * math.sin(angles[n]) #* math.pi / 180)
+            force_due_moments.append([mx,my])
+            n += 1
 
         return force_due_moments  # outputs force acting on fasteners to counteract moment caused by antisymmetry
 
