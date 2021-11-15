@@ -230,7 +230,7 @@ class Plate:
             d = math.sqrt((i[0] - cg_coords[0]) ** 2 + (i[1] - cg_coords[1]) ** 2)
             a = math.atan2((i[1] - cg_coords[1]), (i[0] - cg_coords[0]))
             distances.append(d)
-            angles.append(a * 180 / math.pi)
+            angles.append(a) # * 180 / math.pi)
 
             moments = []
             for i in distances:
@@ -238,23 +238,32 @@ class Plate:
                 m2 = m / i * math.sin(angles[distances.index(i)] * math.pi / 180)
                 moments.append([m1, m2])
 
-        return  moments  # outputs moment acting around cg to counteact antisymmetry
+        return force_due_moments  # outputs force acting on fasteners to counteract moment caused by antisymmetry
 
-    def force_moment(self, moment, coords, cg_coords):  # force on connector caused by moment around cg
+    def force_moment(self, force_due_moments, f_ip_x, f_ip_y):  # force on connector caused by moment around cg
+        forces = []
 
-        distances = []
-        angles = []
+        for i in force_due_moments:
+            forcex = i[0] + f_ip_x
+            forcey = i[1] + f_ip_y
+            forces.append([forcex,forcey])
 
-        for i in coords:
-            d = math.sqrt((i[0] - cg_coords[0]) ** 2 + (i[1] - cg_coords[1]) ** 2)
-            a = math.atan2((i[1] - cg_coords[1]), (i[0] - cg_coords[0]))
-            distances.append(d)
-            angles.append(a * 180 / math.pi)
+        return forces
 
-        moments = []
-        for i in distances:
-            m1 = moment / i * math.cos(angles[distances.index(i)] * math.pi / 180)
-            m2 = moment / i * math.sin(angles[distances.index(i)] * math.pi / 180)
-            moments.append([m1, m2])
+class Loads:
+    def __init__(self, Force_x, Force_y, Force_z, Moment_x, Moment_y, Moment_z):
+        self.F_x = Force_x
+        self.F_y = Force_y
+        self.F_z = Force_z
+        self.M_x = Moment_x
+        self.M_y = Moment_y
+        self.M_z = Moment_z
 
-        return moments
+def Min_Fastener_Diameter_Tension (Loads, Material, n, width, height, gap):
+    Sigma_yield = Material.y
+    M_x_plate = Loads.F_y * gap
+    F_z_max = Loads.F_z + Loads.M_y*2/width + M_x_plate*2/height
+    A_total = F_z_max / Sigma_yield
+    A = A_total/n
+    D = math.sqrt(4*A/math.pi)
+    return D
