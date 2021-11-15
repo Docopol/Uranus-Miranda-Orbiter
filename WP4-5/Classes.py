@@ -11,40 +11,38 @@ class Flange:
         self.l = length
 
     def K_br(self):
-        k = round(self.d/self.t)
-        if k<2:
-            k = 2
-        elif k>10:
-            k = 5*round(k/5)
+        k = self.t / self.d
+
+        if k <= 0.06:
+            k = 0.06
+        elif k >= 0.5:
+            k = 0.6
+        elif k < 0.135:
+            k = round(k/2*100)*2/100
+        elif k < 0.25:
+            k = round(k/5*100)*5/100
+        else:
+            k = round(k*10)/10
 
         x = self.w / (2 * self.d)
-        # Polynomials are wrong, need to be changed.
-        if k == 2:
-            return -0.0065*x**6 + 0.099*x**5 - 0.6121*x**4 + 1.9956*x**3 - 3.8136*x**2 + 5.0505*x - 1.8379
-        elif k == 3:
-            return -0.0113*x**6 + 0.167*x**5 - 0.9829*x**4 + 2.9662*x**3 - 5.0921*x**2 + 5.85*x - 2.0225
-        elif k == 4:
-            return -0.012*x**6 + 0.1681*x**5 - 0.9298*x**4 + 2.6434*x**3 - 4.42*x**2 + 5.2851*x - 1.861
-        elif k == 5:
-            return -0.0053*x**6 + 0.073*x**5 - 0.4008*x**4 + 1.203*x**3 - 2.4694*x**2 + 4.0522*x - 1.5765
-        elif k == 6:
-            return -0.0025*x**6 + 0.0362*x**5 - 0.221*x**4 + 0.8136*x**3 - 2.1579*x**2 + 4.0147*x - 1.6038
-        elif k == 7:
-            return 0.0021*x**6 - 0.0227*x**5 + 0.0579*x**4 + 0.2253*x**3 - 1.6628*x**2 + 3.889*x - 1.6119
-        elif k == 8:
-            return 0.0087*x**6 - 0.1071*x**5 + 0.4641*x**4 - 0.6625*x**3 - 0.8352*x**2 + 3.5981*x - 1.5915
-        elif k == 9:
-            return 0.0029*x**6 - 0.0233*x**5 - 0.0226*x**4 + 0.7597*x**3 - 2.9987*x**2 + 5.0998*x - 1.9599
-        elif k == 10:
-            return -0.001*x**6 + 0.04*x**5 - 0.4264*x**4 + 2.047*x**3 - 5.0972*x**2 + 6.6263*x - 2.3538
-        elif k == 15:
-            return -0.0246*x**6 + 0.3572*x**5 - 2.069*x**4 + 6.1293*x**3 - 9.9355*x**2 + 8.6779*x - 2.5356
-        elif k == 20:
-            return -0.0092*x**6 + 0.1363*x**5 - 0.8148*x**4 + 2.5231*x**3 - 4.3542*x**2 + 4.1361*x - 1.2611
-        elif k == 25:
-            return -0.0092*x**6 + 0.1363*x**5 - 0.8148*x**4 + 2.5231*x**3 - 4.3542*x**2 + 4.1361*x - 1.2611
-        elif k == 30:
-            return -0.0076*x**6 + 0.1131*x**5 - 0.6773*x**4 + 2.0967*x**3 - 3.6146*x**2 + 3.4374*x - 1.0535
+        if k == 0.06:
+            return -0.00235*x**6 + 0.3448*x**5 - 2.0373*x**4 + 6.2116*x**3 - 10.396*x**2 + 9.3121*x - 2.7106
+        elif k == 0.08:
+            return -0.0196*x**6 + 0.2937*x**5 - 1.7831*x**4 + 5.6263*x**3 - 9.845*x**2 + 9.3348*x - 2.8232
+        elif k == 0.1:
+            return -0.0081*x**6 + 0.1355*x**5 - 0.9318*x**4 + 3.3725*x**3 - 6.8401*x**2 + 7.5535*x - 2.4513
+        elif k == 0.12:
+            return -0.005*x**6 + 0.0901*x**5 - 0.6644*x**4 + 2.5808*x**3 - 5.6329*x**2 + 6.7237*x - 2.2501
+        elif k == 0.15:
+            return 0.0032*x**6 - 0.0281*x**5 + 0.0106*x**4 + 0.6622*x**3 - 2.8503*x**2 + 4.8915*x - 1.8208
+        elif k == 0.2:
+            return 0.0068*x**6 - 0.087*x**5 + 0.3885*x**4 - 0.5524*x**3 - 0.8532*x**2 + 3.4179*x - 1.441
+        elif k == 0.3:
+            return 0.004*x**6 - 0.0555*x**5 + 0.2734*x**4 - 0.4473*x**3 - 0.6323*x**2 + 3.0505*x - 1.3112
+        elif k == 0.4:
+            return -0.0015*x**6 + 0.0165*x**5 - 0.088*x**4 + 0.4184*x**3 - 1.6331*x**2 + 3.579*x - 1.4127
+        elif k == 0.6:
+            return -0.0048*x**6 + 0.0626*x**5 - 0.343*x**4 + 1.1103*x**3 - 2.5736*x**2 + 4.1826*x - 1.5554
 
 
     def minimum_t(self, load):
@@ -94,6 +92,13 @@ class Flange:
         diameters = sorted([d1, d2, d3])
         return diameters[2]
 
+    def minimum_w(self, load):
+        fx, fy, fz = load
+
+        # Failure due to bending right before the bolt
+        length = self.l-self.d/2
+        return math.sqrt(6*fy*length/self.t)
+
     def mass(self):
         area = math.pi * ((self.w/2)**2 - (self.d/2)**2) + self.w * self.l
         volume = area * self.t
@@ -101,50 +106,62 @@ class Flange:
 
 
 class Lug:  # Assumes flange separation will be the same and flanges will be identical
-    def __init__(self, lug, separation, number):
-        self.l = lug
+    def __init__(self, flange, separation, number):
+        self.f = flange
         self.n = number
         self.h = separation
 
     def minimum_t(self, loads):
-        fx, fy, fz = load
+        fx, fy, fz = loads
         fx = fx/self.n
         fy = fy/self.n
         fz = fz/self.n
-        return self.l.minimum_t((fx, fy, fz))
+        return self.f.minimum_t((fx, fy, fz))
 
     def minimum_d(self, loads):
-        fx, fy, fz = load
+        fx, fy, fz = loads
         fx = fx / self.n
         fy = fy / self.n
         fz = fz / self.n
-        return self.l.minimum_d((fx, fy, fz))
-
-    def mass(self):
-        return self.l.mass() * self.n
-
-
-class Double_lug:   # A double lug
-    def __init__(self, flange, separation):
-        self.f = flange
-        self.h = separation
-
-    def min_t(self, loads):
-        fx, fy, fz = load
-        fx = fx/2
-        fy = fy/2
-        fz = fz/2
-        return self.f.minimum_t((fx, fy, fz))
-
-    def min_d(self, loads):
-        fx, fy, fz = load
-        fx = fx/2
-        fy = fy/2
-        fz = fz/2
         return self.f.minimum_d((fx, fy, fz))
 
     def mass(self):
-        return self.f.mass() * 2
+        return self.f.mass() * self.n
+
+
+class Double_lug:   # A double lug
+    def __init__(self, top_lug, bottom_lug, separation, dist_to_cg):
+        self.tl = top_lug
+        self.bl = bottom_lug
+        self.h = separation
+        self.r = dist_to_cg
+
+    def loads(self, loads):
+        fx, fy, fz = loads
+        fx = fx / 2
+        fy = fy / 2
+
+        fz_top = fz / 2 - 2 * fy * self.r / self.h
+        fz_bot = fz / 2 + 2 * fy * self.r / self.h
+
+        return [(fx, fy, fz_top), (fx, fy, fz_bot)]
+
+    def min_t(self, force):
+        forces = self.loads(force)
+        top = self.tl.minimum_t(forces[0])
+        bottom = self.bl.minimum_t(forces[1])
+        return [top, bottom]
+
+    def min_d(self, force):
+        forces = self.loads(force)
+        top = self.tl.minimum_d(forces[0])
+        bottom = self.bl.minimum_d(forces[1])
+        return [top, bottom]
+
+    def mass(self):
+        top = self.tl.mass()
+        bottom = self.bl.mass()
+        return [top, bottom]
 
 
 class Material:
