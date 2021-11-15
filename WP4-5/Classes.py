@@ -221,10 +221,9 @@ class Plate:
         f_ip_y = fy / n
         return [f_ip_x, f_ip_y]  # outputs forces acting on single (every) fastener
 
-    def moment_cg(self, coords, coords_lug, f_ip_x, f_ip_y, cg_coords):
-        components_moments = []
-
-        for i in coords:
+    def moment_cg(self, coords_cg, coords_lug, f_ip_x, f_ip_y):
+        moment = 0
+        for i in coords_cg:
             g = ((coords_lug[1] - i[1]) * f_ip_x) - ((coords_lug[0] - i[0]) * f_ip_y)  # positive ?
             components_moments.append(g)
 
@@ -270,9 +269,47 @@ class Plate:
             shear_stress.append(shear)
         return max(shear_stress)
 
-    #PULL-THROUGH CHECK
+    #PULL-THROUGH CHECK (ONLY FOR ONE SYSTEM)
 
- #   def
+    def z_forces(self, fy, n):
+        f_pi = fy / n
+        return f_pi
+
+    #def forces_due_moment(self, , ):
+    #    ...
+
+    def pull_through_fail(self, D_fin, D_fout, r_f, t_wall, t_lug, M_ASRG, cg_y):
+        # D_fin is inner diameter of fastener (numppy array)
+        # D_fout is outer
+
+        # r_f is fastener coordinates (2D numpy array...
+        # ... of the form [[x1, x2, xn], [z1, z2, zn]])
+        # ^^^ (0,0) x-z axis asrg centre of mass
+
+        g = 9.81
+
+        # t is the thickness of s/c wall or lug plate
+        n_f = len(D_fin)  # number of fasteners
+        F_y = 2 * g * M_ASRG  # normal force
+        Mx = 6 * g * M_ASRG * cg_y  # moment about x axis
+        Mz = 2 * g * M_ASRG * cg_y  # moment about z axis
+        # cg_y is distance from lug to center of mass of ASRG
+        # now we calculate the normal forces caused by the moments:
+        A_n = np.pi * (D_fout ** 2 - D_fin ** 2) / 4  # normal area
+        F_Mx = Mx * A_n * r_f[1] / np.sum(A_n * (r_f[1] ** 2))
+        F_Mz = Mz * A_n * r_f[0] / np.sum(A_n * (np.abs(r_f[0]) ** 2))
+        # r_f[0] is considered always positive so we design for the highest tensile load
+        # on both sides of the lug
+        # total normal force:
+        F_tot = F_y + F_Mx + F_Mz
+        # stresses:
+        sigma = F_tot / A_n  # normal stress
+        A_s = np.pi * D_fin * (t_wall + t_lug)  # shear area
+        tau = F_tot / A_s  # shear stress
+        Y = np.sqrt((sigma ** 2) + 3 * (tau ** 2))
+        # Y is the total normal stress
+        # which has to be below the yield stresses of the wall and lug materials.
+        return Y
 
 class Loads:
     def __init__(self, Force_x, Force_y, Force_z, Moment_x, Moment_y, Moment_z):

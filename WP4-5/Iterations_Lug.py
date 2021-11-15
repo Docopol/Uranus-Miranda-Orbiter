@@ -1,46 +1,6 @@
 from Classes import Flange, Lug, Double_lug, Material
 import numpy as np
 
-
-def iterate(flange):
-    w, t, d, l = flange.get_dimensions()
-    material = flange.get_material()
-
-    t2 = flange.minimum_t(load=loads)
-    d2 = flange.minimum_d(load=loads)
-    w2 = flange.minimum_w(load=loads)
-
-    f2 = Flange(width=w,
-                lug_thickness=t2,
-                hinge_diameter=d,
-                material=material,
-                length=l)
-
-    f3 = Flange(width=w,
-                lug_thickness=t,
-                hinge_diameter=d2,
-                material=material,
-                length=l)
-
-    f4 = Flange(width=w2,
-                lug_thickness=t,
-                hinge_diameter=d,
-                material=material,
-                length=l)
-
-    flanges = [flange, f2, f3, f4]
-    m_list = list()
-    for i in flanges:
-        m_list.append(i.mass())
-    sorted_m = sorted(m_list)
-    best_config = flanges[m_list.index(sorted_m[0])]
-    return best_config.get_dimensions()
-
-
-def iterate_lug(lug):
-    flange = lug.get_flange()
-
-
 # Loads not taking into account the moment generated
 g = 9.81
 rtg_mass = 97.8
