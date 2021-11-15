@@ -16,39 +16,49 @@ class Flange:
     def get_material(self):
         return self.m
 
-    def K_br(self):
-        k = self.t / self.d
+    def K_bry(self):
+        r = self.t / self.d
 
-        if k <= 0.06:
-            k = 0.06
-        elif k >= 0.5:
-            k = 0.6
-        elif k < 0.135:
-            k = round(k/2*100)*2/100
-        elif k < 0.25:
-            k = round(k/5*100)*5/100
+        if r <= 0.06:
+            r = 0.06
+        elif 0.06 < r < 0.135:
+            r = round(r/2*100)*2/100
+        elif 0.135 <= r < 0.25:
+            r = round(r/5*100)*5/100
+        elif 0.25 <= r < 0.5:
+            r = round(r*10)/10
         else:
-            k = round(k*10)/10
+            r = 0.6
 
         x = self.w / (2 * self.d)
-        if k == 0.06:
-            return -0.00235*x**6 + 0.3448*x**5 - 2.0373*x**4 + 6.2116*x**3 - 10.396*x**2 + 9.3121*x - 2.7106
-        elif k == 0.08:
-            return -0.0196*x**6 + 0.2937*x**5 - 1.7831*x**4 + 5.6263*x**3 - 9.845*x**2 + 9.3348*x - 2.8232
-        elif k == 0.1:
-            return -0.0081*x**6 + 0.1355*x**5 - 0.9318*x**4 + 3.3725*x**3 - 6.8401*x**2 + 7.5535*x - 2.4513
-        elif k == 0.12:
-            return -0.005*x**6 + 0.0901*x**5 - 0.6644*x**4 + 2.5808*x**3 - 5.6329*x**2 + 6.7237*x - 2.2501
-        elif k == 0.15:
-            return 0.0032*x**6 - 0.0281*x**5 + 0.0106*x**4 + 0.6622*x**3 - 2.8503*x**2 + 4.8915*x - 1.8208
-        elif k == 0.2:
-            return 0.0068*x**6 - 0.087*x**5 + 0.3885*x**4 - 0.5524*x**3 - 0.8532*x**2 + 3.4179*x - 1.441
-        elif k == 0.3:
-            return 0.004*x**6 - 0.0555*x**5 + 0.2734*x**4 - 0.4473*x**3 - 0.6323*x**2 + 3.0505*x - 1.3112
-        elif k == 0.4:
-            return -0.0015*x**6 + 0.0165*x**5 - 0.088*x**4 + 0.4184*x**3 - 1.6331*x**2 + 3.579*x - 1.4127
-        elif k == 0.6:
-            return -0.0048*x**6 + 0.0626*x**5 - 0.343*x**4 + 1.1103*x**3 - 2.5736*x**2 + 4.1826*x - 1.5554
+        if r == 0.06:
+            k = -0.00235*x**6 + 0.3448*x**5 - 2.0373*x**4 + 6.2116*x**3 - 10.396*x**2 + 9.3121*x - 2.7106
+        elif r == 0.08:
+            k = -0.0196*x**6 + 0.2937*x**5 - 1.7831*x**4 + 5.6263*x**3 - 9.845*x**2 + 9.3348*x - 2.8232
+        elif r == 0.1:
+            k = -0.0081*x**6 + 0.1355*x**5 - 0.9318*x**4 + 3.3725*x**3 - 6.8401*x**2 + 7.5535*x - 2.4513
+        elif r == 0.12:
+            k = -0.005*x**6 + 0.0901*x**5 - 0.6644*x**4 + 2.5808*x**3 - 5.6329*x**2 + 6.7237*x - 2.2501
+        elif r == 0.15:
+            k = 0.0032*x**6 - 0.0281*x**5 + 0.0106*x**4 + 0.6622*x**3 - 2.8503*x**2 + 4.8915*x - 1.8208
+        elif r == 0.2:
+            k = 0.0068*x**6 - 0.087*x**5 + 0.3885*x**4 - 0.5524*x**3 - 0.8532*x**2 + 3.4179*x - 1.441
+        elif r == 0.3:
+            k = 0.004*x**6 - 0.0555*x**5 + 0.2734*x**4 - 0.4473*x**3 - 0.6323*x**2 + 3.0505*x - 1.3112
+        elif r == 0.4:
+            k = -0.0015*x**6 + 0.0165*x**5 - 0.088*x**4 + 0.4184*x**3 - 1.6331*x**2 + 3.579*x - 1.4127
+        else:
+            k = -0.0048*x**6 + 0.0626*x**5 - 0.343*x**4 + 1.1103*x**3 - 2.5736*x**2 + 4.1826*x - 1.5554
+
+        if k < 0:
+            k = 0
+
+        return k
+
+    def K_t(self):
+        mat = self.m.get_name()
+
+
 
 
     def minimum_t(self, load):
@@ -110,6 +120,17 @@ class Flange:
         volume = area * self.t
         return volume * self.m.get_density()
 
+    def check_failure(self, load):
+        # Needs to be checked, probably incorrect
+        fx, fy, fz = load
+        yield_stress = fy/(self.t*(self.w-self.d))
+        bearing_stress = fy/(self.t*self.d)
+
+        k_bry = self.K_bry()
+        shear_out_stress = fy/(self.d*self.t*k_bry)
+
+        ...
+
 
 class Lug:  # Assumes flange separation will be the same and flanges will be identical
     def __init__(self, flange, separation, number):
@@ -119,6 +140,12 @@ class Lug:  # Assumes flange separation will be the same and flanges will be ide
 
     def get_flange(self):
         return self.f
+
+    def get_material(self):
+        return self.f.get_material()
+
+    def get_dimensions(self):
+        return self.f.get_dimensions()
 
     def minimum_t(self, loads):
         fx, fy, fz = loads
@@ -134,6 +161,13 @@ class Lug:  # Assumes flange separation will be the same and flanges will be ide
         fz = fz / self.n
         return self.f.minimum_d((fx, fy, fz))
 
+    def minimum_w(self, loads):
+        fx, fy, fz = loads
+        fx = fx / self.n
+        fy = fy / self.n
+        fz = fz / self.n
+        return self.f.minimum_w((fx, fy, fz))
+
     def mass(self):
         return self.f.mass() * self.n
 
@@ -144,6 +178,9 @@ class Double_lug:   # A double lug
         self.bl = bottom_lug
         self.h = separation
         self.r = dist_to_cg
+
+    def get_lugs(self):
+        return [self.tl, self.bl]
 
     def loads(self, loads):
         fx, fy, fz = loads
@@ -167,6 +204,12 @@ class Double_lug:   # A double lug
         bottom = self.bl.minimum_d(forces[1])
         return [top, bottom]
 
+    def min_w(self, force):
+        forces = self.loads(force)
+        top = self.tl.minimum_w(forces[0])
+        bottom = self.bl.minimum_w(forces[1])
+        return [top, bottom]
+
     def mass(self):
         top = self.tl.mass()
         bottom = self.bl.mass()
@@ -174,7 +217,8 @@ class Double_lug:   # A double lug
 
 
 class Material:
-    def __init__(self, Youngs_Modulus, yield_stress, shear_modulus, maximum_shear, max_bearing_stress, density):
+    def __init__(self, name, Youngs_Modulus, yield_stress, shear_modulus, maximum_shear, max_bearing_stress, density):
+        self.n = name
         self.e = Youngs_Modulus
         self.y = yield_stress
         self.g = shear_modulus
@@ -184,6 +228,9 @@ class Material:
 
     def get_stress(self):
         return self.y
+
+    def get_name(self):
+        return self.n
 
     def get_E(self):
         return self.e
@@ -224,16 +271,14 @@ class Plate:
     def force_cg(self, fx, fy, n):
         f_ip_x = fx / n
         f_ip_y = fy / n
-        return [f_ip_x, f_ip_y]  # outputs forces acting on single (every) fastener
+        return [f_ip_x, f_ip_y]     # outputs forces acting on single (every) fastener
 
     def moment_cg(self, coords_cg, coords_lug, f_ip_x, f_ip_y):
         moment = 0
         for i in coords_cg:
             g = ((coords_lug[1] - i[1]) * f_ip_x) - ((coords_lug[0] - i[0]) * f_ip_y)  # positive ?
-            components_moments.append(g)
-
-        m = sum(components_moments)     # moment around cg of the plate
-        return m
+            moment += g
+        return moment   # moment around cg of the plate
 
     def force_due_to_moment(self, coords, cg_coords, m):
         distances = []
@@ -316,7 +361,8 @@ class Plate:
         # which has to be below the yield stresses of the wall and lug materials.
         return Y
 
-class Loads:
+
+class Loads:  # Javi - is this really necessary??
     def __init__(self, Force_x, Force_y, Force_z, Moment_x, Moment_y, Moment_z):
         self.F_x = Force_x
         self.F_y = Force_y
@@ -324,6 +370,7 @@ class Loads:
         self.M_x = Moment_x
         self.M_y = Moment_y
         self.M_z = Moment_z
+
 
 def Min_Fastener_Diameter_Tension (Loads, Material, n, width, height, gap):
     Sigma_yield = Material.y
