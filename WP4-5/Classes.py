@@ -207,3 +207,54 @@ class Plate:
         coords = copy
         return list(sum(coords) / len(coords)) # the output format: [x,y]
 
+    def force_cg(self, fx, fy, n):
+        f_ip_x = fx / n
+        f_ip_y = fy / n
+        return [f_ip_x, f_ip_y]  # outputs forces acting on single (every) fastener
+
+    def moment_cg(self, coords, coords_lug, f_ip_x, f_ip_y, cg_coords):
+        components_moments = []
+
+        for i in coords:
+            g = ((coords_lug[1] - i[1]) * f_ip_x) - ((coords_lug[0] - i[0]) * f_ip_y)  # positive ?
+            components_moments.append(g)
+
+        m = sum(components_moments)     # moment around cg of the plate
+        return m
+
+    def force_due_to_moment(self):
+        distances = []
+        angles = []
+
+        for i in coords:
+            d = math.sqrt((i[0] - cg_coords[0]) ** 2 + (i[1] - cg_coords[1]) ** 2)
+            a = math.atan2((i[1] - cg_coords[1]), (i[0] - cg_coords[0]))
+            distances.append(d)
+            angles.append(a * 180 / math.pi)
+
+            moments = []
+            for i in distances:
+                m1 = m / i * math.cos(angles[distances.index(i)] * math.pi / 180)
+                m2 = m / i * math.sin(angles[distances.index(i)] * math.pi / 180)
+                moments.append([m1, m2])
+
+        return  moments  # outputs moment acting around cg to counteact antisymmetry
+
+    def force_moment(self, moment, coords, cg_coords):  # force on connector caused by moment around cg
+
+        distances = []
+        angles = []
+
+        for i in coords:
+            d = math.sqrt((i[0] - cg_coords[0]) ** 2 + (i[1] - cg_coords[1]) ** 2)
+            a = math.atan2((i[1] - cg_coords[1]), (i[0] - cg_coords[0]))
+            distances.append(d)
+            angles.append(a * 180 / math.pi)
+
+        moments = []
+        for i in distances:
+            m1 = moment / i * math.cos(angles[distances.index(i)] * math.pi / 180)
+            m2 = moment / i * math.sin(angles[distances.index(i)] * math.pi / 180)
+            moments.append([m1, m2])
+
+        return moments
