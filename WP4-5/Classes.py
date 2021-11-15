@@ -202,10 +202,12 @@ class Material:
 
 #test
 class Plate:
-    def __init__(self, number_fasteners, fastener_diameter, plate_thickness):
+    def __init__(self, number_fasteners, fastener_diameter, plate_thickness, plate_width, plate_height):
         self.n = number_fasteners
         self.d = fastener_diameter
         self.t = plate_thickness
+        self.w = plate_width
+        self.h = plate_height
 
     # Assuming the fastener diameters (D1) are the same
 

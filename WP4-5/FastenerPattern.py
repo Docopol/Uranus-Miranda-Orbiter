@@ -18,7 +18,9 @@ h = 150.0
 
 D_1st = Min_Fastener_Diameter_Tension(F,steel, n, w, h, 0.02)
 
-plate = Plate(n,D_1st, thick)
+plate = Plate(n,D_1st, thick, w+D_1st*1.5, h+D_1st*1.5)
+
+
 
 cord = [[-w/2,-h/2],[-w/2,h/2],[w/2,h/2],[w/2,-h/2]]
 
