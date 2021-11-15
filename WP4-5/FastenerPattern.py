@@ -25,8 +25,4 @@ A = A_tot / n
 
 D = math.sqrt(4*A/math.pi)
 
-
-
-
-print("Bolt Area ", A)
 print("Bolt D    ", D)
