@@ -291,7 +291,7 @@ class Loads:
 def Min_Fastener_Diameter_Tension (Loads, Material, n, width, height, gap):
     Sigma_yield = Material.y
     M_x_plate = Loads.F_y * gap
-    F_z_max = Loads.F_z + Loads.M_y*2/width + M_x_plate*2/height
+    F_z_max = Loads.F_z/n + Loads.M_y*2/width + M_x_plate*2/height
     A_total = F_z_max / Sigma_yield
     A = A_total/n
     D = math.sqrt(4*A/math.pi)
