@@ -209,6 +209,9 @@ class Plate:
         self.w = plate_width
         self.h = plate_height
 
+    def get_mass(self, material):
+        return self.w*self.h*self.t*material.d
+
     # Assuming the fastener diameters (D1) are the same
 
     def get_cg(self, coords):  # coords format: [[x1,y1],[x2,y2]]
