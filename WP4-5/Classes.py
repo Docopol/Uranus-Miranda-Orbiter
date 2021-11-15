@@ -239,7 +239,7 @@ class Plate:
             i = distances[n]
             mx = m / i * math.cos(angles[n]) #* math.pi / 180)
             my = m / i * math.sin(angles[n]) #* math.pi / 180)
-            force_due_moments.append([mx,my])
+            force_due_moments.append([round(mx), round(my)])
             n += 1
 
         return force_due_moments  # outputs force acting on fasteners to counteract moment caused by antisymmetry
@@ -250,9 +250,20 @@ class Plate:
         for i in force_due_moments:
             forcex = i[0] + f_ip_x
             forcey = i[1] + f_ip_y
-            forces.append([forcex,forcey])
+            force = np.sqrt(forcex**2 + forcey**2)
+            forces.append(force)
+        return forces           # force P
 
-        return forces
+    def fastener_shear_stress(self, fastener_diameter, thickness_plate, forces):
+        shear_stress = []
+        for i in forces:
+            shear = i / (fastener_diameter * thickness_plate)
+            shear_stress.append(shear)
+        return max(shear_stress)
+
+    #PULL-THROUGH CHECK
+
+ #   def
 
 class Loads:
     def __init__(self, Force_x, Force_y, Force_z, Moment_x, Moment_y, Moment_z):
