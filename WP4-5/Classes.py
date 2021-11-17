@@ -59,10 +59,13 @@ class Flange:
         mat = self.m.get_name()
         ...
 
+    def K(self):
+        ...
+
     def minimum_t(self, load):
         fx, fy, fz = load
 
-        # Failure due to tensile forces - Extracted from Bruhn
+        # Failure due to tensile forces - Extracted from Bruh
         def t_yield_z():
             area = (self.w-self.d)  # per unit thickness
             return fz / (self.m.get_stress() * area)
@@ -88,7 +91,7 @@ class Flange:
     def minimum_d(self, load):
         fx, fy, fz = load  # works both with lists and arrays
 
-        # Failure due to tensile forces - Extracted from Bruhn
+        # Failure due to tensile forces - Extracted from Bruh...
         def t_yield_z():
             return fz / (self.m.get_stress() * self.t) + self.w
 
@@ -104,7 +107,7 @@ class Flange:
         d3 = t_shear()
 
         diameters = sorted([d1, d2, d3])
-        return diameters[2]
+        return diameters[-1]
 
     def minimum_w(self, load):
         fx, fy, fz = load
@@ -133,6 +136,23 @@ class Flange:
             return False
         else:
             return True
+        
+    def loading(self, loads):  # assuming w to be constant
+        fx, fy, fz = loads
+              
+        # Coefficient funcitons need to be finished and this has to be checked.
+        p_bry = self.K_bry() * self.m.get_stress() * self.d * (self.w + self.d) / 2
+        p_y = (self.w**2 - self.d**2) / 2 * self.K() * self.m.get_stress()
+
+        if p_bry < p_y:
+            min_l = p_bry
+        else:
+            min_l = p_y
+        
+        # These both should be equal according to the Ra and Rtr equations
+        p_ty_1 = (fy**1.6 / (1 - fz**1.6 / min_l**1.6))**(1/1.6)
+        p_ty_2 = self.K_t() * self.m.get_stress() * self.d * self.t
+        return p_bry, p_y, p_ty_1, p_ty_2
 
 
 class Lug:  # Assumes flange separation will be the same and flanges will be identical
@@ -313,7 +333,7 @@ class Plate:
             forcey = i[1] + f_ip_y
             force = np.sqrt(forcex**2 + forcey**2)
             forces.append(force)
-        return forces           # force P
+        return forces           # list of P forces
 
     def fastener_shear_stress(self, fastener_diameter, thickness_plate, forces):
         shear_stress = []
@@ -334,13 +354,10 @@ class Plate:
     def pull_through_fail(self,n_f, D_fin, D_fout, r_f, t_wall, t_lug, M_ASRG, cg_y):
         # D_fin is inner diameter of fastener (numppy array)
         # D_fout is outer
-
         # r_f is fastener coordinates (2D numpy array...
         # ... of the form [[x1, x2, xn], [z1, z2, zn]])
         # ^^^ (0,0) x-z axis asrg centre of mass
-
         g = 9.81
-
         # t is the thickness of s/c wall or lug plate
         #n_f = len(D_fin)  # number of fasteners
         F_y = 2 * g * M_ASRG /n_f  # normal force

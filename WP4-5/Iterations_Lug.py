@@ -2,6 +2,9 @@ from Classes import Flange, Lug, Double_lug, Material
 import numpy as np
 
 
+# Minimum volume will be given when 2t = w + D - found through partial derivatives
+
+
 def iterate(dlug):
     lugs = dlug.get_lugs()
     dim_list = list()
