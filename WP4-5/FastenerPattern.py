@@ -1,6 +1,6 @@
 
 from Classes import *
-from Iterations_Lug import *
+from Iterations_Lug import steel,aluminium
 
 F_y = 2118.2364
 F_z = 4069.2436105263155
