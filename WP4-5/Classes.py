@@ -57,9 +57,7 @@ class Flange:
 
     def K_t(self):
         mat = self.m.get_name()
-
-
-
+        ...
 
     def minimum_t(self, load):
         fx, fy, fz = load
@@ -70,8 +68,8 @@ class Flange:
             return fz / (self.m.get_stress() * area)
 
         def t_bearing():
-            safety_margin = 1.5
-            return safety_margin * fz / (self.m.get_bear() * self.d)
+            k_bry = self.K_bry()
+            return fy / (k_bry * self.m.get_stress() * self.d)
 
         def t_shear():
             area = 2*math.sqrt((self.w/2)**2 + (self.d/2)**2)  # conservative estimate - per unit thickness
@@ -129,7 +127,12 @@ class Flange:
         k_bry = self.K_bry()
         shear_out_stress = fy/(self.d*self.t*k_bry)
 
-        ...
+        if self.m.get_stress() < yield_stress or \
+                self.m.get_stress() < shear_out_stress or \
+                self.m.get_bear() < bearing_stress:
+            return False
+        else:
+            return True
 
 
 class Lug:  # Assumes flange separation will be the same and flanges will be identical
