@@ -29,8 +29,8 @@ iron = Material(
 )
 steel = Material(
     name='steel',
-    Youngs_Modulus=210*10**9,
-    yield_stress=800*10**6,
+    Youngs_Modulus=210*(10**9),
+    yield_stress=800*(10**6),
     shear_modulus=77*10**9,
     maximum_shear=600*10**6,
     max_bearing_stress=185*10**6,
@@ -42,8 +42,8 @@ F = Loads(353.0394,2118.2364,4069.2436105263155,0,141.21576000000002,0)
 
 n = 4 #number of bolts
 
-w = 200.0
-h = 150.0
+w = 0.200
+h = 0.150
 
 D_1st = 1.5 * Min_Fastener_Diameter_Tension(F,steel, n, w, h, gap)
 
