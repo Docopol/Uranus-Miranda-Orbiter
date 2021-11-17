@@ -1,6 +1,8 @@
 
 from Classes import *
 #from Iterations_Lug import *
+import math
+import numpy as np
 
 F_y = 2118.2364
 F_z = 4069.2436105263155
@@ -74,3 +76,8 @@ SF_Shear_Failure = shearYieldStrength / shearStress
 print("Shear stress Safety Factor  ", SF_Shear_Failure)
 
 print("Bolt D    ", D_1st)
+
+
+stress_Bearing = plate.pull_through_fail(n,D_1st,D_1st*3,np.transpose(cord),thick,thick,36.0,gap)
+
+print("Stress Bearing  ",stress_Bearing)
