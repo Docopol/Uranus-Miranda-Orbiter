@@ -331,7 +331,7 @@ class Plate:
     #def forces_due_moment(self, , ):
     #    ...
 
-    def pull_through_fail(self, D_fin, D_fout, r_f, t_wall, t_lug, M_ASRG, cg_y):
+    def pull_through_fail(self,n_f, D_fin, D_fout, r_f, t_wall, t_lug, M_ASRG, cg_y):
         # D_fin is inner diameter of fastener (numppy array)
         # D_fout is outer
 
@@ -342,8 +342,8 @@ class Plate:
         g = 9.81
 
         # t is the thickness of s/c wall or lug plate
-        n_f = len(D_fin)  # number of fasteners
-        F_y = 2 * g * M_ASRG  # normal force
+        #n_f = len(D_fin)  # number of fasteners
+        F_y = 2 * g * M_ASRG /n_f  # normal force
         Mx = 6 * g * M_ASRG * cg_y  # moment about x axis
         Mz = 2 * g * M_ASRG * cg_y  # moment about z axis
         # cg_y is distance from lug to center of mass of ASRG
