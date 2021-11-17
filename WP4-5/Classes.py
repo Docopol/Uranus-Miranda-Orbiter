@@ -279,7 +279,7 @@ class Plate:
     def moment_cg(self, coords_cg, coords_lug, f_ip_x, f_ip_y):
         moment = 0
         for i in coords_cg:
-            g = ((coords_lug[1] - i[1]) * f_ip_x) - ((coords_lug[0] - i[0]) * f_ip_y)  # positive ?
+            g = ((coords_lug[1] - i) * f_ip_x) - ((coords_lug[0] - i) * f_ip_y)  # positive ?
             moment += g
         return moment   # moment around cg of the plate
 
@@ -365,7 +365,7 @@ class Plate:
         return Y
 
 
-class Loads:  # Javi - is this really necessary??
+class Loads:  # Javi - is this really necessary?? Well, it makes it easier for me
     def __init__(self, Force_x, Force_y, Force_z, Moment_x, Moment_y, Moment_z):
         self.F_x = Force_x
         self.F_y = Force_y
