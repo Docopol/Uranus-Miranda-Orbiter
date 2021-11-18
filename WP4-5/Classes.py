@@ -100,7 +100,7 @@ class Flange:
             return safety_margin * fz / (self.m.get_bear() * self.t)
 
         def t_shear():
-            return math.sqrt(self.w**2 - 4*(fz/self.m.get_shear)**2)
+            return math.sqrt(self.w**2 - 4*(fz/self.m.get_shear())**2)
 
         d1 = t_yield_z()
         d2 = t_bearing()
@@ -113,7 +113,10 @@ class Flange:
         fx, fy, fz = load
 
         # Failure due to bending right before the bolt
-        length = self.l-self.d/2
+        if self.l == 0:
+            length = 0
+        else:
+            length = self.l-self.d/2
         return math.sqrt(6*fy*length/self.t)
 
     def mass(self):

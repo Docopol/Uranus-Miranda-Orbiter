@@ -13,9 +13,9 @@ def iterate(dlug):
         w, t, d, l = i.get_dimensions()
         material = i.get_material()
 
-        t2 = dlug.min_t(load=loads)
-        d2 = dlug.min_d(load=loads)
-        w2 = dlug.min_w(load=loads)
+        t2 = dlug.min_t(loads)
+        d2 = dlug.min_d(loads)
+        w2 = dlug.min_w(loads)
 
         # Since flanges are assumed to be equal to each other, minimizing Lug them will minimize the lug's
         s2 = Flange(width=w,
@@ -45,7 +45,7 @@ def iterate(dlug):
 
         flanges = [fl, s2, s3, s4]
         m_list = list()
-        for j in flanges:
+        for j in flanges:  # error pops up here
             m_list.append(j.mass())
         sorted_m = sorted(m_list)
         best_config = flanges[m_list.index(sorted_m[0])]
@@ -103,10 +103,10 @@ Materials Book
 
 
 # First level estimation of dimensions
-w_initial = int()
-t_initial = int()
-d_initial = int()
-l_initial = int()
+w_initial = 0.05
+t_initial = 0.005
+d_initial = 0.04
+l_initial = 0
 
 flange = Flange(
     width=w_initial,
