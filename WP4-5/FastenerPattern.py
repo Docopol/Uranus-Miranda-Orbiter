@@ -78,6 +78,9 @@ print("Shear stress Safety Factor  ", SF_Shear_Failure)
 print("Bolt D    ", D_1st)
 
 
-stress_Bearing = plate.pull_through_fail(n,D_1st,D_1st*3,np.transpose(cord),thick,thick,36.0,gap)
+bearing_Stress = plate.pull_through_fail(n,D_1st,D_1st*3,np.transpose(cord),thick,thick,36.0,gap)
 
-print("Stress Bearing  ",stress_Bearing)
+bearing_Stress_Max = max(bearing_Stress)
+print("Stress Bearing  ",bearing_Stress)
+print("Stress Bearing MAX ",bearing_Stress_Max)
+print("Bearing Safety Factor  ", aluminium.y/bearing_Stress_Max)
