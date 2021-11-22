@@ -107,7 +107,6 @@ while (min(SFs)>1.5):
     D = D_over_t * thickness
     SFs = GetSFs(F,D, thickness, w, h, n)
     
-
 thickness = thickness + 0.00025
 w = w_over_t * thickness
 h = w
@@ -115,10 +114,13 @@ W = W_over_w * w
 D = D_over_t * thickness
 SFs = GetSFs(F,D, thickness, w, h, n)
 
+mass_back_plate = W**2 * thickness * aluminium.get_density()
+
 print("Safety Factors: Shear, Pull-through, Tension")
 print(SFs)
 print("Thickness (mm)   ", thickness*1000)
 print("Width = Height (mm)  ",W*1000)
 print("Distance between fasteners (mm)  ",w*1000)
 print("Fastener diameter (mm)  ",D*1000)
+print("Mass of Back plate (kg) ", mass_back_plate)
 
