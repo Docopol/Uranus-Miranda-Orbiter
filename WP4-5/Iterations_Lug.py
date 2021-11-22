@@ -78,55 +78,6 @@ def iterate_2(dlug):
     return configs
 
 
-def iterate(dlug):
-    lugs = dlug.get_lugs()
-    dim_list = list()
-    mass_list = list()
-    for i in lugs:
-        w, t, d, l = i.get_dimensions()
-        material = i.get_material()
-
-        t2 = i.minimum_t(loads)
-        d2 = i.minimum_d(loads)
-        w2 = i.minimum_w(loads)
-
-        # Since flanges are assumed to be equal to each other, minimizing Lug them will minimize the lug's
-        s2 = Flange(width=w,
-                    lug_thickness=t2,
-                    hinge_diameter=d,
-                    material=material,
-                    length=l)
-
-        s3 = Flange(width=w,
-                    lug_thickness=t,
-                    hinge_diameter=d2,
-                    material=material,
-                    length=l)
-
-        s4 = Flange(width=w2,
-                    lug_thickness=t,
-                    hinge_diameter=d,
-                    material=material,
-                    length=l)
-
-        # Necessary for it to work for Flange and Lug classes
-        is_lug = isinstance(i, Lug)
-        if is_lug:
-            fl = i.get_flange()
-        else:
-            fl = i
-
-        flanges = [fl, s2, s3, s4]
-        m_list = list()
-        for j in flanges:  # error pops up here
-            m_list.append(j.mass())
-        sorted_m = sorted(m_list)
-        best_config = flanges[m_list.index(sorted_m[0])]
-        dim_list.append(best_config.get_dimensions())
-        mass_list.append(best_config.mass())
-    return dim_list, sorted(mass_list)
-
-
 # Loads not taking into account the moment generated
 g = 9.81
 rtg_mass = 97.8
