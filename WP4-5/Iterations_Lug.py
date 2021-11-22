@@ -1,8 +1,69 @@
 from Classes import Flange, Lug, Double_lug, Material
 import numpy as np
+import matplotlib.pyplot as plt
 
 
-# Minimum volume will be given when 2t = w + D - found through partial derivatives
+def iterate_2(dlug):
+    # Assume w to be fixed
+    # 1. Maximize D
+    # 2. Minimize t for D_max
+    # 3. Find out if smaller "D"s allow for smaller "t"s
+    lugs = dlug.get_lugs()
+    iterations = list()
+    for i in lugs:
+        w, t, d, l = i.get_dimensions()
+        material = i.get_material()
+
+        d_min = i.minimum_d(loads)
+        d_max = i.maximum_d(loads)
+
+        t_list = list()
+        diameter = d_max
+        while diameter > d_min:
+            fl = Flange(
+                width=w,
+                lug_thickness=t,
+                hinge_diameter=diameter,
+                material=material,
+                length=l
+            )
+            lug = Lug(
+                flange=fl,
+                number=2,
+                separation=0.05
+            )
+            t_list.append((diameter, lug.minimum_t(loads)))
+            diameter -= 0.001*d_max
+        iterations.append(t_list)
+
+    # Plot results
+    d_list = list()
+    t_list = list()
+    for i in iterations:
+        for j in i:
+            d_list.append(round(1000*j[0], 2))
+            t_list.append(round(1000*j[1], 2))
+        plt.plot(d_list, t_list)
+    plt.xlabel('Diameter [mm]')
+    plt.ylabel('Thickness [mm]')
+    plt.legend(['Top lug', 'Bottom lug'])
+    plt.grid()
+    plt.show()
+
+    m = 1000
+    for i in range(len(d_list)):
+        f = Flange(
+            width=w_initial,
+            lug_thickness=t_list[i] / 1000,
+            hinge_diameter=d_list[i] / 1000,
+            material=material_dict['aluminum'],
+            length=l_initial
+        )
+        mass = f.mass()
+        if mass < m:
+            m = f.mass()
+            fl = f
+    return m, fl
 
 
 def iterate(dlug):
@@ -103,9 +164,9 @@ Materials Book
 
 
 # First level estimation of dimensions
-w_initial = 0.02
-t_initial = 0.008
-d_initial = 0.015
+w_initial = 0.04
+t_initial = 0.01
+d_initial = 0.025
 l_initial = 0.05
 
 flange = Flange(
@@ -134,12 +195,6 @@ d_2 = Double_lug(
     dist_to_cg=distance_to_rtgs_cg
 )
 
-d_1_1, m_1_1 = iterate(d_1)
-d_2_1, m_2_1 = iterate(d_2)
+m, f = iterate_2(dlug=d_2)
 
-print(m_2_1[0] - m_1_1[0])
-
-if m_1_1[0] < m_2_1[0]:
-    print(f'A double single flange configuration with dimensions (w, t, d, l) ({d_1_1}) is best')
-else:
-    print(f'A double lug configuration with dimensions (w, t, d, l) ({d_2_1}) is best')
+print('(w, t, d, l)' + str(f.get_dimensions()) + ' has a mass of ' + str(m) + ' kg')

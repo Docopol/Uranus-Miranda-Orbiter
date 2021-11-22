@@ -85,31 +85,31 @@ class Flange:
         t3 = t_shear()
 
         # Failure due to vertical forces - assuming bending is negligible
-        t4 = (6 * self.l * fy / self.m.get_stress())**(1/3)
-
+        # t4 = (6 * self.l * fy / self.m.get_stress())**(1/3) - Don't remember where I got this from
+        t4 = 0
         thickness = sorted([t1, t2, t3, t4])
         return thickness[-1]
 
     def minimum_d(self, load):
         fx, fy, fz = load  # works both with lists and arrays
 
-        # Failure due to tensile forces - Extracted from Bruh...
-        def t_yield_z():
-            return self.w - fz / (self.m.get_stress() * self.t)
-
         def t_bearing():
             safety_margin = 1.5
             return safety_margin * fz / (self.m.get_bear() * self.t)
 
-        def t_shear():
-            return math.sqrt(self.w**2 - 4*(fz/self.m.get_shear())**2)
+        # def t_shear():
+        #     return math.sqrt(self.w**2 - 4*(fz/self.m.get_shear())**2)
 
-        d1 = t_yield_z()
         d2 = t_bearing()
-        d3 = t_shear()
+        # d3 = t_shear()
+        d3 = 0
 
-        diameters = sorted([d1, d2, d3])
+        diameters = sorted([d2, d3])
         return diameters[-1]
+
+    def maximum_d(self, load):
+        fx, fy, fz = load  # works both with lists and arrays
+        return self.w - fz / (self.m.get_stress() * self.t)
 
     def minimum_w(self, load):
         fx, fy, fz = load
@@ -188,6 +188,13 @@ class Lug:  # Assumes flange separation will be the same and flanges will be ide
         fy = fy / self.n
         fz = fz / self.n
         return self.f.minimum_d((fx, fy, fz))
+
+    def maximum_d(self, loads):
+        fx, fy, fz = loads
+        fx = fx / self.n
+        fy = fy / self.n
+        fz = fz / self.n
+        return self.f.maximum_d((fx, fy, fz))
 
     def minimum_w(self, loads):
         fx, fy, fz = loads
