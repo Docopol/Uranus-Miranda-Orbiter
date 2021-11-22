@@ -133,6 +133,8 @@ def getSF_lug(lug, F):
     SF_thickness = lug.f.t/lug.minimum_t((F.F_x,F.F_y,F.F_z))
     SF_diameter = lug.f.d/lug.minimum_d((F.F_x,F.F_y,F.F_z))
     SF_width = lug.f.w/lug.minimum_w((F.F_x,F.F_y,F.F_z))
+    print(lug.f.d/lug.maximum_d((F.F_x,F.F_y,F.F_z)))
+    print(lug.minimum_w((F.F_x,F.F_y,F.F_z)))
     return SF_thickness, SF_diameter, SF_width
 
 print("Safety Factors Lugs:  thickness, diameter, width")
@@ -171,7 +173,7 @@ SFs = GetSFs(F,D, thickness, w, h, n)
 
 mass_back_plate = W**2 * thickness * Al2014T6.get_density()
 
-print("Safety Factors: Shear, Pull-through, Tension")
+print("Revised Safety Factors: Shear, Pull-through, Tension")
 print(SFs)
 print("Thickness (mm)   ", thickness*1000)
 print("Width = Height (mm)  ",W*1000)
