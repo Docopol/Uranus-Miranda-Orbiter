@@ -33,7 +33,7 @@ def iterate_2(dlug):
                 separation=0.05
             )
             t_list.append((diameter, lug.minimum_t(loads)))
-            diameter -= 0.001*d_max
+            diameter -= 0.0001*d_max
         iterations.append(t_list)
 
     # Plot results
@@ -164,10 +164,11 @@ Materials Book
 
 
 # First level estimation of dimensions
-w_initial = 0.04
+# Obtained from BDCB-13 -- https://www.hydrauliccylindersinc.com/product/clevis-bracket/
+w_initial = 0.04445
 t_initial = 0.01
-d_initial = 0.025
-l_initial = 0.05
+d_initial = 0.034925
+l_initial = 0.041275
 
 flange = Flange(
     width=w_initial,
@@ -177,11 +178,11 @@ flange = Flange(
     length=l_initial
 )
 
-clearance = 0.2
+clearance = 0.0516128
 lug = Lug(flange=flange, separation=clearance, number=2)
 
-separation = 0.05
-distance_to_rtgs_cg = 0.2
+separation = 0.56
+distance_to_rtgs_cg = 0.38
 d_1 = Double_lug(
     top_lug=flange,
     bottom_lug=flange,
@@ -196,5 +197,4 @@ d_2 = Double_lug(
 )
 
 m, f = iterate_2(dlug=d_2)
-
 print('(w, t, d, l)' + str(f.get_dimensions()) + ' has a mass of ' + str(m) + ' kg')
