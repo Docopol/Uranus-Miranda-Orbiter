@@ -9,13 +9,15 @@ def iterate_2(dlug):
     # 2. Minimize t for D_max
     # 3. Find out if smaller "D"s allow for smaller "t"s
     lugs = dlug.get_lugs()
+    loading = dlug.loads(loads)
     iterations = list()
+    n = 0
     for i in lugs:
         w, t, d, l = i.get_dimensions()
         material = i.get_material()
 
-        d_min = i.minimum_d(loads)
-        d_max = i.maximum_d(loads)
+        d_min = i.minimum_d(loading[n])
+        d_max = i.maximum_d(loading[n])
 
         t_list = list()
         diameter = d_max
@@ -32,38 +34,48 @@ def iterate_2(dlug):
                 number=2,
                 separation=0.05
             )
-            t_list.append((diameter, lug.minimum_t(loads)))
-            diameter -= 0.0001*d_max
+            t_list.append((diameter, lug.minimum_t(loading[n])))
+            diameter -= 0.001*d_max
         iterations.append(t_list)
+        n += 1
 
     # Plot results
-    d_list = list()
-    t_list = list()
+    diameters = list()
+    thicknesses = list()
     for i in iterations:
+        d_list = list()
+        t_list = list()
         for j in i:
             d_list.append(round(1000*j[0], 2))
             t_list.append(round(1000*j[1], 2))
         plt.plot(d_list, t_list)
+        diameters.append(d_list)
+        thicknesses.append(t_list)
     plt.xlabel('Diameter [mm]')
     plt.ylabel('Thickness [mm]')
     plt.legend(['Top lug', 'Bottom lug'])
     plt.grid()
     plt.show()
 
-    m = 1000
-    for i in range(len(d_list)):
-        f = Flange(
-            width=w_initial,
-            lug_thickness=t_list[i] / 1000,
-            hinge_diameter=d_list[i] / 1000,
-            material=material_dict['aluminum'],
-            length=l_initial
-        )
-        mass = f.mass()
-        if mass < m:
-            m = f.mass()
-            fl = f
-    return m, fl
+    n = 0
+    configs = list()
+    for j in diameters:
+        m = 1000
+        for i in range(len(j)):
+            f = Flange(
+                width=w_initial,
+                lug_thickness=thicknesses[n][i] / 1000,
+                hinge_diameter=j[i] / 1000,
+                material=material_dict['aluminum'],
+                length=l_initial
+            )
+            mass = f.mass()
+            if mass < m:
+                m = f.mass()
+                fl = f
+        configs.append((m, fl))
+        n += 1
+    return configs
 
 
 def iterate(dlug):
@@ -196,5 +208,6 @@ d_2 = Double_lug(
     dist_to_cg=distance_to_rtgs_cg
 )
 
-m, f = iterate_2(dlug=d_2)
-print('(w, t, d, l)' + str(f.get_dimensions()) + ' has a mass of ' + str(m) + ' kg')
+top, bottom = iterate_2(dlug=d_2)
+print('Top lug: (w, t, d, l)' + str(top[1].get_dimensions()) + ' has a mass of ' + str(top[0]) + ' kg')
+print('Bottom lug: (w, t, d, l)' + str(bottom[1].get_dimensions()) + ' has a mass of ' + str(bottom[0]) + ' kg')
