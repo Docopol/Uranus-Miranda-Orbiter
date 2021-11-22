@@ -13,9 +13,9 @@ def iterate(dlug):
         w, t, d, l = i.get_dimensions()
         material = i.get_material()
 
-        t2 = dlug.min_t(loads)
-        d2 = dlug.min_d(loads)
-        w2 = dlug.min_w(loads)
+        t2 = i.minimum_t(loads)
+        d2 = i.minimum_d(loads)
+        w2 = i.minimum_w(loads)
 
         # Since flanges are assumed to be equal to each other, minimizing Lug them will minimize the lug's
         s2 = Flange(width=w,
@@ -51,7 +51,7 @@ def iterate(dlug):
         best_config = flanges[m_list.index(sorted_m[0])]
         dim_list.append(best_config.get_dimensions())
         mass_list.append(best_config.mass())
-    return dim_list, mass_list
+    return dim_list, sorted(mass_list)
 
 
 # Loads not taking into account the moment generated
@@ -103,10 +103,10 @@ Materials Book
 
 
 # First level estimation of dimensions
-w_initial = 0.05
-t_initial = 0.005
-d_initial = 0.04
-l_initial = 0
+w_initial = 0.02
+t_initial = 0.008
+d_initial = 0.015
+l_initial = 0.05
 
 flange = Flange(
     width=w_initial,
@@ -116,11 +116,11 @@ flange = Flange(
     length=l_initial
 )
 
-clearance = int()
+clearance = 0.2
 lug = Lug(flange=flange, separation=clearance, number=2)
 
-separation = int()
-distance_to_rtgs_cg = int()
+separation = 0.05
+distance_to_rtgs_cg = 0.2
 d_1 = Double_lug(
     top_lug=flange,
     bottom_lug=flange,
@@ -137,7 +137,9 @@ d_2 = Double_lug(
 d_1_1, m_1_1 = iterate(d_1)
 d_2_1, m_2_1 = iterate(d_2)
 
-if m_1_1 < m_2_1:
-    print(f'A double single flange configuration with dimensions ({d_1_1}) is best')
+print(m_2_1[0] - m_1_1[0])
+
+if m_1_1[0] < m_2_1[0]:
+    print(f'A double single flange configuration with dimensions (w, t, d, l) ({d_1_1}) is best')
 else:
-    print(f'A double lug configuration with dimensions ({d_2_1}) is best')
+    print(f'A double lug configuration with dimensions (w, t, d, l) ({d_2_1}) is best')

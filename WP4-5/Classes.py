@@ -57,10 +57,10 @@ class Flange:
 
     def K_t(self):
         mat = self.m.get_name()
-        ...
+        return 0.5  # Change when values are obtained
 
-    def K(self):
-        ...
+    def K_ty(self):
+        return 1  # Change when values are obtained
 
     def minimum_t(self, load):
         fx, fy, fz = load
@@ -68,15 +68,17 @@ class Flange:
         # Failure due to tensile forces - Extracted from Bruh
         def t_yield_z():
             area = (self.w-self.d)  # per unit thickness
-            return fz / (self.m.get_stress() * area)
+            k = self.K_ty()
+            return fz / (k * self.m.get_stress() * area)
 
         def t_bearing():
             k_bry = self.K_bry()
             return fy / (k_bry * self.m.get_stress() * self.d)
 
         def t_shear():
+            k_ty = self.K_ty()
             area = 2*math.sqrt((self.w/2)**2 + (self.d/2)**2)  # conservative estimate - per unit thickness
-            return fz / (self.m.get_shear() * area)
+            return fz / (k_ty * self.m.get_shear() * area)
 
         t1 = t_yield_z()
         t2 = t_bearing()
@@ -93,7 +95,7 @@ class Flange:
 
         # Failure due to tensile forces - Extracted from Bruh...
         def t_yield_z():
-            return fz / (self.m.get_stress() * self.t) + self.w
+            return self.w - fz / (self.m.get_stress() * self.t)
 
         def t_bearing():
             safety_margin = 1.5
