@@ -66,18 +66,18 @@ class Flange:
         fx, fy, fz = load
 
         # Failure due to tensile forces - Extracted from Bruh
-        def t_yield_z():
+        def t_yield_z():  # Eq 3.1 from Overleaf
             area = (self.w-self.d)  # per unit thickness
             k = self.K_ty()
             return fz / (k * self.m.get_stress() * area)
 
-        def t_bearing():
+        def t_bearing():  # Eq 3.3 from Overleaf
             k_bry = self.K_bry()
             return fy / (k_bry * self.m.get_stress() * self.d)
 
-        def t_shear():
+        def t_shear():  # Eq 3.7 from Overleaf
             k_ty = self.K_ty()
-            area = 2*math.sqrt((self.w/2)**2 + (self.d/2)**2)  # conservative estimate - per unit thickness
+            area = 2*math.sqrt((self.w/2)**2 - (self.d/2)**2)  # conservative estimate - per unit thickness
             return fz / (k_ty * self.m.get_shear() * area)
 
         t1 = t_yield_z()
@@ -93,23 +93,20 @@ class Flange:
     def minimum_d(self, load):
         fx, fy, fz = load  # works both with lists and arrays
 
-        def t_bearing():
-            safety_margin = 1.5
-            return safety_margin * fz / (self.m.get_bear() * self.t)
+        def d_bearing():  # Eq 3.3 from Overleaf
+            k_bry = self.K_bry()
+            return fy / (k_bry * self.m.get_bear() * self.t)
 
-        # def t_shear():
-        #     return math.sqrt(self.w**2 - 4*(fz/self.m.get_shear())**2)
-
-        d2 = t_bearing()
-        # d3 = t_shear()
-        d3 = 0
-
-        diameters = sorted([d2, d3])
-        return diameters[-1]
+        d2 = d_bearing()
+        return d2
 
     def maximum_d(self, load):
         fx, fy, fz = load  # works both with lists and arrays
-        return self.w - fz / (self.m.get_stress() * self.t)
+        k = self.K_ty()
+        d1 = self.w - fz / (k * self.m.get_stress() * self.t)  # Eq 3.1 from Overleaf
+        d2 = 2 * math.sqrt((self.w/2)**2 - (fz/(2*k*self.m.get_shear()*self.t))**2)  # Eq 3.7 from Overleaf
+        d_list = sorted([d1, d2])
+        return d_list[0]
 
     def minimum_w(self, load):
         fx, fy, fz = load
