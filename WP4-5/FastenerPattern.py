@@ -11,36 +11,76 @@ M_y = 141.21576000000002
 gap = 0.02
 thickness = 0.01
 
-aluminium = Material(
-    name='aluminium',
-    Youngs_Modulus=75*10**9,
-    yield_stress=265*10**6,
-    shear_modulus=24*10**9,
-    maximum_shear=207*10**6,
-    max_bearing_stress=1.6*265*10**6,
-    density=2700
+# Aluminium
+Al2014T6 = Material(
+    name='Al2014-T6',
+    Youngs_Modulus=73.1 * 10**9,
+    yield_stress=414 * 10**6,
+    shear_modulus=28 * 10**9,
+    maximum_shear=290 * 10**6,
+    max_bearing_stress=662 * 10**6,
+    density=2800
 )
-iron = Material(
-    name='iron',
-    Youngs_Modulus=175*10**9,
-    yield_stress=465*10**6,
-    shear_modulus=41*10**9,
-    maximum_shear=0.6*465*10**6,
-    max_bearing_stress=1.5*465*10**6,
-    density=7200
+Al7075T6 = Material(
+    name='Al7075-T6',
+    Youngs_Modulus=71.7 * 10**9,
+    yield_stress=503 * 10**6,
+    shear_modulus=26.9 * 10**9,
+    maximum_shear=331 * 10**6,
+    max_bearing_stress=662 * 10**6,  #NOT FOUND
+    density=2810
 )
-steel = Material(
-    name='steel',
-    Youngs_Modulus=210*(10**9),
-    yield_stress=800*(10**6),
-    shear_modulus=77*10**9,
-    maximum_shear=600*10**6,
-    max_bearing_stress=185*10**6,
-    density=7850
+Al2024T3 = Material(
+    name='Al2024-T3',
+    Youngs_Modulus=73.1 * 10**9,
+    yield_stress=345 * 10**6,
+    shear_modulus=28 * 10**9,
+    maximum_shear=283 * 10**6,
+    max_bearing_stress=524 * 10**6,
+    density=2780
+)
+Al2024T4 = Material(
+    name='Al2024T4',
+    Youngs_Modulus=73.1 * 10**9,
+    yield_stress=324 * 10**6,
+    shear_modulus=28 * 10**9,
+    maximum_shear=283 * 10**6,
+    max_bearing_stress=441 * 10**6,
+    density=2780
+)
+# Steel
+St8630 = Material(
+    name='St8630',
+    Youngs_Modulus=73.1 * 10**9,
+    yield_stress=414 * 10**6,
+    shear_modulus=28 * 10**9,
+    maximum_shear=290 * 10**6,
+    max_bearing_stress=662 * 10**6,
+    density=2800
+)
+St4130 = Material(
+    name='St4130',
+    Youngs_Modulus=73.1 * 10**9,
+    yield_stress=414 * 10**6,
+    shear_modulus=28 * 10**9,
+    maximum_shear=290 * 10**6,
+    max_bearing_stress=662 * 10**6,
+    density=2800
+)
+# Titanium
+
+# Magnesium
+MgAZ91CT6 = Material(
+    name='MgAZ91C-T6',
+    Youngs_Modulus=44.8 * 10**9,
+    yield_stress=145 * 10**6,
+    shear_modulus=17 * 10**9,
+    maximum_shear=145 * 10**6,
+    max_bearing_stress=360 * 10**6,
+    density=1810
 )
 
-
-F = Loads(353.0394,2118.2364,4069.2436105263155,0,141.21576000000002,0)
+F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
 
 n = 4 #number of bolts
 
