@@ -47,40 +47,49 @@ n = 4 #number of bolts
 w = 0.200
 h = 0.150
 
-D_1st = 1.5 * Min_Fastener_Diameter_Tension(F,steel, n, w, h, gap)
+def GetSFs (F,thick,w,h,n):
 
-plate = Plate(n,D_1st, thick, w+D_1st*1.5, h+D_1st*1.5)
+    D_1st = 1.5 * Min_Fastener_Diameter_Tension(F,steel, n, w, h, gap)
 
-plate.get_mass(aluminium)
+    plate = Plate(n,D_1st, thick, w+D_1st*1.5, h+D_1st*1.5)
 
-cord = [[-w/2,-h/2],[-w/2,h/2],[w/2,h/2],[w/2,-h/2]]
+    plate.get_mass(aluminium)
 
-plate_cg = plate.get_cg(cord)
+    cord = [[-w/2,-h/2],[-w/2,h/2],[w/2,h/2],[w/2,-h/2]]
 
-plate_force_cg = plate.force_cg(F.F_x,F.F_y,n)
+    plate_cg = plate.get_cg(cord)
 
-plate_moment_cg = plate.moment_cg(plate_cg, [0,0], F.F_x, F.F_y)
+    plate_force_cg = plate.force_cg(F.F_x,F.F_y,n)
 
-plate_ftdm = plate.force_due_to_moment(cord, plate_cg, 0)
+    plate_moment_cg = plate.moment_cg(plate_cg, [0,0], F.F_x, F.F_y)
 
-plate_fm = plate.force_moment(plate_ftdm,F.F_x, F.F_y)
+    plate_ftdm = plate.force_due_to_moment(cord, plate_cg, 0)
 
-shearStress = plate.fastener_shear_stress(D_1st, thick, plate_fm)
+    plate_fm = plate.force_moment(plate_ftdm,F.F_x, F.F_y)
 
-print("Shear stress in fasteners   ", shearStress/(10**6), "MPa")
+    shearStress = plate.fastener_shear_stress(D_1st, thick, plate_fm)
 
-shearYieldStrength = 0.58 * steel.y
+#print("Shear stress in fasteners   ", shearStress/(10**6), "MPa")
 
-SF_Shear_Failure = shearYieldStrength / shearStress
+    shearYieldStrength = 0.58 * steel.y
 
-print("Shear stress Safety Factor  ", SF_Shear_Failure)
+    SF_Shear_Failure = shearYieldStrength / shearStress
 
-print("Bolt D    ", D_1st)
+#print("Shear stress Safety Factor  ", SF_Shear_Failure)
+
+#print("Bolt D    ", D_1st)
 
 
-bearing_Stress = plate.pull_through_fail(n,D_1st,D_1st*3,np.transpose(cord),thick,thick,36.0,gap)
+    bearing_Stress = plate.pull_through_fail(n,D_1st,D_1st*3,np.transpose(cord),thick,thick,36.0,gap)
 
-bearing_Stress_Max = max(bearing_Stress)
-print("Stress Bearing  ",bearing_Stress)
-print("Stress Bearing MAX ",bearing_Stress_Max)
-print("Bearing Safety Factor  ", aluminium.y/bearing_Stress_Max)
+    bearing_Stress_Max = max(bearing_Stress)
+
+    SF_bearing_failure = aluminium.y/bearing_Stress_Max
+
+    return SF_Shear_Failure, SF_bearing_failure
+
+SFs = GetSFs(F, thick, w, h, n)
+print(SFs)
+#print("Stress Bearing  ",bearing_Stress)
+#print("Stress Bearing MAX ",bearing_Stress_Max)
+#print("Bearing Safety Factor  ", aluminium.y/bearing_Stress_Max)
