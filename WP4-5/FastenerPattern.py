@@ -11,7 +11,7 @@ M_y = 141.21576000000002
 gap = 0.02
 thickness = 0.01
 
-# Aluminium
+# Al2014T6
 Al2014T6 = Material(
     name='Al2014-T6',
     Youngs_Modulus=73.1 * 10**9,
@@ -92,13 +92,13 @@ def inch_to_m(l):
 
 def GetSFs (F,D_1st,thickness,w,h,n):
 
-    D_not_fail = Min_Fastener_Diameter_Tension(F,steel, n, w, h, gap)
+    D_not_fail = Min_Fastener_Diameter_Tension(F,St8630, n, w, h, gap)
 
     SF_Tension_Failure = D_1st/D_not_fail
 
     plate = Plate(n,D_1st, thickness, w+D_1st*1.5, h+D_1st*1.5)
 
-    plate.get_mass(aluminium)
+    plate.get_mass(Al2014T6)
 
     cord = [[-w/2,-h/2],[-w/2,h/2],[w/2,h/2],[w/2,-h/2]]
 
@@ -114,7 +114,7 @@ def GetSFs (F,D_1st,thickness,w,h,n):
 
     shearStress = plate.fastener_shear_stress(D_1st, thickness, plate_fm)
 
-    shearYieldStrength = 0.58 * steel.y
+    shearYieldStrength = 0.58 * St8630.y
 
     SF_Shear_Failure = shearYieldStrength / shearStress
 
@@ -122,11 +122,11 @@ def GetSFs (F,D_1st,thickness,w,h,n):
 
     bearing_Stress_Max = max(bearing_Stress)
 
-    SF_bearing_failure = aluminium.y/bearing_Stress_Max
+    SF_bearing_failure = Al2014T6.y/bearing_Stress_Max
 
     return SF_Shear_Failure, SF_bearing_failure, SF_Tension_Failure
 
-flange = Flange(inch_to_m(1+3/4),inch_to_m(1),inch_to_m(1+3/8),aluminium,inch_to_m(3))
+flange = Flange(inch_to_m(1+3/4),inch_to_m(1),inch_to_m(1+3/8),Al2014T6,inch_to_m(3))
 lug = Lug(flange,inch_to_m(2.038),2)
 
 def getSF_lug(lug, F):
@@ -169,7 +169,7 @@ W = W_over_w * w
 D = D_over_t * thickness
 SFs = GetSFs(F,D, thickness, w, h, n)
 
-mass_back_plate = W**2 * thickness * aluminium.get_density()
+mass_back_plate = W**2 * thickness * Al2014T6.get_density()
 
 print("Safety Factors: Shear, Pull-through, Tension")
 print(SFs)
