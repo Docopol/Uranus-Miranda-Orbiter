@@ -86,6 +86,18 @@ def GetSFs (F,D_1st,thickness,w,h,n):
 
     return SF_Shear_Failure, SF_bearing_failure, SF_Tension_Failure
 
+flange = Flange(inch_to_m(1+3/4),inch_to_m(1),inch_to_m(1+3/8),aluminium,inch_to_m(3))
+lug = Lug(flange,inch_to_m(2.038),2)
+
+def getSF_lug(lug, F):
+    SF_thickness = lug.f.t/lug.minimum_t((F.F_x,F.F_y,F.F_z))
+    SF_diameter = lug.f.d/lug.minimum_d((F.F_x,F.F_y,F.F_z))
+    SF_width = lug.f.w/lug.minimum_w((F.F_x,F.F_y,F.F_z))
+    return SF_thickness, SF_diameter, SF_width
+
+print("Safety Factors Lugs:  thickness, diameter, width")
+print(getSF_lug(lug,F))
+
 thickness = inch_to_m(7/8)
 D = inch_to_m(5/8)
 w = inch_to_m(3+13/16)
@@ -99,6 +111,9 @@ h = w
 W_over_w = W/w
 
 SFs = GetSFs(F,D, thickness, w, h, n)
+
+print("Safety Factors: Shear, Pull-through, Tension")
+print(SFs)
 
 while (min(SFs)>1.5):
     thickness = thickness - 0.00025

@@ -3,7 +3,7 @@ import numpy as np
 
 
 class Flange:
-    def __init__(self, width, lug_thickness, hinge_diameter, material, length=0):
+    def __init__(self, width, lug_thickness, hinge_diameter, material, length):
         self.w = width
         self.t = lug_thickness
         self.d = hinge_diameter
