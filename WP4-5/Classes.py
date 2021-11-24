@@ -170,18 +170,17 @@ class Flange:
     def check_failure(self, load):
         # Needs to be checked, probably incorrect
         fx, fy, fz = load
-        yield_stress = fy/(self.t*(self.w-self.d))
-        bearing_stress = fy/(self.t*self.d)
 
-        k_bry = self.K_bry()
-        shear_out_stress = fy/(self.d*self.t*k_bry)
-
-        if self.m.get_stress() < yield_stress or \
-                self.m.get_stress() < shear_out_stress or \
-                self.m.get_bear() < bearing_stress:
-            return False
+        if self.t * (self.w - self.d) < fy/(self.K_t() * self.m.get_stress()): # From equation 3.1
+            failure = True
+        elif self.d * self.t < fx / (self.K_ty() * self.m.get_stress()):
+            failure = True
+        elif self.d * self.t < fz / (self.K_bry() * self.m.get_stress()):
+            failure = True
         else:
-            return True
+            failure = False
+
+        return failure
         
     def loading(self, loads):  # assuming w to be constant
         fx, fy, fz = loads
