@@ -100,6 +100,7 @@ print(SFs)
 mass_min = massBackPlate(Al2024T3,W,thickness)
 
 while (min(SFs) > 1.5):  # constant dimensions
+#while (min(SFs)>1.5):
     thickness = thickness - 0.00025
     w = w_over_t * thickness
     h = w
