@@ -136,7 +136,7 @@ optimal_Values = (0,0,0,0)
 for Al in aluminiums:
     for t in np.linspace(0.1,0.00005,101):
         for D in bolt_D_standarts:
-            D=inch_to_m(D)
+            D=D/1000
             for w in np.linspace(0.1,3*D,51):
             
                 if min(GetSFs(D, t, w,h,n, Al))>1.5:
