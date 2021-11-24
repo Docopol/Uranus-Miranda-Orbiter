@@ -49,7 +49,7 @@ def GetSFs (D_1st,thickness,w,h,n):
 
     SF_Shear_Failure = shearYieldStrength / shearStress
 
-    bearing_Stress = plate.pull_through_fail(n,D_1st,D_1st*3,np.transpose(cord),thickness,thickness,36.0,gap)
+    bearing_Stress = plate.pull_through_fail(n,D_1st,D_1st*1.5,np.transpose(cord),thickness,thickness,36.0,gap)
 
     bearing_Stress_Max = max(bearing_Stress)
 
@@ -129,7 +129,7 @@ optimal_Values = (0,0,0,0)
 for t in np.linspace(0.01,0.0005,100):
     for w in np.linspace(0.4,0.01,100):
         for D in np.linspace(0.01,0.003,100):
-            if min(GetSFs (D, t, w,h,n))>1.5:
+            if min(GetSFs(D, t, w,h,n))>1.5:
                 h=w
                 W = W_over_w * w
                 mass = massBackPlate(Al2024T3, W, t)
