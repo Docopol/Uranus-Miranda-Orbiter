@@ -3,7 +3,7 @@ import math
 # from Iterations_Lug import *
 # from Classes import Flange, Loads
 from Constants import Material, Al2014T6
-fx, fy, fz, mx, my, mz = 353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0
+fx, fy, fz, mx, my, mz = 176.5197, 1059.1182, 1972.4157782608693, 0, 141.21576000000002, 0
 
 
 
@@ -13,7 +13,7 @@ def check_failure(mat, t, w, d):
         failure = True
     elif fx / ((d * t) * K_ty(mat, t, w, d)) > mat.get_stress():  # From equation 3.3
         failure = True
-    elif fz / ((d * t) * K_bry(w, d)) > mat.get_stress():  # From equation 3.5
+    elif fz / ((d * t) * K_bry(w, d)) > mat.get_bear():  # From equation 3.5
         failure = True
     else:
         failure = False
