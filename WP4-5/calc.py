@@ -23,11 +23,11 @@ Force_lower_x = Force_upper_x
 
 Moment_upper_y = Moment_lower_y = M_y/2
 
-Force_upper_z = F_z/2 + M_x / h * 2
+Force_upper_z = F_z/2 + M_x / h
 
 Force_upper_y = Force_lower_y = F_y
 
-print("Force in Y (both)   ",Force_upper_y)
+print("Force in Y (both)   ", Force_upper_y)
 print("Force in Z max      ", Force_upper_z)
 print("Force in X          ", Force_upper_x)
 print("Moment around y     ", Moment_upper_y)

@@ -13,7 +13,7 @@ def check_failure(mat, t, w, d):
         failure = True
     elif fx / ((d * t) * K_ty(mat, t, w, d)) > mat.get_stress():  # From equation 3.3
         failure = True
-    elif fz / ((d * t) * K_bry(w, d)) > mat.get_stress():  # From equation 3.5
+    elif fz / ((d * t) * K_bry(w, d)) > mat.get_bear():  # From equation 3.5
         failure = True
     else:
         failure = False
