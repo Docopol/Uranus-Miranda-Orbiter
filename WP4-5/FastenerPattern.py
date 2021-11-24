@@ -4,7 +4,7 @@ from Constants import *
 import math
 import numpy as np
 import time
-from Brute_Force_Iteration import *
+#from Brute_Force_Iteration import *
 start_time = time.time()
 
 #print("--- %s seconds ---" % (time.time() - start_time))
@@ -76,7 +76,7 @@ def getSF_lug(lug):
 
 print("")
 print("")
-print("Safety Factors Lugs:  diameter min, diameter max, thickness, width")
+print("Safety Factors Flanges:  diameter min, diameter max, thickness, width")
 print(getSF_lug(lug))
 
 thickness = inch_to_m(7/8)
@@ -96,7 +96,7 @@ def massBackPlate (material,W,t):
 
 SFs = GetSFs(D, thickness, w, h, n, Al2024T3)
 
-print("Safety Factors: Shear, Pull-through, Tension")
+print("Safety Factors Backplate/Fasteners: Shear, Pull-through, Tension")
 print(SFs)
 mass_min = massBackPlate(Al2024T3,W,thickness)
 

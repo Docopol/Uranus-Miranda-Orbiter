@@ -393,7 +393,7 @@ class Plate:
         # ^^^ (0,0) x-z axis asrg centre of mass
         g = 9.81
         # t is the thickness of s/c wall or lug plate
-        n_f = len(D_fin)  # number of fasteners
+        #n_f = len(D_fin)  # number of fasteners
         F_y = 2 * g * M_ASRG /n_f  # normal force
         Mx = 6 * g * M_ASRG * cg_y  # moment about x axis
         Mz = 2 * g * M_ASRG * cg_y  # moment about z axis
