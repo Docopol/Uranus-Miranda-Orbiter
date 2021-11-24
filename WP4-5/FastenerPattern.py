@@ -134,15 +134,15 @@ optimal_Values = (0,0,0,0)
 #print("test")
 for Al in aluminiums:
     for t in np.linspace(0.01,0.0005,100):
-        for w in np.linspace(0.4,0.01,100):
-            for D in np.linspace(0.01,0.003,100):
-                if min(GetSFs(D, t, w,h,n, Al))>1.5:
+        for w in np.linspace(0.04,0.01,100):
+            for D in bolt_D_standarts:
+                if min(GetSFs(inch_to_m(D), t, w,h,n, Al))>1.5:
                     h=w
                     W = W_over_w * w
                     mass = massBackPlate(Al, W, t)
             
                     if mass<mass_min:
-                        optimal_Values=(D,t,w,W)
+                        optimal_Values=(inch_to_m(D),t,w,W)
                         mass_min = mass
 
 
