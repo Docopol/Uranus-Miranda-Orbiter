@@ -150,11 +150,11 @@ for Al in aluminiums:
                         mass_min = mass
 
 
-#print("test end")               
+          
 print(mass_min)
 
 print("Optimal fastener diameter, thickness, distance between fasteners, width")
 print(optimal_Values)
 
 print("")
-print("--- %s seconds ---" % (time.time() - start_time))
+print("--- runtime: %s seconds ---" % (time.time() - start_time))
