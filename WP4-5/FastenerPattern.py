@@ -124,7 +124,7 @@ print("Mass of Back plate (kg) ", mass_back_plate)
 print("")
 print("")
 
-
+optimal_Values = (0,0,0,0)
 #print("test")
 for t in np.linspace(0.01,0.0005,100):
     for w in np.linspace(0.4,0.01,100):
@@ -135,9 +135,13 @@ for t in np.linspace(0.01,0.0005,100):
                 mass = massBackPlate(Al2024T3, W, t)
             
                 if mass<mass_min:
+                    optimal_Values=(D,t,w,W)
                     mass_min = mass
 
 
 #print("test end")               
 print(mass_min)
+
+print("Optimal fastener diameter, thickness, distance between fasteners, width")
+print(optimal_Values)
 
