@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 
 def iterate_2(dlug):
+    global lower_bound_t_up, lower_bound_t_down
     # Assume w to be fixed
     # 1. Maximize D
     # 2. Minimize t for D_max
@@ -48,7 +49,7 @@ def iterate_2(dlug):
         iterations.append(t_list)
         n += 1
 
-    ''''
+
     # Add lower bound thickness
     d_list = list()
     t_list = list()
@@ -60,9 +61,9 @@ def iterate_2(dlug):
                 t_list.append(round(1000 * lower_bound_t_up, 2))
             else:
                 t_list.append(round(1000 * lower_bound_t_down, 2))
-            plt.plot(d_list, t_list)
-            n += 1
-    '''
+        plt.plot(d_list, t_list)
+        n += 1
+
     # Plot results
     diameters = list()
     thicknesses = list()
@@ -75,11 +76,11 @@ def iterate_2(dlug):
         plt.plot(d_list, t_list)
         diameters.append(d_list)
         thicknesses.append(t_list)
-    # plt.xlabel('Diameter [mm]')
-    # plt.ylabel('Thickness [mm]')
-    # plt.legend(['Minimum thickness top lug', 'Minimum thickness bottom lug', 'Top lug', 'Bottom lug'])
-    # plt.grid()
-    # plt.show()
+    plt.xlabel('Diameter [mm]')
+    plt.ylabel('Thickness [mm]')
+    plt.legend(['Minimum thickness top lug', 'Minimum thickness bottom lug', 'Top lug', 'Bottom lug'])
+    plt.grid()
+    plt.show()
 
     n = 0
     configs = list()
@@ -99,12 +100,48 @@ def iterate_2(dlug):
                 fl = f
         configs.append((m, fl))
         n += 1
-    return configs
+    return configs  # Minimum diameters are (low, up) = (33.15mm, 42.18mm)
 
 
-def second_iteration(dlug):
+def second_iteration(dob_lug):  # Check, it does not work
+    global lower_bound_t_up, lower_bound_t_down
     # Explore variations in length and width, using the minimum thickness stablished by bending moments
-    ...
+    top_config, bottom_config = iterate_2(dob_lug)
+    top_flange = top_config[1]
+    bottom_flange = bottom_config[1]
+
+    loading = dob_lug.loads(loads)
+    flanges = [top_flange, bottom_flange]
+
+    n = 0
+    for i in flanges:
+        w, t, d, l = i.get_dimensions()
+        material = i.get_material()
+        failure = False
+        if n == 0:
+            t = lower_bound_t_up
+            d = 0.03315
+        else:
+            t = lower_bound_t_down
+            d = 0.04318
+        m = 0
+        while not failure:
+            print(m)
+            l -= 0.00001
+            w -= 0.00001**2
+            f = Flange(
+                width=w,
+                lug_thickness=t,
+                hinge_diameter=d,
+                length=l,
+                material=material
+            )
+            failure = flange.check_failure(loading[n])
+            m += 1
+        flanges.append(f)
+        n += 1
+
+    return flanges
 
 
 # Loads not taking into account the moment generated
@@ -137,6 +174,8 @@ https://www.google.com/search?q=maximum+shear+stress+aluminium&rlz=1C1CHBF_esNL9
 Materials Book
 """
 
+lower_bound_t_up = int()
+lower_bound_t_down = int()
 
 # First level estimation of dimensions
 
@@ -167,3 +206,7 @@ d_2 = Double_lug(
 top, bottom = iterate_2(dlug=d_2)
 print('Top lug: (w, t, d, l)' + str(top[1].get_dimensions()) + ' has a mass of ' + str(1000*top[0]) + ' g')
 print('Bottom lug: (w, t, d, l)' + str(bottom[1].get_dimensions()) + ' has a mass of ' + str(1000*bottom[0]) + ' g')
+
+top2, bottom2 = second_iteration(dob_lug=d_2)
+print('Top lug: (w, t, d, l)' + str(top.get_dimensions()) + ' has a mass of ' + str(1000*top.mass()) + ' g')
+print('Bottom lug: (w, t, d, l)' + str(bottom.get_dimensions()) + ' has a mass of ' + str(1000*bottom.mass()) + ' g')
