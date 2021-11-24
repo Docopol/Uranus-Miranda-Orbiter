@@ -161,3 +161,5 @@ for t in trange:
                 if m < m_i:
                     m_i = m
                     print("mass - {}, thickness - {}, width - {}, diameter - {}, length - {}".format(m_i,t,w,d,l))
+
+print("end of code")
