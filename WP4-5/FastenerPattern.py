@@ -21,8 +21,8 @@ n = 4 #number of bolts
 def inch_to_m(l):
     return l*2.54/100
 
-def GetSFs (F,D_1st,thickness,w,h,n):
-
+def GetSFs (D_1st,thickness,w,h,n):
+    F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
     D_not_fail = Min_Fastener_Diameter_Tension(F,St8630, n, w, h, gap)
 
     SF_Tension_Failure = D_1st/D_not_fail
@@ -60,7 +60,8 @@ def GetSFs (F,D_1st,thickness,w,h,n):
 flange = Flange(inch_to_m(1+3/4),inch_to_m(1),inch_to_m(1+3/8),Al2014T6,inch_to_m(3))
 lug = Lug(flange,inch_to_m(2.038),2)
 
-def getSF_lug(lug, F):
+def getSF_lug(lug):
+    F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
     SF_thickness = lug.f.t/lug.minimum_t((F.F_x,F.F_y,F.F_z))
     SF_diameter_min = lug.f.d/lug.minimum_d((F.F_x,F.F_y,F.F_z))
     SF_width = lug.f.w/lug.minimum_w((F.F_x,F.F_y,F.F_z))
@@ -71,7 +72,7 @@ def getSF_lug(lug, F):
 print("")
 print("")
 print("Safety Factors Lugs:  diameter min, diameter max, thickness, width")
-print(getSF_lug(lug,F))
+print(getSF_lug(lug))
 
 thickness = inch_to_m(7/8)
 D = inch_to_m(5/8)
@@ -88,7 +89,7 @@ W_over_w = W/w
 def massBackPlate (material,W,t):
     return material.d*W**2*t
 
-SFs = GetSFs(F,D, thickness, w, h, n)
+SFs = GetSFs(D, thickness, w, h, n)
 
 print("Safety Factors: Shear, Pull-through, Tension")
 print(SFs)
@@ -100,14 +101,14 @@ while (min(SFs)>1.5):
     w = w_over_t * thickness
     h = w
     D = D_over_t * thickness
-    SFs = GetSFs(F,D, thickness, w, h, n)
+    SFs = GetSFs(D, thickness, w, h, n)
     
 thickness = thickness + 0.00025
 w = w_over_t * thickness
 h = w
 W = W_over_w * w
 D = D_over_t * thickness
-SFs = GetSFs(F,D, thickness, w, h, n)
+SFs = GetSFs(D, thickness, w, h, n)
 
 mass_back_plate = W**2 * thickness * Al2014T6.get_density()
 print("")
@@ -122,16 +123,21 @@ print("Mass of Back plate (kg) ", mass_back_plate)
 
 print("")
 print("")
-for t in np.linspace(0.0005,0.01,1000):
-    for w in np.linspace(0.01,0.4,1000):
-        for D in np.linspace(0.003,0.01,1000):
-            if min(GetSFs (F, D, t, w,h,n))>1.5:
+
+
+#print("test")
+for t in np.linspace(0.01,0.0005,100):
+    for w in np.linspace(0.4,0.01,100):
+        for D in np.linspace(0.01,0.003,100):
+            if min(GetSFs (D, t, w,h,n))>1.5:
                 h=w
                 W = W_over_w * w
                 mass = massBackPlate(Al2024T3, W, t)
             
                 if mass<mass_min:
                     mass_min = mass
-                
+
+
+#print("test end")               
 print(mass_min)
 
