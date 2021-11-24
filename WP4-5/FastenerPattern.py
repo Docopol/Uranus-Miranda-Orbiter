@@ -4,7 +4,7 @@ from Constants import *
 import math
 import numpy as np
 import time
-#from Brute Force Iteration import *
+from Brute_Force_Iteration import *
 start_time = time.time()
 
 #print("--- %s seconds ---" % (time.time() - start_time))
