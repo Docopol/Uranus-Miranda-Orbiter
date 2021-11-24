@@ -162,7 +162,7 @@ class Flange:
         return math.sqrt(6*fy*self.l/(self.t*self.m.get_stress()))
 
     def mass(self):
-        area = math.pi * ((self.w/2)**2 - (self.d/2)**2) / 2 + self.w * self.l - math.pi * self.d**2 / 4
+        area = self.w * self.l - math.pi * self.d**2 / 8 + math.pi / 2 * (self.w**2 - self.d**2)/4
         volume = area * self.t
         return volume * self.m.get_density()
 
@@ -174,7 +174,7 @@ class Flange:
             failure = True
         elif fx/((self.d * self.t)*self.K_ty()) > self.m.get_stress():  # From equation 3.3
             failure = True
-        elif abs(fz)/((self.d * self.t)*self.K_bry()) > self.m.get_stress():  # From equation 3.5
+        elif abs(fz)/((self.d * self.t)*self.K_bry()) > self.m.get_bear():  # From equation 3.5
             failure = True
         else:
             failure = False

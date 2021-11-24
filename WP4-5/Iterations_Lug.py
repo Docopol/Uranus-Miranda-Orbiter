@@ -102,14 +102,41 @@ def iterate_2(dlug):
     return configs
 
 
-def second_iteration(dlug):
+def second_iteration(dob_lug):
     # Explore variations in length and width, using the minimum thickness established by bending moments
-    ...
+    # Explore variations in length and width, using the minimum thickness stablished by bending moments
+    top_config, bottom_config = iterate_2(dob_lug)
+    top_flange = top_config[1]
+    bottom_flange = bottom_config[1]
+
+    loading = dob_lug.loads(loads)
+    flanges = [top_flange, bottom_flange]
+
+    n = 0
+    for i in flanges:
+        w, t, d, l = i.get_dimensions()
+        material = i.get_material()
+        failure = False
+        while not failure:
+            l -= 0.0001*l
+            w -= 0.000000001*w
+            f = Flange(
+                width=w,
+                lug_thickness=t,
+                hinge_diameter=d,
+                length=l,
+                material=material
+            )
+            failure = flange.check_failure(loading[n])
+        flanges.append(f)
+        n += 1
+
+    return flanges
 
 
 # Loads not taking into account the moment generated
 g = 9.80665
-rtg_mass = 97.8
+rtg_mass = 107.6
 number_of_rtgs = 3
 accelerations = np.array([2, 6, 2])
 loads = rtg_mass / number_of_rtgs * g * accelerations

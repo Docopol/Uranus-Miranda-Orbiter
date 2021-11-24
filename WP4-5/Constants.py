@@ -58,7 +58,7 @@ Al2024T3 = Material(
     density=2780
 )
 Al2024T4 = Material(
-    name='Al2024T4',
+    name='Al2024-T4',
     Youngs_Modulus=73.1 * 10 ** 9,
     yield_stress=324 * 10 ** 6,
     shear_modulus=28 * 10 ** 9,
@@ -87,7 +87,7 @@ St4130 = Material(
 )
 # Titanium
 Ti6Al4v = Material(
-    name='Ti6Al4v',
+    name='Ti-6Al-4v',
     Youngs_Modulus=113.8 * 10 ** 9,
     yield_stress=880 * 10 ** 6,
     shear_modulus=44 * 10 ** 9,
@@ -107,36 +107,35 @@ MgAZ91CT6 = Material(
     max_bearing_stress=360 * 10 ** 6,
     density=1810
 )
-"""
+
 # more materials
-aluminium = Material(
-    name='aluminium',
-    Youngs_Modulus=75*10**9,
-    yield_stress=265*10**6,
-    shear_modulus=24*10**9,
-    maximum_shear=207*10**6,
-    max_bearing_stress=1.6*265*10**6,
-    density=2700
-)
-iron = Material(
-    name='iron',
-    Youngs_Modulus=175*10**9,
-    yield_stress=465*10**6,
-    shear_modulus=41*10**9,
-    maximum_shear=0.6*465*10**6,
-    max_bearing_stress=1.5*465*10**6,
-    density=7200
-)
-steel = Material(
-    name='steel',
-    Youngs_Modulus=210*10**9,
-    yield_stress=800*10**6,
-    shear_modulus=77*10**9,
-    maximum_shear=600*10**6,
-    max_bearing_stress=185*10**6,
-    density=7850
-)
-"""
+# aluminium = Material(
+#     name='aluminium',
+#     Youngs_Modulus=75*10**9,
+#     yield_stress=265*10**6,
+#     shear_modulus=24*10**9,
+#     maximum_shear=207*10**6,
+#     max_bearing_stress=1.6*265*10**6,
+#     density=2700
+# )
+# iron = Material(
+#     name='iron',
+#     Youngs_Modulus=175*10**9,
+#     yield_stress=465*10**6,
+#     shear_modulus=41*10**9,
+#     maximum_shear=0.6*465*10**6,
+#     max_bearing_stress=1.5*465*10**6,
+#     density=7200
+# )
+# steel = Material(
+#     name='steel',
+#     Youngs_Modulus=210*10**9,
+#     yield_stress=800*10**6,
+#     shear_modulus=77*10**9,
+#     maximum_shear=600*10**6,
+#     max_bearing_stress=185*10**6,
+#     density=7850
+# )
 
 
 #Standart Metric Bolt diameters in mm (Bolt D, Nut D)
