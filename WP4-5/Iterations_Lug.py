@@ -107,7 +107,7 @@ def second_iteration(dlug):
 
 
 # Loads not taking into account the moment generated
-g = 9.81
+g = 9.80665
 rtg_mass = 97.8
 number_of_rtgs = 3
 accelerations = np.array([2, 6, 2])
