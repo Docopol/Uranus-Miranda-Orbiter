@@ -163,7 +163,7 @@ class Flange:
         return math.sqrt(6*fy*self.l/(self.t*self.m.get_stress()))
 
     def mass(self):
-        area = math.pi * ((self.w/2)**2 - (self.d/2)**2) + self.w * self.l
+        area = math.pi * ((self.w/2)**2 - (self.d/2)**2) / 2 + self.w * self.l - math.pi * self.d**2 / 4
         volume = area * self.t
         return volume * self.m.get_density()
 

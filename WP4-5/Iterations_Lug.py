@@ -47,6 +47,7 @@ def iterate_2(dlug):
         iterations.append(t_list)
         n += 1
 
+    ''''
     # Add lower bound thickness
     d_list = list()
     t_list = list()
@@ -60,7 +61,7 @@ def iterate_2(dlug):
                 t_list.append(round(1000 * lower_bound_t_down, 2))
             plt.plot(d_list, t_list)
             n += 1
-
+    '''
     # Plot results
     diameters = list()
     thicknesses = list()
@@ -73,11 +74,11 @@ def iterate_2(dlug):
         plt.plot(d_list, t_list)
         diameters.append(d_list)
         thicknesses.append(t_list)
-    plt.xlabel('Diameter [mm]')
-    plt.ylabel('Thickness [mm]')
-    plt.legend(['Minimum thickness top lug', 'Minimum thickness bottom lug', 'Top lug', 'Bottom lug'])
-    plt.grid()
-    plt.show()
+    # plt.xlabel('Diameter [mm]')
+    # plt.ylabel('Thickness [mm]')
+    # plt.legend(['Minimum thickness top lug', 'Minimum thickness bottom lug', 'Top lug', 'Bottom lug'])
+    # plt.grid()
+    # plt.show()
 
     n = 0
     configs = list()
@@ -98,6 +99,11 @@ def iterate_2(dlug):
         configs.append((m, fl))
         n += 1
     return configs
+
+
+def second_iteration(dlug):
+    # Explore variations in length and width, using the minimum thickness stablished by bending moments
+    ...
 
 
 # Loads not taking into account the moment generated
@@ -182,5 +188,5 @@ d_2 = Double_lug(
 )
 
 top, bottom = iterate_2(dlug=d_2)
-print('Top lug: (w, t, d, l)' + str(top[1].get_dimensions()) + ' has a mass of ' + str(top[0]) + ' kg')
-print('Bottom lug: (w, t, d, l)' + str(bottom[1].get_dimensions()) + ' has a mass of ' + str(bottom[0]) + ' kg')
+print('Top lug: (w, t, d, l)' + str(top[1].get_dimensions()) + ' has a mass of ' + str(1000*top[0]) + ' g')
+print('Bottom lug: (w, t, d, l)' + str(bottom[1].get_dimensions()) + ' has a mass of ' + str(1000*bottom[0]) + ' g')
