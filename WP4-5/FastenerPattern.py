@@ -3,6 +3,10 @@ from Classes import *
 from Constants import *
 import math
 import numpy as np
+import time
+start_time = time.time()
+
+#print("--- %s seconds ---" % (time.time() - start_time))
 
 F_y = 2118.2364
 F_z = 4069.2436105263155
@@ -21,7 +25,7 @@ n = 4 #number of bolts
 def inch_to_m(l):
     return l*2.54/100
 
-def GetSFs (D_1st,thickness,w,h,n):
+def GetSFs (D_1st,thickness,w,h,n,material):
     F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
     D_not_fail = Min_Fastener_Diameter_Tension(F,St8630, n, w, h, gap)
 
@@ -29,7 +33,7 @@ def GetSFs (D_1st,thickness,w,h,n):
 
     plate = Plate(n,D_1st, thickness, w+D_1st*1.5, h+D_1st*1.5)
 
-    plate.get_mass(Al2014T6)
+    plate.get_mass(material)
 
     cord = [[-w/2,-h/2],[-w/2,h/2],[w/2,h/2],[w/2,-h/2]]
 
@@ -53,7 +57,7 @@ def GetSFs (D_1st,thickness,w,h,n):
 
     bearing_Stress_Max = max(bearing_Stress)
 
-    SF_bearing_failure = Al2014T6.y/bearing_Stress_Max
+    SF_bearing_failure = material.y/bearing_Stress_Max
 
     return SF_Shear_Failure, SF_bearing_failure, SF_Tension_Failure
 
@@ -89,7 +93,7 @@ W_over_w = W/w
 def massBackPlate (material,W,t):
     return material.d*W**2*t
 
-SFs = GetSFs(D, thickness, w, h, n)
+SFs = GetSFs(D, thickness, w, h, n, Al2024T3)
 
 print("Safety Factors: Shear, Pull-through, Tension")
 print(SFs)
@@ -101,14 +105,14 @@ while (min(SFs)>1.5):
     w = w_over_t * thickness
     h = w
     D = D_over_t * thickness
-    SFs = GetSFs(D, thickness, w, h, n)
+    SFs = GetSFs(D, thickness, w, h, n, Al2024T3)
     
 thickness = thickness + 0.00025
 w = w_over_t * thickness
 h = w
 W = W_over_w * w
 D = D_over_t * thickness
-SFs = GetSFs(D, thickness, w, h, n)
+SFs = GetSFs(D, thickness, w, h, n, Al2024T3)
 
 mass_back_plate = W**2 * thickness * Al2014T6.get_density()
 print("")
@@ -124,19 +128,22 @@ print("Mass of Back plate (kg) ", mass_back_plate)
 print("")
 print("")
 
+aluminiums = (Al2014T6,Al2024T3,Al2024T4,Al7075T6)
+
 optimal_Values = (0,0,0,0)
 #print("test")
-for t in np.linspace(0.01,0.0005,100):
-    for w in np.linspace(0.4,0.01,100):
-        for D in np.linspace(0.01,0.003,100):
-            if min(GetSFs(D, t, w,h,n))>1.5:
-                h=w
-                W = W_over_w * w
-                mass = massBackPlate(Al2024T3, W, t)
+for Al in aluminiums:
+    for t in np.linspace(0.01,0.0005,100):
+        for w in np.linspace(0.4,0.01,100):
+            for D in np.linspace(0.01,0.003,100):
+                if min(GetSFs(D, t, w,h,n, Al))>1.5:
+                    h=w
+                    W = W_over_w * w
+                    mass = massBackPlate(Al, W, t)
             
-                if mass<mass_min:
-                    optimal_Values=(D,t,w,W)
-                    mass_min = mass
+                    if mass<mass_min:
+                        optimal_Values=(D,t,w,W)
+                        mass_min = mass
 
 
 #print("test end")               
@@ -145,3 +152,5 @@ print(mass_min)
 print("Optimal fastener diameter, thickness, distance between fasteners, width")
 print(optimal_Values)
 
+print("")
+print("--- %s seconds ---" % (time.time() - start_time))
