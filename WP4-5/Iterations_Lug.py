@@ -19,6 +19,14 @@ def iterate_2(dlug):
         d_min = i.minimum_d(loading[n])
         d_max = i.maximum_d(loading[n])
 
+        # Lower bounds for thickness
+        if n == 0:
+            lower_bound_t_up = i.lower_bound_t(loading[n])
+            print(1000*lower_bound_t_up)
+        else:
+            lower_bound_t_down = i.lower_bound_t(loading[n])
+            print(1000*lower_bound_t_down)
+
         t_list = list()
         diameter = d_max
         while diameter > d_min:
@@ -39,6 +47,20 @@ def iterate_2(dlug):
         iterations.append(t_list)
         n += 1
 
+    # Add lower bound thickness
+    d_list = list()
+    t_list = list()
+    n = 0
+    for i in iterations:
+        for j in i:
+            d_list.append(round(1000 * j[0], 2))
+            if n == 0:
+                t_list.append(round(1000 * lower_bound_t_up, 2))
+            else:
+                t_list.append(round(1000 * lower_bound_t_down, 2))
+            plt.plot(d_list, t_list)
+            n += 1
+
     # Plot results
     diameters = list()
     thicknesses = list()
@@ -53,7 +75,7 @@ def iterate_2(dlug):
         thicknesses.append(t_list)
     plt.xlabel('Diameter [mm]')
     plt.ylabel('Thickness [mm]')
-    plt.legend(['Top lug', 'Bottom lug'])
+    plt.legend(['Minimum thickness top lug', 'Minimum thickness bottom lug', 'Top lug', 'Bottom lug'])
     plt.grid()
     plt.show()
 
@@ -131,7 +153,7 @@ Materials Book
 w_initial = 0.04445
 t_initial = 0.01
 d_initial = 0.034925
-l_initial = 0.041275
+l_initial = 0.053975
 
 flange = Flange(
     width=w_initial,

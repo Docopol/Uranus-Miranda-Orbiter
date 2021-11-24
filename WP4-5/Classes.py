@@ -110,13 +110,8 @@ class Flange:
 
     def minimum_w(self, load):
         fx, fy, fz = load
-
         # Failure due to bending right before the bolt
-        if self.l == 0:
-            length = 0
-        else:
-            length = self.l-self.d/2
-        return math.sqrt(6*fy*length/self.t)
+        return math.sqrt(6*fy*self.l/(self.t*self.m.get_stress()))
 
     def mass(self):
         area = math.pi * ((self.w/2)**2 - (self.d/2)**2) + self.w * self.l
@@ -202,6 +197,21 @@ class Lug:  # Assumes flange separation will be the same and flanges will be ide
 
     def mass(self):
         return self.f.mass() * self.n
+
+    def lower_bound_t(self, loads):
+        fx, fy, fz = loads
+        material = self.f.get_material()
+        w = self.f.get_dimensions()[0]
+        l = self.f.get_dimensions()[-1]
+
+        t_list = list()
+        t1 = 6*fy*l / (material.get_stress() * w**2)  # From failure due to bending around y
+        t_list.append(t1)
+        if self.n == 2:
+            t2 = 2 * fx * l / (material.get_stress() * self.h**2)
+            t_list.append(t2)
+
+        return sorted(t_list)[-1]
 
 
 class Double_lug:   # A double lug
