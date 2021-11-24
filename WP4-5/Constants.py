@@ -1,4 +1,34 @@
-from Classes import Material
+class Material:
+    def __init__(self, name, Youngs_Modulus, yield_stress, shear_modulus, maximum_shear, max_bearing_stress, density):
+        self.n = name
+        self.e = Youngs_Modulus
+        self.y = yield_stress
+        self.g = shear_modulus
+        self.sh = maximum_shear
+        self.bear = max_bearing_stress
+        self.d = density
+
+    def get_stress(self):
+        return self.y
+
+    def get_name(self):
+        return self.n
+
+    def get_E(self):
+        return self.e
+
+    def get_G(self):
+        return self.g
+
+    def get_shear(self):
+        return self.sh
+
+    def get_bear(self):
+        return self.bear
+
+    def get_density(self):
+        return self.d
+
 
 Al2014T6 = Material(
     name='Al2014-T6',

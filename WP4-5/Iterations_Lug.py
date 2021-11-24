@@ -125,7 +125,6 @@ d_initial = 0.034925
 l_initial = 0.053975
 
 
-material_dict = {'aluminum': aluminium, 'iron': iron, 'steel': steel}
 """
 Sources: (So far only averaged values have been used)
 https://curioustab.com/discuss/69852/the-permissible-bearing-stress-in-steel-is/#:~:text=The%20permissible%20bearing%20stress%20in,cm2%201890%20kg%2Fcm2%2020
