@@ -1,6 +1,6 @@
-
 from Classes import *
 #from Iterations_Lug import *
+from Constants import *
 import math
 import numpy as np
 
@@ -10,75 +10,6 @@ F_x = 353.0394
 M_y = 141.21576000000002
 gap = 0.02
 thickness = 0.01
-
-# Al2014T6
-Al2014T6 = Material(
-    name='Al2014-T6',
-    Youngs_Modulus=73.1 * 10**9,
-    yield_stress=414 * 10**6,
-    shear_modulus=28 * 10**9,
-    maximum_shear=290 * 10**6,
-    max_bearing_stress=662 * 10**6,
-    density=2800
-)
-Al7075T6 = Material(
-    name='Al7075-T6',
-    Youngs_Modulus=71.7 * 10**9,
-    yield_stress=503 * 10**6,
-    shear_modulus=26.9 * 10**9,
-    maximum_shear=331 * 10**6,
-    max_bearing_stress=662 * 10**6,  #NOT FOUND
-    density=2810
-)
-Al2024T3 = Material(
-    name='Al2024-T3',
-    Youngs_Modulus=73.1 * 10**9,
-    yield_stress=345 * 10**6,
-    shear_modulus=28 * 10**9,
-    maximum_shear=283 * 10**6,
-    max_bearing_stress=524 * 10**6,
-    density=2780
-)
-Al2024T4 = Material(
-    name='Al2024T4',
-    Youngs_Modulus=73.1 * 10**9,
-    yield_stress=324 * 10**6,
-    shear_modulus=28 * 10**9,
-    maximum_shear=283 * 10**6,
-    max_bearing_stress=441 * 10**6,
-    density=2780
-)
-# Steel
-St8630 = Material(
-    name='St8630',
-    Youngs_Modulus=73.1 * 10**9,
-    yield_stress=414 * 10**6,
-    shear_modulus=28 * 10**9,
-    maximum_shear=290 * 10**6,
-    max_bearing_stress=662 * 10**6,
-    density=2800
-)
-St4130 = Material(
-    name='St4130',
-    Youngs_Modulus=73.1 * 10**9,
-    yield_stress=414 * 10**6,
-    shear_modulus=28 * 10**9,
-    maximum_shear=290 * 10**6,
-    max_bearing_stress=662 * 10**6,
-    density=2800
-)
-# Titanium
-
-# Magnesium
-MgAZ91CT6 = Material(
-    name='MgAZ91C-T6',
-    Youngs_Modulus=44.8 * 10**9,
-    yield_stress=145 * 10**6,
-    shear_modulus=17 * 10**9,
-    maximum_shear=145 * 10**6,
-    max_bearing_stress=360 * 10**6,
-    density=1810
-)
 
 F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
 
@@ -154,10 +85,15 @@ D_over_t = D/thickness
 h = w
 W_over_w = W/w
 
+def massBackPlate (material,W,t):
+    return material.d*W**2*t
+
 SFs = GetSFs(F,D, thickness, w, h, n)
 
 print("Safety Factors: Shear, Pull-through, Tension")
 print(SFs)
+mass_min = massBackPlate(Al2024T3,W,thickness)
+
 
 while (min(SFs)>1.5):
     thickness = thickness - 0.00025
@@ -183,4 +119,19 @@ print("Width = Height (mm)  ",W*1000)
 print("Distance between fasteners (mm)  ",w*1000)
 print("Fastener diameter (mm)  ",D*1000)
 print("Mass of Back plate (kg) ", mass_back_plate)
+
+print("")
+print("")
+for t in np.linspace(0.0005,0.01,1000):
+    for w in np.linspace(0.01,0.4,1000):
+        for D in np.linspace(0.003,0.01,1000):
+            if min(GetSFs (F, D, t, w,h,n))>1.5:
+                h=w
+                W = W_over_w * w
+                mass = massBackPlate(Al2024T3, W, t)
+            
+                if mass<mass_min:
+                    mass_min = mass
+                
+print(mass_min)
 

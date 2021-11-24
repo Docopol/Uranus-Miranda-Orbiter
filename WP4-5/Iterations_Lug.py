@@ -1,4 +1,5 @@
 from Classes import Flange, Lug, Double_lug, Material
+from Constants import *
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -113,34 +114,17 @@ number_of_rtgs = 3
 accelerations = np.array([2, 6, 2])
 loads = rtg_mass / number_of_rtgs * g * accelerations
 
-# Possible materials
-aluminium = Material(
-    name='aluminium',
-    Youngs_Modulus=75*10**9,
-    yield_stress=265*10**6,
-    shear_modulus=24*10**9,
-    maximum_shear=207*10**6,
-    max_bearing_stress=1.6*265*10**6,
-    density=2700
-)
-iron = Material(
-    name='iron',
-    Youngs_Modulus=175*10**9,
-    yield_stress=465*10**6,
-    shear_modulus=41*10**9,
-    maximum_shear=0.6*465*10**6,
-    max_bearing_stress=1.5*465*10**6,
-    density=7200
-)
-steel = Material(
-    name='steel',
-    Youngs_Modulus=210*10**9,
-    yield_stress=800*10**6,
-    shear_modulus=77*10**9,
-    maximum_shear=600*10**6,
-    max_bearing_stress=185*10**6,
-    density=7850
-)
+separation = 0.56
+distance_to_rtgs_cg = 0.38
+
+#initial values for the itteration
+# Obtained from BDCB-13 -- https://www.hydrauliccylindersinc.com/product/clevis-bracket/
+w_initial = 0.04445
+t_initial = 0.01
+d_initial = 0.034925
+l_initial = 0.053975
+
+
 material_dict = {'aluminum': aluminium, 'iron': iron, 'steel': steel}
 """
 Sources: (So far only averaged values have been used)
@@ -155,11 +139,6 @@ Materials Book
 
 
 # First level estimation of dimensions
-# Obtained from BDCB-13 -- https://www.hydrauliccylindersinc.com/product/clevis-bracket/
-w_initial = 0.04445
-t_initial = 0.01
-d_initial = 0.034925
-l_initial = 0.053975
 
 flange = Flange(
     width=w_initial,
@@ -172,8 +151,6 @@ flange = Flange(
 clearance = 0.0516128
 lug = Lug(flange=flange, separation=clearance, number=2)
 
-separation = 0.56
-distance_to_rtgs_cg = 0.38
 d_1 = Double_lug(
     top_lug=flange,
     bottom_lug=flange,
