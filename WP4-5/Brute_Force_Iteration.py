@@ -3,7 +3,7 @@ import math
 # from Iterations_Lug import *
 # from Classes import Flange, Loads
 from Constants import Material, Al2014T6
-fx, fy, fz, mx, my, mz = 353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0
+fx, fy, fz, mx, my, mz = 176.5197, 1059.1182, 1972.4157782608693, 0, 141.21576000000002, 0
 
 
 
