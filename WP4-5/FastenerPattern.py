@@ -154,10 +154,15 @@ D_over_t = D/thickness
 h = w
 W_over_w = W/w
 
+def massBackPlate (material,W,t):
+    return material.d*W**2*t
+
 SFs = GetSFs(F,D, thickness, w, h, n)
 
 print("Safety Factors: Shear, Pull-through, Tension")
 print(SFs)
+mass_min = massBackPlate(Al2024T3,W,thickness)
+
 
 while (min(SFs)>1.5):
     thickness = thickness - 0.00025
@@ -183,4 +188,18 @@ print("Width = Height (mm)  ",W*1000)
 print("Distance between fasteners (mm)  ",w*1000)
 print("Fastener diameter (mm)  ",D*1000)
 print("Mass of Back plate (kg) ", mass_back_plate)
+
+print("")
+print("")
+for t in range (0.0005,0.01,0.0001):
+    for w in range (0.01,0.4,0.005):
+        for D in range (0.003,0.01,0.001):
+            h=w
+            W = W_over_w * w
+            mass = massBackPlate(Al2024T3, W, t)
+            
+            if min(GetSFs (F, D, t, w,h,n))>1.5 and mass<mass_min:
+                mass_min = mass
+                
+print(mass_min)
 
