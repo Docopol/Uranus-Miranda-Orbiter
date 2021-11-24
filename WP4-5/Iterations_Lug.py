@@ -1,4 +1,4 @@
-from Classes import Flange, Lug, Double_lug, Material
+from Classes import Flange, Lug, Double_lug
 from Constants import *
 import numpy as np
 import matplotlib.pyplot as plt
@@ -90,7 +90,7 @@ def iterate_2(dlug):
                 width=w_initial,
                 lug_thickness=thicknesses[n][i] / 1000,
                 hinge_diameter=j[i] / 1000,
-                material=material_dict['aluminum'],
+                material=Al2024T3,
                 length=l_initial
             )
             mass = f.mass()
@@ -103,7 +103,7 @@ def iterate_2(dlug):
 
 
 def second_iteration(dlug):
-    # Explore variations in length and width, using the minimum thickness stablished by bending moments
+    # Explore variations in length and width, using the minimum thickness established by bending moments
     ...
 
 
@@ -124,7 +124,6 @@ t_initial = 0.01
 d_initial = 0.034925
 l_initial = 0.053975
 
-
 """
 Sources: (So far only averaged values have been used)
 https://curioustab.com/discuss/69852/the-permissible-bearing-stress-in-steel-is/#:~:text=The%20permissible%20bearing%20stress%20in,cm2%201890%20kg%2Fcm2%2020
@@ -143,7 +142,7 @@ flange = Flange(
     width=w_initial,
     lug_thickness=t_initial,
     hinge_diameter=d_initial,
-    material=material_dict['aluminum'],
+    material=Al2024T3,
     length=l_initial
 )
 

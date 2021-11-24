@@ -32,71 +32,82 @@ class Material:
 
 Al2014T6 = Material(
     name='Al2014-T6',
-    Youngs_Modulus=73.1 * 10**9,
-    yield_stress=414 * 10**6,
-    shear_modulus=28 * 10**9,
-    maximum_shear=290 * 10**6,
-    max_bearing_stress=662 * 10**6,
+    Youngs_Modulus=73.1 * 10 ** 9,
+    yield_stress=414 * 10 ** 6,
+    shear_modulus=28 * 10 ** 9,
+    maximum_shear=290 * 10 ** 6,
+    max_bearing_stress=662 * 10 ** 6,
     density=2800
 )
 Al7075T6 = Material(
     name='Al7075-T6',
-    Youngs_Modulus=71.7 * 10**9,
-    yield_stress=503 * 10**6,
-    shear_modulus=26.9 * 10**9,
-    maximum_shear=331 * 10**6,
-    max_bearing_stress=662 * 10**6,  #NOT FOUND
+    Youngs_Modulus=71.7 * 10 ** 9,
+    yield_stress=503 * 10 ** 6,
+    shear_modulus=26.9 * 10 ** 9,
+    maximum_shear=331 * 10 ** 6,
+    max_bearing_stress=662 * 10 ** 6,  # NOT FOUND
     density=2810
 )
 Al2024T3 = Material(
     name='Al2024-T3',
-    Youngs_Modulus=73.1 * 10**9,
-    yield_stress=345 * 10**6,
-    shear_modulus=28 * 10**9,
-    maximum_shear=283 * 10**6,
-    max_bearing_stress=524 * 10**6,
+    Youngs_Modulus=73.1 * 10 ** 9,
+    yield_stress=345 * 10 ** 6,
+    shear_modulus=28 * 10 ** 9,
+    maximum_shear=283 * 10 ** 6,
+    max_bearing_stress=524 * 10 ** 6,
     density=2780
 )
 Al2024T4 = Material(
     name='Al2024T4',
-    Youngs_Modulus=73.1 * 10**9,
-    yield_stress=324 * 10**6,
-    shear_modulus=28 * 10**9,
-    maximum_shear=283 * 10**6,
-    max_bearing_stress=441 * 10**6,
+    Youngs_Modulus=73.1 * 10 ** 9,
+    yield_stress=324 * 10 ** 6,
+    shear_modulus=28 * 10 ** 9,
+    maximum_shear=283 * 10 ** 6,
+    max_bearing_stress=441 * 10 ** 6,
     density=2780
 )
 # Steel
 St8630 = Material(
     name='St8630',
-    Youngs_Modulus=73.1 * 10**9,
-    yield_stress=414 * 10**6,
-    shear_modulus=28 * 10**9,
-    maximum_shear=290 * 10**6,
-    max_bearing_stress=662 * 10**6,
+    Youngs_Modulus=73.1 * 10 ** 9,
+    yield_stress=414 * 10 ** 6,
+    shear_modulus=28 * 10 ** 9,
+    maximum_shear=290 * 10 ** 6,
+    max_bearing_stress=662 * 10 ** 6,
     density=2800
 )
 St4130 = Material(
     name='St4130',
-    Youngs_Modulus=73.1 * 10**9,
-    yield_stress=414 * 10**6,
-    shear_modulus=28 * 10**9,
-    maximum_shear=290 * 10**6,
-    max_bearing_stress=662 * 10**6,
+    Youngs_Modulus=73.1 * 10 ** 9,
+    yield_stress=414 * 10 ** 6,
+    shear_modulus=28 * 10 ** 9,
+    maximum_shear=290 * 10 ** 6,
+    max_bearing_stress=662 * 10 ** 6,
     density=2800
 )
 # Titanium
+Ti6Al4v = Material(
+    name='Ti6Al4v',
+    Youngs_Modulus=113.8 * 10 ** 9,
+    yield_stress=880 * 10 ** 6,
+    shear_modulus=44 * 10 ** 9,
+    maximum_shear=550 * 10 ** 6,
+    max_bearing_stress=1860 * 10 ** 6,
+    density=4430
+)
+#http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=MTP641
 
 # Magnesium
 MgAZ91CT6 = Material(
     name='MgAZ91C-T6',
-    Youngs_Modulus=44.8 * 10**9,
-    yield_stress=145 * 10**6,
-    shear_modulus=17 * 10**9,
-    maximum_shear=145 * 10**6,
-    max_bearing_stress=360 * 10**6,
+    Youngs_Modulus=44.8 * 10 ** 9,
+    yield_stress=145 * 10 ** 6,
+    shear_modulus=17 * 10 ** 9,
+    maximum_shear=145 * 10 ** 6,
+    max_bearing_stress=360 * 10 ** 6,
     density=1810
 )
+"""
 # more materials
 aluminium = Material(
     name='aluminium',
@@ -125,6 +136,7 @@ steel = Material(
     max_bearing_stress=185*10**6,
     density=7850
 )
+"""
 
 
 
