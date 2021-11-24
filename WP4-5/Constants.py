@@ -1,3 +1,5 @@
+from Classes import Material
+
 Al2014T6 = Material(
     name='Al2014-T6',
     Youngs_Modulus=73.1 * 10**9,

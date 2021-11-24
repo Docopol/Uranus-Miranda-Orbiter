@@ -1,4 +1,3 @@
-
 from Classes import *
 #from Iterations_Lug import *
 from Constants import *
@@ -123,15 +122,16 @@ print("Mass of Back plate (kg) ", mass_back_plate)
 
 print("")
 print("")
-for t in range (0.0005,0.01,0.0001):
-    for w in range (0.01,0.4,0.005):
-        for D in range (0.003,0.01,0.001):
-            h=w
-            W = W_over_w * w
-            mass = massBackPlate(Al2024T3, W, t)
+for t in np.linspace(0.0005,0.01,1000):
+    for w in np.linspace(0.01,0.4,1000):
+        for D in np.linspace(0.003,0.01,1000):
+            if min(GetSFs (F, D, t, w,h,n))>1.5:
+                h=w
+                W = W_over_w * w
+                mass = massBackPlate(Al2024T3, W, t)
             
-            if min(GetSFs (F, D, t, w,h,n))>1.5 and mass<mass_min:
-                mass_min = mass
+                if mass<mass_min:
+                    mass_min = mass
                 
 print(mass_min)
 
