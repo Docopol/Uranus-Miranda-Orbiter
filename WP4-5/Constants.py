@@ -152,7 +152,10 @@ MgAZ91CT6 = Material(
 # )
 
 
-#Standart Metric Bolt diameters in mm (Bolt D, Nut D)
+material_dict = {'Al2014T6': Al2014T6, 'Al7075T6': Al7075T6, 'Al2024T3': Al2024T3, 'Al2024T4': Al2024T4,
+                 'St8630': St8630, 'St4130': St4130, 'MgAZ91CT6': MgAZ91CT6}
+
+# Standart Metric Bolt diameters in mm (Bolt D, Nut D)
 bolt_D_standarts = (
 (1.6,3.02),
 (2,3.82),
