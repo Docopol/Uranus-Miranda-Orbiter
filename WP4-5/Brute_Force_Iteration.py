@@ -6,18 +6,20 @@ from Constants import Material, Al2014T6
 fx, fy, fz, mx, my, mz = 176.5197, 1059.1182, 1972.4157782608693, 162.398124, 275.37073200000003, 162.398124
 
 
-
 def check_failure(material, t, w, d):
-    if fz / (t * (w - d) * K_t(material, w, d)) >= material.get_u_stress():  # From equation 3.1
+    sigma = fz / (t * (w - d) * K_t(material, w, d))
+    sigma_t = fy / ((d * t) * K_ty(material, t, w, d))
+    sigma_br = fz / ((d * t) * K_bry(w, d))
+    if sigma >= material.get_u_stress():  # From equation 3.1
         failure = True
-    elif fy / ((d * t) * K_ty(material, t, w, d)) >= material.get_stress():  # From equation 3.3
+    elif sigma_t >= material.get_stress():  # From equation 3.3
         failure = True
-    elif fz / ((d * t) * K_bry(w, d)) >= material.get_bear():  # From equation 3.5
+    elif sigma_br >= material.get_bear():  # From equation 3.5
         failure = True
     else:
         failure = False
 
-    return failure
+    return failure, sigma/10**6, sigma_t/10**6, sigma_br/10**6
 
 
 def K_t(material, w, d):
@@ -114,9 +116,9 @@ def mass(material, w, t, d, l):
 
 mat = Al2014T6
 trange = np.linspace(10*10**(-3), 0.1*10**(-3), 101)
-wrange = np.linspace(250*10**(-3), 5*10**(-3), 101)
-drange = np.linspace(250*10**(-3), 5*10**(-3), 101)
-lrange = np.linspace(250*10**(-3), 5*10**(-3), 101)
+wrange = np.linspace(250*10**(-3), 1*10**(-3), 101)
+drange = np.linspace(250*10**(-3), 1*10**(-3), 101)
+lrange = np.linspace(250*10**(-3), 1*10**(-3), 101)
 
 m_i = 10000000
 
@@ -129,11 +131,12 @@ for t in trange:
                 if l <= w/2 or 1/2 * math.pi * (w / 2) ** 2 - math.pi * (d / 2) ** 2 + w * l <= 0:
                     continue
                 else:
-                    fail = check_failure(mat, t, w, d)
+                    fail = check_failure(mat, t, w, d)[0]
                     if fail:
                         break
                     else:
                         m = mass(mat, w, t, d, l)
+                        s, s_t, s_br = check_failure(mat, t, w, d)[1:]
                         if m < m_i:
                             m_i = m
-                            print("mass (g) - {}, thickness - {}, width - {}, diameter - {}, length - {}".format(m_i*1000, t, w, d, l))
+                            print("mass (g) - {}, thickness - {}, width - {}, diameter - {}, length - {}, sigma - {}, sigma_t - {}, sigma_br - {}".format(m_i*1000, t, w, d, l, s, s_t, s_br))
