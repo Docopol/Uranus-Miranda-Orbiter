@@ -1,22 +1,24 @@
 from Classes import *
+from calc import Force_upper_x, Force_upper_y, Force_upper_z, Moment_upper_y
 #from Iterations_Lug import *
 from Constants import *
 import math
 import numpy as np
 import time
+#from Brute_Force_Iteration import *
 start_time = time.time()
 
 #print("--- %s seconds ---" % (time.time() - start_time))
 
-F_y = 2118.2364
-F_z = 4069.2436105263155
-F_x = 353.0394
-M_y = 141.21576000000002
+# F_y = 2118.2364
+# F_z = 4069.2436105263155
+# F_x = 353.0394
+# M_y = 141.21576000000002
 gap = 0.02
 thickness = 0.01
 
-F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
-
+F = Loads(Force_upper_x, Force_upper_y, Force_upper_z, 0, Moment_upper_y, 0)
+print(F.F_z)
 n = 4 #number of bolts
 
 #w = 0.200
@@ -26,7 +28,7 @@ def inch_to_m(l):
     return l*2.54/100
 
 def GetSFs (D_1st,thickness,w,h,n,material):
-    F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
+    #F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
     D_not_fail = Min_Fastener_Diameter_Tension(F,St8630, n, w, h, gap)
 
     SF_Tension_Failure = D_1st/D_not_fail
@@ -65,7 +67,7 @@ flange = Flange(inch_to_m(1+3/4),inch_to_m(1),inch_to_m(1+3/8),Al2014T6,inch_to_
 lug = Lug(flange,inch_to_m(2.038),2)
 
 def getSF_lug(lug):
-    F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
+    #F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
     SF_thickness = lug.f.t/lug.minimum_t((F.F_x,F.F_y,F.F_z))
     SF_diameter_min = lug.f.d/lug.minimum_d((F.F_x,F.F_y,F.F_z))
     SF_width = lug.f.w/lug.minimum_w((F.F_x,F.F_y,F.F_z))
@@ -75,7 +77,7 @@ def getSF_lug(lug):
 
 print("")
 print("")
-print("Safety Factors Lugs:  diameter min, diameter max, thickness, width")
+print("Safety Factors Flanges:  diameter min, diameter max, thickness, width")
 print(getSF_lug(lug))
 
 thickness = inch_to_m(7/8)
@@ -95,12 +97,12 @@ def massBackPlate (material,W,t):
 
 SFs = GetSFs(D, thickness, w, h, n, Al2024T3)
 
-print("Safety Factors: Shear, Pull-through, Tension")
+print("Safety Factors Backplate/Fasteners: Shear, Pull-through, Tension")
 print(SFs)
 mass_min = massBackPlate(Al2024T3,W,thickness)
 
-
-while (min(SFs)>1.5):
+while (min(SFs) > 1.5):  # constant dimensions
+#while (min(SFs)>1.5):
     thickness = thickness - 0.00025
     w = w_over_t * thickness
     h = w
@@ -135,7 +137,7 @@ optimal_Values = (0,0,0,0)
 for Al in aluminiums:
     for t in np.linspace(0.1,0.00005,101):
         for D in bolt_D_standarts:
-            D=inch_to_m(D)
+            D=D[0]/1000
             for w in np.linspace(0.1,3*D,51):
             
                 if min(GetSFs(D, t, w,h,n, Al))>1.5:
@@ -148,11 +150,11 @@ for Al in aluminiums:
                         mass_min = mass
 
 
-#print("test end")               
+          
 print(mass_min)
 
 print("Optimal fastener diameter, thickness, distance between fasteners, width")
 print(optimal_Values)
 
 print("")
-print("--- %s seconds ---" % (time.time() - start_time))
+print("--- runtime: %s seconds ---" % (time.time() - start_time))

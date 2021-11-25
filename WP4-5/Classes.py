@@ -19,7 +19,7 @@ class Flange:
     def K_bry(self):
         r = self.t / self.d
 
-        if r <= 0.06:
+        if r < 0.06:
             r = 0.06
         elif 0.06 < r < 0.135:
             r = round(r/2*100)*2/100
@@ -115,27 +115,26 @@ class Flange:
         fx, fy, fz = load
 
         # Failure due to tensile forces - Extracted from Bruh
-        def t_yield_z():  # Eq 3.1 from Overleaf
+        def t_yield():  # Eq 3.1 from Overleaf
             area = (self.w-self.d)  # per unit thickness
             k = self.K_ty()
-            return fz / (k * self.m.get_stress() * area)
+            return fy / (k * self.m.get_stress() * area)
 
         def t_bearing():  # Eq 3.3 from Overleaf
             k_bry = self.K_bry()
-            return fy / (k_bry * self.m.get_stress() * self.d)
+            return fx / (k_bry * self.m.get_stress() * self.d)
 
         def t_shear():  # Eq 3.7 from Overleaf
             k_ty = self.K_ty()
             area = 2*math.sqrt((self.w/2)**2 - (self.d/2)**2)  # conservative estimate - per unit thickness
             return fz / (k_ty * self.m.get_shear() * area)
 
-        t1 = t_yield_z()
+        t1 = t_yield()
         t2 = t_bearing()
         t3 = t_shear()
 
         # Failure due to vertical forces - assuming bending is negligible
-        # t4 = (6 * self.l * fy / self.m.get_stress())**(1/3) - Don't remember where I got this from
-        t4 = 0
+        t4 = (6 * self.l * fy / (self.m.get_stress() * self.w**2))
         thickness = sorted([t1, t2, t3, t4])
         return thickness[-1]
 
@@ -144,7 +143,7 @@ class Flange:
 
         def d_bearing():  # Eq 3.3 from Overleaf
             k_bry = self.K_bry()
-            return fy / (k_bry * self.m.get_bear() * self.t)
+            return abs(fx) / (k_bry * self.m.get_bear() * self.t)
 
         d2 = d_bearing()
         return d2
@@ -152,8 +151,8 @@ class Flange:
     def maximum_d(self, load):
         fx, fy, fz = load  # works both with lists and arrays
         k = self.K_ty()
-        d1 = self.w - fz / (k * self.m.get_stress() * self.t)  # Eq 3.1 from Overleaf
-        d2 = 2 * math.sqrt((self.w/2)**2 - (fz/(2*k*self.m.get_shear()*self.t))**2)  # Eq 3.7 from Overleaf
+        d1 = self.w - abs(fy) / (k * self.m.get_stress() * self.t)  # Eq 3.1 from Overleaf
+        d2 = 2 * math.sqrt((self.w/2)**2 - (abs(fz)/(2*k*self.m.get_shear()*self.t))**2)  # Eq 3.7 from Overleaf
         d_list = sorted([d1, d2])
         return d_list[0]
 
@@ -163,7 +162,7 @@ class Flange:
         return math.sqrt(6*fy*self.l/(self.t*self.m.get_stress()))
 
     def mass(self):
-        area = math.pi * ((self.w/2)**2 - (self.d/2)**2) / 2 + self.w * self.l - math.pi * self.d**2 / 4
+        area = self.w * self.l - math.pi * self.d**2 / 8 + math.pi / 2 * (self.w**2 - self.d**2)/4
         volume = area * self.t
         return volume * self.m.get_density()
 
@@ -171,23 +170,23 @@ class Flange:
         # Needs to be checked, probably incorrect
         fx, fy, fz = load
 
-        if self.t * (self.w - self.d) < fy/(self.K_t() * self.m.get_stress()): # From equation 3.1
+        if fy/(self.t * (self.w - self.d)*self.K_t()) > self.m.get_stress():  # From equation 3.1
             failure = True
-        elif self.d * self.t < fx / (self.K_ty() * self.m.get_stress()):
+        elif fx/((self.d * self.t)*self.K_ty()) > self.m.get_stress():  # From equation 3.3
             failure = True
-        elif self.d * self.t < fz / (self.K_bry() * self.m.get_stress()):
+        elif abs(fz)/((self.d * self.t)*self.K_bry()) > self.m.get_bear():  # From equation 3.5
             failure = True
         else:
             failure = False
 
         return failure
-        
+
     def loading(self, loads):  # assuming w to be constant
         fx, fy, fz = loads
               
-        # Coefficient funcitons need to be finished and this has to be checked.
+        # Coefficient functions need to be finished and this has to be checked.
         p_bry = self.K_bry() * self.m.get_stress() * self.d * (self.w + self.d) / 2
-        p_y = (self.w**2 - self.d**2) / 2 * self.K() * self.m.get_stress()
+        p_y = (self.w**2 - self.d**2) / 2 * self.K_ty() * self.m.get_stress()
 
         if p_bry < p_y:
             min_l = p_bry
@@ -195,7 +194,7 @@ class Flange:
             min_l = p_y
         
         # These both should be equal according to the Ra and Rtr equations
-        p_ty_1 = (fy**1.6 / (1 - fz**1.6 / min_l**1.6))**(1/1.6)
+        p_ty_1 = (fy**1.6 / (1 - abs(fz)**1.6 / min_l**1.6))**(1/1.6)
         p_ty_2 = self.K_t() * self.m.get_stress() * self.d * self.t
         return p_bry, p_y, p_ty_1, p_ty_2
 
@@ -304,38 +303,6 @@ class Double_lug:   # A double lug
         top = self.tl.mass()
         bottom = self.bl.mass()
         return [top, bottom]
-
-
-class Material:
-    def __init__(self, name, Youngs_Modulus, yield_stress, shear_modulus, maximum_shear, max_bearing_stress, density):
-        self.n = name
-        self.e = Youngs_Modulus
-        self.y = yield_stress
-        self.g = shear_modulus
-        self.sh = maximum_shear
-        self.bear = max_bearing_stress
-        self.d = density
-
-    def get_stress(self):
-        return self.y
-
-    def get_name(self):
-        return self.n
-
-    def get_E(self):
-        return self.e
-
-    def get_G(self):
-        return self.g
-
-    def get_shear(self):
-        return self.sh
-
-    def get_bear(self):
-        return self.bear
-
-    def get_density(self):
-        return self.d
 
 #test
 class Plate:
