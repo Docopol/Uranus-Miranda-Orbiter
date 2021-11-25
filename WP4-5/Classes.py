@@ -129,12 +129,14 @@ class Flange:
             area = 2*math.sqrt((self.w/2)**2 - (self.d/2)**2)  # conservative estimate - per unit thickness
             return fz / (k_ty * self.m.get_shear() * area)
 
+        def bending():
+            return 6 * fy * self.l / (self.m.get_stress() * self.w**2)  # From failure due to bending around x
+
         t1 = t_yield()
         t2 = t_bearing()
         t3 = t_shear()
+        t4 = bending()
 
-        # Failure due to vertical forces - assuming bending is negligible
-        t4 = (6 * self.l * fy / (self.m.get_stress() * self.w**2))
         thickness = sorted([t1, t2, t3, t4])
         return thickness[-1]
 
@@ -158,8 +160,15 @@ class Flange:
 
     def minimum_w(self, load):
         fx, fy, fz = load
-        # Failure due to bending right before the bolt
-        return math.sqrt(6*fy*self.l/(self.t*self.m.get_stress()))
+
+        w1 = math.sqrt(6*fy*self.l/(self.t*self.m.get_stress()))  # Failure due to bending right before the bolt
+        w2 = fy / (self.K_t() * self.m.get_stress() * self.t) + self.d
+        w_list = [w1, w2]
+        return sorted(w_list)[-1]
+
+    def min_w_2(self, load):
+        fx, fy, fz = load
+        return fy / (self.K_t() * self.m.get_stress() * self.t) + self.d
 
     def mass(self):
         area = self.w * self.l - math.pi * self.d**2 / 8 + math.pi / 2 * (self.w**2 - self.d**2)/4
@@ -174,7 +183,7 @@ class Flange:
             failure = True
         elif fx/((self.d * self.t)*self.K_ty()) > self.m.get_stress():  # From equation 3.3
             failure = True
-        elif abs(fz)/((self.d * self.t)*self.K_bry()) > self.m.get_bear():  # From equation 3.5
+        elif fz/((self.d * self.t)*self.K_bry()) > self.m.get_bear():  # From equation 3.5
             failure = True
         else:
             failure = False
@@ -247,12 +256,15 @@ class Lug:  # Assumes flange separation will be the same and flanges will be ide
 
     def lower_bound_t(self, loads):
         fx, fy, fz = loads
+        fx = fx / self.n
+        fy = fy / self.n
+
         material = self.f.get_material()
         w = self.f.get_dimensions()[0]
         l = self.f.get_dimensions()[-1]
 
         t_list = list()
-        t1 = 6*fy*l / (material.get_stress() * w**2)  # From failure due to bending around y
+        t1 = 6*fy*l / (material.get_stress() * w**2)  # From failure due to bending around x
         t_list.append(t1)
         if self.n == 2:
             t2 = 2 * fx * l / (material.get_stress() * self.h**2)
@@ -274,12 +286,12 @@ class Double_lug:   # A double lug
     def loads(self, loads):
         fx, fy, fz = loads
         fx = fx / 2
-        fy = fy / 2
+        fy = fy  # Design allows for each lug to withstand the entire vertical load
 
-        fz_top = fz / 2 - 2 * fy * self.r / self.h
-        fz_bot = fz / 2 + 2 * fy * self.r / self.h
+        fz_top = abs(fz / 2 - 2 * fy * self.r / self.h)
+        fz_bot = abs(fz / 2 + 2 * fy * self.r / self.h)
 
-        return [(fx, fy, fz_top), (fx, fy, fz_bot)]
+        return [[fx, fy, fz_top], [fx, fy, fz_bot]]
 
     def min_t(self, force):
         forces = self.loads(force)
