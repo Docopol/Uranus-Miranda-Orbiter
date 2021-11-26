@@ -87,24 +87,24 @@ Al2024T4 = Material(
 # Steel #STILL NEEDS TO BE DONE
 St8630 = Material(
     name='St8630',
-    Youngs_Modulus=73.1 * 10 ** 9,
-    yield_stress=414 * 10 ** 6,
-    ultimate_stress=572 * 10 ** 6,
-    shear_modulus=28 * 10 ** 9,
+    Youngs_Modulus=187 * 10 ** 9,
+    yield_stress=550 * 10 ** 6,
+    ultimate_stress=620 * 10 ** 6,
+    shear_modulus=72 * 10 ** 9,
     maximum_shear=290 * 10 ** 6,
     max_bearing_stress=662 * 10 ** 6,
-    density=2800,
+    density=7850,
     TEC=25.2 * 10 ** -6
 )
 St4130 = Material(
     name='St4130',
-    Youngs_Modulus=73.1 * 10 ** 9,
-    yield_stress=414 * 10 ** 6,
-    ultimate_stress=572 * 10 ** 6,
-    shear_modulus=28 * 10 ** 9,
+    Youngs_Modulus=190 * 10 ** 9,
+    yield_stress=460 * 10 ** 6,
+    ultimate_stress=560 * 10 ** 6,
+    shear_modulus=80 * 10 ** 9,
     maximum_shear=290 * 10 ** 6,
     max_bearing_stress=662 * 10 ** 6,
-    density=2800,
+    density=7850,
     TEC=25.2 * 10 ** -6
 )
 # Titanium  STILL NEEDS TO BE DONE
@@ -126,7 +126,7 @@ MgAZ91CT6 = Material(
     name='MgAZ91C-T6',
     Youngs_Modulus=44.8 * 10 ** 9,
     yield_stress=145 * 10 ** 6,
-    ultimate_stress=572 * 10 ** 6,
+    ultimate_stress=275 * 10 ** 6,
     shear_modulus=17 * 10 ** 9,
     maximum_shear=145 * 10 ** 6,
     max_bearing_stress=360 * 10 ** 6,
