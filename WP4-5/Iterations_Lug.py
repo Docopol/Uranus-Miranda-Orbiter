@@ -33,7 +33,7 @@ def iterate_2(dlug):
             lug = Lug(
                 flange=fl,
                 number=2,
-                separation=0.05
+                separation=separation
             )
             t_list.append((diameter, lug.minimum_t(loading[n])))
             diameter -= 0.0001*d_max
@@ -56,7 +56,7 @@ def iterate_2(dlug):
     plt.ylabel('Thickness [mm]')
     plt.legend(['Minimum thickness top lug', 'Minimum thickness bottom lug', 'Top lug', 'Bottom lug'])
     plt.grid()
-    # plt.show()
+    plt.show()
 
     n = 0
     configs = list()
