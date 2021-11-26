@@ -95,6 +95,9 @@ W_over_w = W/w
 def massBackPlate (material,W,t):
     return material.d*W**2*t
 
+def massBolt (material,D_in,D_out,t,L):
+    V = math.pi * D_in**2 / 4 * (L-2*t) + D_out**2 * math.pi / 4 * magic_Ratio * 2 * t 
+    return V * material.d
 SFs = GetSFs(D, thickness, w, h, n, Al2024T3)
 
 print("Safety Factors Backplate/Fasteners: Shear, Pull-through, Tension")

@@ -16,9 +16,9 @@ wz = a_z * m
 
 
 # PER FLANGE
-f_tot_x = 1/4 * wx
+f_tot_x = 1/2 * wx
 f_tot_y = 1/2 * wy
-f_tot_z = 1/4 * wz + 1/2 * wy * l_rtg/h_rtg
+f_tot_z = 1/2 * wz + wy * l_rtg/h_rtg
 
 M_tot_x = wz * h_rtg/2
 M_tot_y = wx * l_rtg/2
