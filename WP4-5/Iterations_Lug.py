@@ -46,8 +46,8 @@ def iterate_2(dlug):
     plt.xlabel('Diameter [mm]')
     plt.ylabel('Thickness [mm]')
     plt.legend(['Minimum thickness top lug', 'Minimum thickness bottom lug', 'Top lug', 'Bottom lug'])
-    # plt.grid()
-    # plt.show()
+    plt.grid()
+    plt.show()
 
     m = 1000
     for i in range(len(t_list)):
@@ -135,5 +135,8 @@ for item in material_dict:
     )
 
     flange_config = second_iteration(dob_lug=d_2)
+    loading = d_2.loads(loads)
+    ms, tp = flange_config.margin_of_safety(loading)
     print('Flange: (w, t, d, l)' + str(flange_config.get_dimensions()) +
           ' has a mass of ' + str(1000*flange_config.mass()) + ' g')
+    print(f'With a margin of safety of {ms} - Failure due to {tp}')

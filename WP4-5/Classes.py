@@ -136,8 +136,8 @@ class Flange:
         t3 = t_shear()
         t4 = bending()
 
-        thickness = sorted([t1, t2, t3, t4])
-        return thickness[-1]
+        thickness = [t1, t2, t3, t4]
+        return max(thickness)
 
     def minimum_d(self, load):
         fx, fy, fz = load  # works both with lists and arrays
@@ -152,7 +152,7 @@ class Flange:
         d2 = d_bearing()
 
         d_list = [d1, d2]
-        return sorted(d_list)[-1]
+        return max(d_list)
 
     def maximum_d(self, load):
         fx, fy, fz = load  # works both with lists and arrays
@@ -169,7 +169,7 @@ class Flange:
         w1 = math.sqrt(6*fy*self.l/(self.t*self.m.get_stress(safety_factor)))  # Failure due to bending right before the bolt
         w2 = fy / (self.K_t() * self.m.get_stress(safety_factor) * self.t) + self.d
         w_list = [w1, w2]
-        return sorted(w_list)[-1]
+        return max(w_list)
 
     def min_w_2(self, load):
         fx, fy, fz = load
@@ -183,7 +183,6 @@ class Flange:
         return volume * self.m.get_density()
 
     def check_failure(self, load):
-        # Needs to be checked, probably incorrect
         fx, fy, fz = load
         safety_factor = 1.5
 
@@ -199,6 +198,28 @@ class Flange:
             failure = False
 
         return failure
+
+    def margin_of_safety(self, load):
+        fx, fy, fz = load
+
+        o1 = fz/(self.t * (self.w - self.d)*self.K_t())
+        o2 = fy/((self.d * self.t)*self.K_ty())
+        o3 = fz/((self.d * self.t)*self.K_bry())
+        o4 = 6 * fy * self.l / (self.t * self.w**2)
+
+        o = min([o1, o2, o3, o4])
+        ms = o / self.m.get_stress()
+
+        if o == o1:
+            f_type = 'tension'
+        elif o == o2:
+            f_type = 'yield'
+        elif o == o3:
+            f_type = 'bearing'
+        else:
+            f_type = 'bending'
+
+        return ms, f_type
 
     def loading(self, loads):  # assuming w to be constant
         fx, fy, fz = loads
