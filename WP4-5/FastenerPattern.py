@@ -27,15 +27,15 @@ n = 4 #number of bolts
 def inch_to_m(l):
     return l*2.54/100
 
-def GetSFs (D_1st,thickness,w,h,n,material):
+def GetSFs (D_1st,thickness,w,h,n,material_plate, material_bolt):
     #F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
-    D_not_fail = Min_Fastener_Diameter_Tension(F,St8630, n, w, h, gap)
+    D_not_fail = Min_Fastener_Diameter_Tension(F,material_bolt, n, w, h, gap)
 
     SF_Tension_Failure = D_1st/D_not_fail
 
     plate = Plate(n,D_1st, thickness, w+D_1st*1.5, h+D_1st*1.5)
 
-    plate.get_mass(material)
+    plate.get_mass(material_plate)
 
     cord = [[-w/2,-h/2],[-w/2,h/2],[w/2,h/2],[w/2,-h/2]]
 
@@ -51,7 +51,7 @@ def GetSFs (D_1st,thickness,w,h,n,material):
 
     shearStress = plate.fastener_shear_stress(D_1st, thickness, plate_fm)
 
-    shearYieldStrength = 0.58 * St8630.y
+    shearYieldStrength = 0.58 * material_bolt.y
 
     SF_Shear_Failure = shearYieldStrength / shearStress
 
@@ -59,7 +59,7 @@ def GetSFs (D_1st,thickness,w,h,n,material):
 
     bearing_Stress_Max = max(bearing_Stress)
 
-    SF_bearing_failure = material.y/bearing_Stress_Max
+    SF_bearing_failure = material_plate.y/bearing_Stress_Max
 
     return SF_Shear_Failure, SF_bearing_failure, SF_Tension_Failure
 
@@ -95,14 +95,14 @@ W_over_w = W/w
 def massBackPlate (material,W,t):
     return material.d*W**2*t
 
-def massBolt (material,D_in,D_out,t,L):
-    V = math.pi * D_in**2 / 4 * (L-2*t) + D_out**2 * math.pi / 4 * magic_Ratio * 2 * t 
+def massBolt (material,D_in,D_out,h,L):
+    V = math.pi * D_in**2 / 4 * (L-2*h) + D_out**2 * math.pi / 4 * magic_Ratio * 2 * h 
     return V * material.d
-SFs = GetSFs(D, thickness, w, h, n, Al2024T3)
+SFs = GetSFs(D, thickness, w, h, n, Al2024T3, St4130)
 
 print("Safety Factors Backplate/Fasteners: Shear, Pull-through, Tension")
 print(SFs)
-mass_min = massBackPlate(Al2024T3,W,thickness)
+mass_min = massBackPlate(Al2024T3,W,thickness) + n * massBolt(St4130,D, D*1.5,D/1.5,2*thickness+2*D/1.5)
 
 while (min(SFs) > 1.5):  # constant dimensions
 #while (min(SFs)>1.5):
@@ -110,14 +110,14 @@ while (min(SFs) > 1.5):  # constant dimensions
     w = w_over_t * thickness
     h = w
     D = D_over_t * thickness
-    SFs = GetSFs(D, thickness, w, h, n, Al2024T3)
+    SFs = GetSFs(D, thickness, w, h, n, Al2024T3, St4130)
     
 thickness = thickness + 0.00025
 w = w_over_t * thickness
 h = w
 W = W_over_w * w
 D = D_over_t * thickness
-SFs = GetSFs(D, thickness, w, h, n, Al2024T3)
+SFs = GetSFs(D, thickness, w, h, n, Al2024T3, St4130)
 
 mass_back_plate = W**2 * thickness * Al2014T6.get_density()
 print("")
@@ -134,19 +134,26 @@ print("")
 print("")
 
 aluminiums = (Al2014T6,Al2024T3,Al2024T4,Al7075T6)
+steels = (St4130,St8630)
+#magnesium = MgAZ91CT6
+
+materials_all = (Al2014T6,Al2024T3,Al2024T4,Al7075T6,St4130,St8630,MgAZ91CT6)
+#print(materials_all)
+#materials_all.append(MgAZ91CT6)
+#print(materials_all)
 
 optimal_Values = (0,0,0,0)
 #print("test")
-for Al in aluminiums:
+for plate_mat in materials_all:
     for t in np.linspace(0.1,0.00005,101):
-        for D in bolt_D_standarts:
-            D=D[0]/1000
-            for w in np.linspace(0.1,3*D,51):
-            
-                if min(GetSFs(D, t, w,h,n, Al))>1.5:
+        for bolt in bolt_D_standarts:
+            D=bolt[0]/1000
+            for bolt_mat in materials_all:
+                w = 3*D
+                if min(GetSFs(D, t, w,h,n, plate_mat, bolt_mat))>1.5:
                     h=w
                     W = w + 4*D
-                    mass = massBackPlate(Al, W, t)
+                    mass = massBackPlate(plate_mat, W, t) + n * massBolt(bolt_mat, D, bolt[1]/1000, bolt[2]/1000, t*2+bolt[2]/1000*2 + 2*D)
             
                     if mass<mass_min:
                         optimal_Values=(D,t,w,W)
