@@ -29,8 +29,8 @@ class Material:
     def get_shear(self):
         return self.sh
 
-    def get_bear(self, safety_factor=1):
-        return self.bear/safety_factor
+    def get_bear(self):
+        return self.bear
 
     def get_density(self):
         return self.d
@@ -98,18 +98,16 @@ St8630 = Material(
     density=7850,
     TEC=11.2 * 10 ** -6
 )
-# http://www.matweb.com/search/DataSheet.aspx?MatGUID=8570d3599b5e439391f3c1602e31d0bd
-
-St4130 = Material( # still NEEDS TO BE DONE
+St4130 = Material(
     name='St4130',
-    Youngs_Modulus=205 * 10 ** 9,
-    yield_stress=435 * 10 ** 6,
-    ultimate_stress=670 * 10 ** 6,
+    Youngs_Modulus=190 * 10 ** 9,
+    yield_stress=460 * 10 ** 6,
+    ultimate_stress=560 * 10 ** 6,
     shear_modulus=80 * 10 ** 9,
-    maximum_shear=1 * 10 ** 6, # ???
-    max_bearing_stress=1 * 10 ** 6, # ???
+    maximum_shear=290 * 10 ** 6,# ???
+    max_bearing_stress=662 * 10 ** 6,# ???
     density=7850,
-    TEC=1 * 10 ** -6 # ???
+    TEC=25.2 * 10 ** -6
 )
 # http://www.matweb.com/search/DataSheet.aspx?MatGUID=e1ccebe90cf94502b35c2a4745f63593
 
@@ -128,8 +126,8 @@ Ti6Al4v = Material( # done
 
 MgAZ91CT6 = Material( # done
     name='MgAZ91C-T6',
-    Youngs_Modulus=17 * 10 ** 9,
-    yield_stress=150 * 10 ** 6,
+    Youngs_Modulus=44.8 * 10 ** 9,
+    yield_stress=145 * 10 ** 6,
     ultimate_stress=275 * 10 ** 6,
     shear_modulus=17 * 10 ** 9,
     maximum_shear=145 * 10 ** 6,
