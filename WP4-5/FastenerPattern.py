@@ -120,15 +120,15 @@ D = D_over_t * thickness
 SFs = GetSFs(D, thickness, w, h, n, Al2024T3, St4130)
 
 mass_back_plate = W**2 * thickness * Al2014T6.get_density()
-print("")
-print("")
-print("Revised Safety Factors: Shear, Pull-through, Tension")
-print(SFs)
-print("Thickness (mm)   ", thickness*1000)
-print("Width = Height (mm)  ",W*1000)
-print("Distance between fasteners (mm)  ",w*1000)
-print("Fastener diameter (mm)  ",D*1000)
-print("Mass of Back plate (kg) ", mass_back_plate)
+# print("")
+# print("")
+# print("Revised Safety Factors: Shear, Pull-through, Tension")
+# print(SFs)
+# print("Thickness (mm)   ", thickness*1000)
+# print("Width = Height (mm)  ",W*1000)
+# print("Distance between fasteners (mm)  ",w*1000)
+# print("Fastener diameter (mm)  ",D*1000)
+# print("Mass of Back plate (kg) ", mass_back_plate)
 
 print("")
 print("")
@@ -137,34 +137,49 @@ aluminiums = (Al2014T6,Al2024T3,Al2024T4,Al7075T6)
 steels = (St4130,St8630)
 #magnesium = MgAZ91CT6
 
-materials_all = (Al2014T6,Al2024T3,Al2024T4,Al7075T6,St4130,St8630,MgAZ91CT6)
+materials_all = (Al2014T6,Al2024T3,Al2024T4,Al7075T6,St4130,St8630,MgAZ91CT6, Ti6Al4v)
 #print(materials_all)
 #materials_all.append(MgAZ91CT6)
 #print(materials_all)
 
 optimal_Values = (0,0,0,0)
 #print("test")
-for plate_mat in materials_all:
-    for t in np.linspace(0.1,0.00005,101):
+
+case1 = (Al7075T6, 0.0356)
+case2 = (Ti6Al4v, 0.0379)
+cases = (case1,case2)
+for case in cases:
+    mass_min = 100
+    for t in np.linspace(0.1,0.00005,301):
         for bolt in bolt_D_standarts:
             D=bolt[0]/1000
             for bolt_mat in materials_all:
-                w = 3*D
+                plate_mat = case[0]
+                w = case[1] + D
                 if min(GetSFs(D, t, w,h,n, plate_mat, bolt_mat))>1.5:
-                    h=w
+                    #h=w
                     W = w + 4*D
                     mass = massBackPlate(plate_mat, W, t) + n * massBolt(bolt_mat, D, bolt[1]/1000, bolt[2]/1000, t*2+bolt[2]/1000*2 + 2*D)
             
                     if mass<mass_min:
                         optimal_Values=(D,t,w,W)
                         mass_min = mass
+    print("Optimal fastener diameter, thickness, distance between fasteners, width")
+    print(optimal_Values)
+    #print("")
+    print("Optimal mass: ",mass_min)
+    #print("")
+    print("Plate material: {}, Bolt material: {}".format(case[0].n, bolt_mat.n))
+    print("")
+    print("")
+    print("")
 
 
           
-print(mass_min)
+# print(mass_min)
 
-print("Optimal fastener diameter, thickness, distance between fasteners, width")
-print(optimal_Values)
+# print("Optimal fastener diameter, thickness, distance between fasteners, width")
+# print(optimal_Values)
 
-print("")
+# print("")
 print("--- runtime: %s seconds ---" % (time.time() - start_time))
