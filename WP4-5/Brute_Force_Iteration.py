@@ -118,10 +118,10 @@ def mass(material, w, t, d, l):
 
 
 mat = Al7075T6
-trange = np.linspace(10*10**(-3), 1*10**(-3), 41)
+trange = np.linspace(10*10**(-3), 0.5*10**(-3), 41)
 wrange = np.linspace(100*10**(-3), 8*10**(-3), 41)
 drange = np.linspace(80*10**(-3), 5*10**(-3), 41)
-lrange = np.linspace(100*10**(-3), 10*10**(-3), 41)
+lrange = np.linspace(100*10**(-3), 20*10**(-3), 41)
 
 m_i = 10000000
 

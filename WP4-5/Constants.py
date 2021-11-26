@@ -104,8 +104,8 @@ St4130 = Material(
     yield_stress=460 * 10 ** 6,
     ultimate_stress=560 * 10 ** 6,
     shear_modulus=80 * 10 ** 9,
-    maximum_shear=290 * 10 ** 6,
-    max_bearing_stress=662 * 10 ** 6,
+    maximum_shear=290 * 10 ** 6,# ???
+    max_bearing_stress=662 * 10 ** 6,# ???
     density=7850,
     TEC=25.2 * 10 ** -6
 )
