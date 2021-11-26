@@ -97,7 +97,7 @@ def massBackPlate (material,W,t):
 
 def massBolt (material,D_in,D_out,h,L):
     V = math.pi * D_in**2 / 4 * (L-2*h) + D_out**2 * math.pi / 4 * magic_Ratio * 2 * h 
-    return V * material.d
+    return V * material.d / (1000**3)
 SFs = GetSFs(D, thickness, w, h, n, Al2024T3, St4130)
 
 print("Safety Factors Backplate/Fasteners: Shear, Pull-through, Tension")
@@ -159,27 +159,22 @@ for case in cases:
                 if min(GetSFs(D, t, w,h,n, plate_mat, bolt_mat))>1.5:
                     #h=w
                     W = w + 4*D
-                    mass = massBackPlate(plate_mat, W, t) + n * massBolt(bolt_mat, D, bolt[1]/1000, bolt[2]/1000, t*2+bolt[2]/1000*2 + 2*D)
+                    mass = massBackPlate(plate_mat, W, t) + n * massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
             
                     if mass<mass_min:
                         optimal_Values=(D,t,w,W)
                         mass_min = mass
+                        best_bolt = bolt
     print("Optimal fastener diameter, thickness, distance between fasteners, width")
     print(optimal_Values)
     #print("")
     print("Optimal mass: ",mass_min)
     #print("")
     print("Plate material: {}, Bolt material: {}".format(case[0].n, bolt_mat.n))
+    print("Bolt diameter: {}, Bolt length: {}, Nut/head width: {}, Nut/head thickness: {}".format(best_bolt[0], optimal_Values[1]*2000+best_bolt[2]*2 + 2*best_bolt[3],best_bolt[1], best_bolt[2]))
     print("")
     print("")
     print("")
 
 
-          
-# print(mass_min)
-
-# print("Optimal fastener diameter, thickness, distance between fasteners, width")
-# print(optimal_Values)
-
-# print("")
 print("--- runtime: %s seconds ---" % (time.time() - start_time))
