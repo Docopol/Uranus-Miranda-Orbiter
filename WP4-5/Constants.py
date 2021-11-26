@@ -11,8 +11,8 @@ class Material:
         self.t = TEC # Thermal Expansion Coefficient
 
 
-    def get_stress(self):
-        return self.y
+    def get_stress(self, safety_factor=1):
+        return self.y/safety_factor
 
     def get_u_stress(self):
         return self.u
@@ -29,8 +29,8 @@ class Material:
     def get_shear(self):
         return self.sh
 
-    def get_bear(self):
-        return self.bear
+    def get_bear(self, safety_factor=1):
+        return self.bear/safety_factor
 
     def get_density(self):
         return self.d
@@ -165,7 +165,7 @@ MgAZ91CT6 = Material(
 
 
 material_dict = {'Al2014T6': Al2014T6, 'Al7075T6': Al7075T6, 'Al2024T3': Al2024T3, 'Al2024T4': Al2024T4,
-                 'St8630': St8630, 'St4130': St4130, 'MgAZ91CT6': MgAZ91CT6}
+                 'St8630': St8630, 'St4130': St4130, 'MgAZ91CT6': MgAZ91CT6, 'Ti6Al4v': Ti6Al4v}
 
 # Standart Metric Bolt diameters in mm (Bolt D, Nut D)
 bolt_D_standarts = (
