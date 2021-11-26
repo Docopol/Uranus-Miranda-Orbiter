@@ -11,8 +11,8 @@ class Material:
         self.t = TEC # Thermal Expansion Coefficient
 
 
-    def get_stress(self):
-        return self.y
+    def get_stress(self, safety_factor=1):
+        return self.y/safety_factor
 
     def get_u_stress(self):
         return self.u
@@ -39,7 +39,7 @@ class Material:
         return self.t
 
 
-Al2014T6 = Material(
+Al2014T6 = Material( #done
     name='Al2014-T6',
     Youngs_Modulus=73.1 * 10 ** 9,
     yield_stress=414 * 10 ** 6,
@@ -48,10 +48,10 @@ Al2014T6 = Material(
     maximum_shear=290 * 10 ** 6,
     max_bearing_stress=662 * 10 ** 6,
     density=2800,
-    TEC=24.7 * 10 ** -6
+    TEC=23 * 10 ** -6
 )
 
-Al7075T6 = Material(
+Al7075T6 = Material( # done
     name='Al7075-T6',
     Youngs_Modulus=71.7 * 10 ** 9,
     yield_stress=503 * 10 ** 6,
@@ -60,9 +60,10 @@ Al7075T6 = Material(
     maximum_shear=331 * 10 ** 6,
     max_bearing_stress=662 * 10 ** 6,  # NOT FOUND
     density=2810,
-    TEC=25.2 * 10 ** -6
+    TEC=23.6 * 10 ** -6
 )
-Al2024T3 = Material(
+
+Al2024T3 = Material( # done
     name='Al2024-T3',
     Youngs_Modulus=73.1 * 10 ** 9,
     yield_stress=345 * 10 ** 6,
@@ -71,9 +72,10 @@ Al2024T3 = Material(
     maximum_shear=283 * 10 ** 6,
     max_bearing_stress=524 * 10 ** 6,
     density=2780,
-    TEC=24.7 * 10 ** -6
+    TEC=23.2 * 10 ** -6
 )
-Al2024T4 = Material(
+
+Al2024T4 = Material( # done
     name='Al2024-T4',
     Youngs_Modulus=73.1 * 10 ** 9,
     yield_stress=324 * 10 ** 6,
@@ -82,19 +84,19 @@ Al2024T4 = Material(
     maximum_shear=283 * 10 ** 6,
     max_bearing_stress=441 * 10 ** 6,
     density=2780,
-    TEC=24.7 * 10 ** -6
+    TEC=23.2 * 10 ** -6
 )
-# Steel #STILL NEEDS TO BE DONE
+
 St8630 = Material(
     name='St8630',
     Youngs_Modulus=187 * 10 ** 9,
     yield_stress=550 * 10 ** 6,
     ultimate_stress=620 * 10 ** 6,
     shear_modulus=72 * 10 ** 9,
-    maximum_shear=290 * 10 ** 6,
-    max_bearing_stress=662 * 10 ** 6,
+    maximum_shear=1 * 10 ** 6, # ???
+    max_bearing_stress=1 * 10 ** 6, # ??? I really have no idea where to find this anymore
     density=7850,
-    TEC=25.2 * 10 ** -6
+    TEC=11.2 * 10 ** -6
 )
 St4130 = Material(
     name='St4130',
@@ -107,22 +109,22 @@ St4130 = Material(
     density=7850,
     TEC=25.2 * 10 ** -6
 )
-# Titanium  STILL NEEDS TO BE DONE
-Ti6Al4v = Material(
+# http://www.matweb.com/search/DataSheet.aspx?MatGUID=e1ccebe90cf94502b35c2a4745f63593
+
+Ti6Al4v = Material( # done
     name='Ti-6Al-4v',
     Youngs_Modulus=113.8 * 10 ** 9,
     yield_stress=880 * 10 ** 6,
-    ultimate_stress=572 * 10 ** 6,
+    ultimate_stress=950 * 10 ** 6,
     shear_modulus=44 * 10 ** 9,
     maximum_shear=550 * 10 ** 6,
     max_bearing_stress=1860 * 10 ** 6,
     density=4430,
-    TEC=25.2 * 10 ** -6
+    TEC=8.6 * 10 ** -6
 )
 #http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=MTP641
 
-# Magnesium STILL NEEDS TO BE DONE
-MgAZ91CT6 = Material(
+MgAZ91CT6 = Material( # done
     name='MgAZ91C-T6',
     Youngs_Modulus=44.8 * 10 ** 9,
     yield_stress=145 * 10 ** 6,
@@ -131,8 +133,9 @@ MgAZ91CT6 = Material(
     maximum_shear=145 * 10 ** 6,
     max_bearing_stress=360 * 10 ** 6,
     density=1810,
-    TEC=25.2 * 10 ** -6
+    TEC=26 * 10 ** -6
 )
+# http://www.matweb.com/search/DataSheet.aspx?MatGUID=8c8cad8fe20544508f41b4a1300af4a1
 
 # more materials
 # aluminium = Material(
@@ -165,9 +168,9 @@ MgAZ91CT6 = Material(
 
 
 material_dict = {'Al2014T6': Al2014T6, 'Al7075T6': Al7075T6, 'Al2024T3': Al2024T3, 'Al2024T4': Al2024T4,
-                 'St8630': St8630, 'St4130': St4130, 'MgAZ91CT6': MgAZ91CT6}
+                 'St8630': St8630, 'St4130': St4130, 'MgAZ91CT6': MgAZ91CT6, 'Ti6Al4v': Ti6Al4v}
 
-# Standart Metric Bolt diameters in mm (Bolt D, Nut D, Nut thickness)
+# Standard Metric Bolt diameters in mm (Bolt D, Nut D, Nut thickness)
 bolt_D_standarts = (
 (1.6,3.02,0.048),
 (2,3.82,0.05),
