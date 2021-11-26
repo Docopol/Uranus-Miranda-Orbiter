@@ -3,7 +3,7 @@ import math
 # from Iterations_Lug import *
 # from Classes import Flange, Loads
 from Constants import Material, Al2014T6
-fx, fy, fz, mx, my, mz = 176.5197, 1059.1182, 1972.4157782608693, 162.398124, 275.37073200000003, 162.398124
+fx, fy, fz, mx, my, mz = 353.0394,1059.1182,3944.8315565217385,162.398124,275.37073200000003,162.398124
 
 
 def check_failure(material, t, w, d):
