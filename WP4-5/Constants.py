@@ -39,102 +39,138 @@ class Material:
         return self.t
 
 
-Al2014T6 = Material( #done
+Al2014T6 = Material(        # done
     name='Al2014-T6',
-    Youngs_Modulus=73.1 * 10 ** 9,
-    yield_stress=414 * 10 ** 6,
-    ultimate_stress=483 * 10 ** 6,
-    shear_modulus=28 * 10 ** 9,
-    maximum_shear=290 * 10 ** 6,
-    max_bearing_stress=662 * 10 ** 6,
-    density=2800,
-    TEC=23 * 10 ** -6
+    Youngs_Modulus=73.1e9,
+    yield_stress=414e6,
+    ultimate_stress=483e6,  # not used so not correct value
+    shear_modulus=28e9,     # not used so not correct value
+    maximum_shear=290e6,    # not used so not correct value
+    max_bearing_stress=662e6,    # not used so not correct value
+    density=2790,
+    TEC=23e-6
 )
 
-Al7075T6 = Material( # done
-    name='Al7075-T6',
-    Youngs_Modulus=71.7 * 10 ** 9,
-    yield_stress=503 * 10 ** 6,
-    ultimate_stress=572 * 10 ** 6,
-    shear_modulus=26.9 * 10 ** 9,
-    maximum_shear=331 * 10 ** 6,
-    max_bearing_stress=662 * 10 ** 6,  # NOT FOUND
-    density=2810,
-    TEC=23.6 * 10 ** -6
+Al6061T6 = Material(        # done
+    name='Al6061-T6',
+    Youngs_Modulus=68.9e9,
+    yield_stress=255e6,
+    ultimate_stress=483e6,  # not used so not correct value
+    shear_modulus=28e9,     # not used so not correct value
+    maximum_shear=290e6,    # not used so not correct value
+    max_bearing_stress=662e6,   # not used so not correct value
+    density=2710,
+    TEC=24e-6
 )
 
-Al2024T3 = Material( # done
-    name='Al2024-T3',
-    Youngs_Modulus=73.1 * 10 ** 9,
-    yield_stress=345 * 10 ** 6,
-    ultimate_stress=483 * 10 ** 6,
-    shear_modulus=28 * 10 ** 9,
-    maximum_shear=283 * 10 ** 6,
-    max_bearing_stress=524 * 10 ** 6,
-    density=2780,
-    TEC=23.2 * 10 ** -6
+MgAM60 = Material(        # done
+    name='Mg-Am60',
+    Youngs_Modulus=45e9,
+    yield_stress=130e6,
+    ultimate_stress=483e6,  # not used so not correct value
+    shear_modulus=28e9,     # not used so not correct value
+    maximum_shear=290e6,    # not used so not correct value
+    max_bearing_stress=662e6,   # not used so not correct value
+    density=1800,
+    TEC=26e-6
 )
 
-Al2024T4 = Material( # done
-    name='Al2024-T4',
-    Youngs_Modulus=73.1 * 10 ** 9,
-    yield_stress=324 * 10 ** 6,
-    ultimate_stress=469 * 10 ** 6,
-    shear_modulus=28 * 10 ** 9,
-    maximum_shear=283 * 10 ** 6,
-    max_bearing_stress=441 * 10 ** 6,
-    density=2780,
-    TEC=23.2 * 10 ** -6
-)
-
-St8630 = Material(
-    name='St8630',
-    Youngs_Modulus=187 * 10 ** 9,
-    yield_stress=550 * 10 ** 6,
-    ultimate_stress=620 * 10 ** 6,
-    shear_modulus=72 * 10 ** 9,
-    maximum_shear=1 * 10 ** 6, # ???
-    max_bearing_stress=1 * 10 ** 6, # ??? I really have no idea where to find this anymore
+StA992 = Material(        # done
+    name='St-A992',
+    Youngs_Modulus=200e9,
+    yield_stress=345e6,
+    ultimate_stress=483e6,  # not used so not correct value
+    shear_modulus=28e9,     # not used so not correct value
+    maximum_shear=290e6,    # not used so not correct value
+    max_bearing_stress=662e6,   # not used so not correct value
     density=7850,
-    TEC=11.2 * 10 ** -6
+    TEC=12e-6
 )
-St4130 = Material(
-    name='St4130',
-    Youngs_Modulus=190 * 10 ** 9,
-    yield_stress=460 * 10 ** 6,
-    ultimate_stress=560 * 10 ** 6,
-    shear_modulus=80 * 10 ** 9,
-    maximum_shear=290 * 10 ** 6,# ???
-    max_bearing_stress=662 * 10 ** 6,# ???
-    density=7850,
-    TEC=25.2 * 10 ** -6
-)
+
+# Al7075T6 = Material( # done
+#     name='Al7075-T6',
+#     Youngs_Modulus=71.7 * 10 ** 9,
+#     yield_stress=503 * 10 ** 6,
+#     ultimate_stress=572 * 10 ** 6,
+#     shear_modulus=26.9 * 10 ** 9,
+#     maximum_shear=331 * 10 ** 6,
+#     max_bearing_stress=662 * 10 ** 6,  # NOT FOUND
+#     density=2810,
+#     TEC=23.6 * 10 ** -6
+# )
+
+# Al2024T3 = Material( # done
+#     name='Al2024-T3',
+#     Youngs_Modulus=73.1 * 10 ** 9,
+#     yield_stress=345 * 10 ** 6,
+#     ultimate_stress=483 * 10 ** 6,
+#     shear_modulus=28 * 10 ** 9,
+#     maximum_shear=283 * 10 ** 6,
+#     max_bearing_stress=524 * 10 ** 6,
+#     density=2780,
+#     TEC=23.2 * 10 ** -6
+# )
+#
+# Al2024T4 = Material( # done
+#     name='Al2024-T4',
+#     Youngs_Modulus=73.1 * 10 ** 9,
+#     yield_stress=324 * 10 ** 6,
+#     ultimate_stress=469 * 10 ** 6,
+#     shear_modulus=28 * 10 ** 9,
+#     maximum_shear=283 * 10 ** 6,
+#     max_bearing_stress=441 * 10 ** 6,
+#     density=2780,
+#     TEC=23.2 * 10 ** -6
+# )
+
+# St8630 = Material(
+#     name='St8630',
+#     Youngs_Modulus=187 * 10 ** 9,
+#     yield_stress=550 * 10 ** 6,
+#     ultimate_stress=620 * 10 ** 6,
+#     shear_modulus=72 * 10 ** 9,
+#     maximum_shear=1 * 10 ** 6, # ???
+#     max_bearing_stress=1 * 10 ** 6, # ??? I really have no idea where to find this anymore
+#     density=7850,
+#     TEC=11.2 * 10 ** -6
+# )
+# St4130 = Material(
+#     name='St4130',
+#     Youngs_Modulus=190 * 10 ** 9,
+#     yield_stress=460 * 10 ** 6,
+#     ultimate_stress=560 * 10 ** 6,
+#     shear_modulus=80 * 10 ** 9,
+#     maximum_shear=290 * 10 ** 6,# ???
+#     max_bearing_stress=662 * 10 ** 6,# ???
+#     density=7850,
+#     TEC=25.2 * 10 ** -6
+# )
 # http://www.matweb.com/search/DataSheet.aspx?MatGUID=e1ccebe90cf94502b35c2a4745f63593
 
-Ti6Al4v = Material( # done
-    name='Ti-6Al-4v',
-    Youngs_Modulus=113.8 * 10 ** 9,
-    yield_stress=880 * 10 ** 6,
-    ultimate_stress=950 * 10 ** 6,
-    shear_modulus=44 * 10 ** 9,
-    maximum_shear=550 * 10 ** 6,
-    max_bearing_stress=1860 * 10 ** 6,
+Ti6Al4V = Material(         # done
+    name='Ti-6Al-4V',
+    Youngs_Modulus=120e9,
+    yield_stress=924e6,
+    ultimate_stress=950e6,      # not used so not correct value
+    shear_modulus=44e9,         # not used so not correct value
+    maximum_shear=550e6,        # not used so not correct value
+    max_bearing_stress=1860e6,  # not used so not correct value
     density=4430,
-    TEC=8.6 * 10 ** -6
+    TEC=9.4e-6
 )
 #http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=MTP641
 
-MgAZ91CT6 = Material( # done
-    name='MgAZ91C-T6',
-    Youngs_Modulus=44.8 * 10 ** 9,
-    yield_stress=145 * 10 ** 6,
-    ultimate_stress=275 * 10 ** 6,
-    shear_modulus=17 * 10 ** 9,
-    maximum_shear=145 * 10 ** 6,
-    max_bearing_stress=360 * 10 ** 6,
-    density=1810,
-    TEC=26 * 10 ** -6
-)
+# MgAZ91CT6 = Material( # done
+#     name='MgAZ91C-T6',
+#     Youngs_Modulus=44.8 * 10 ** 9,
+#     yield_stress=145 * 10 ** 6,
+#     ultimate_stress=275 * 10 ** 6,
+#     shear_modulus=17 * 10 ** 9,
+#     maximum_shear=145 * 10 ** 6,
+#     max_bearing_stress=360 * 10 ** 6,
+#     density=1810,
+#     TEC=26 * 10 ** -6
+# )
 # http://www.matweb.com/search/DataSheet.aspx?MatGUID=8c8cad8fe20544508f41b4a1300af4a1
 
 # more materials
@@ -167,8 +203,8 @@ MgAZ91CT6 = Material( # done
 # )
 
 
-material_dict = {'Al2014T6': Al2014T6, 'Al7075T6': Al7075T6, 'Al2024T3': Al2024T3, 'Al2024T4': Al2024T4,
-                 'St8630': St8630, 'St4130': St4130, 'MgAZ91CT6': MgAZ91CT6, 'Ti6Al4v': Ti6Al4v}
+# material_dict = {'Al2014T6': Al2014T6, 'Al7075T6': Al7075T6, 'Al2024T3': Al2024T3, 'Al2024T4': Al2024T4,
+#                  'St8630': St8630, 'St4130': St4130, 'MgAZ91CT6': MgAZ91CT6, 'Ti6Al4v': Ti6Al4v}
 
 # Standard Metric Bolt diameters  (Bolt D, Nut D, Nut height, pitch)
 bolt_D_standarts = (
