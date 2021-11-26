@@ -7,14 +7,14 @@ fx, fy, fz, mx, my, mz = 176.5197, 1059.1182, 1972.4157782608693, 162.398124, 27
 
 
 def check_failure(material, t, w, d):
-    sigma = fz / (t * (w - d) * K_t(material, w, d))
-    sigma_t = fy / ((d * t) * K_ty(material, t, w, d))
-    sigma_br = fz / ((d * t) * K_bry(w, d))
-    if sigma >= material.get_u_stress():  # From equation 3.1
+    sigma = fz / (t * (w - d) * K_t(material, w, d))*1.5
+    sigma_t = fy / ((d * t) * K_ty(material, t, w, d))*1.5
+    sigma_br = fz / ((d * t) * K_bry(w, d))*1.5
+    if sigma >= material.get_stress():  # From equation 3.1
         failure = True
     elif sigma_t >= material.get_stress():  # From equation 3.3
         failure = True
-    elif sigma_br >= material.get_bear():  # From equation 3.5
+    elif sigma_br >= material.get_stress():  # From equation 3.5
         failure = True
     else:
         failure = False
@@ -115,10 +115,10 @@ def mass(material, w, t, d, l):
 
 
 mat = Al2014T6
-trange = np.linspace(10*10**(-3), 0.1*10**(-3), 101)
-wrange = np.linspace(250*10**(-3), 1*10**(-3), 101)
-drange = np.linspace(250*10**(-3), 1*10**(-3), 101)
-lrange = np.linspace(250*10**(-3), 1*10**(-3), 101)
+trange = np.linspace(10*10**(-3), 1*10**(-3), 26)
+wrange = np.linspace(100*10**(-3), 8*10**(-3), 26)
+drange = np.linspace(80*10**(-3), 5*10**(-3), 26)
+lrange = np.linspace(100*10**(-3), 20*10**(-3), 26)
 
 m_i = 10000000
 

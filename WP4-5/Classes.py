@@ -118,16 +118,16 @@ class Flange:
         def t_yield():  # Eq 3.1 from Overleaf
             area = (self.w-self.d)  # per unit thickness
             k = self.K_ty()
-            return fy / (k * self.m.get_stress() * area)
+            return fz / (k * self.m.get_stress() * area)
 
         def t_bearing():  # Eq 3.3 from Overleaf
             k_bry = self.K_bry()
-            return fx / (k_bry * self.m.get_stress() * self.d)
+            return fz / (k_bry * self.m.get_stress() * self.d)
 
         def t_shear():  # Eq 3.7 from Overleaf
             k_ty = self.K_ty()
             area = 2*math.sqrt((self.w/2)**2 - (self.d/2)**2)  # conservative estimate - per unit thickness
-            return fz / (k_ty * self.m.get_shear() * area)
+            return fy / (k_ty * self.m.get_stress() * area)
 
         def bending():
             return 6 * fy * self.l / (self.m.get_stress() * self.w**2)  # From failure due to bending around x
@@ -143,17 +143,17 @@ class Flange:
     def minimum_d(self, load):
         fx, fy, fz = load  # works both with lists and arrays
 
-        def d_bearing():  # Eq 3.3 from Overleaf
-            k_bry = self.K_bry()
-            return abs(fx) / (k_bry * self.m.get_bear() * self.t)
+        def d_transverse():  # Eq 3.3 from Overleaf
+            k_t = self.K_t()
+            return abs(fy) / (k_t * self.m.get_stress() * self.t)
 
-        d2 = d_bearing()
+        d2 = d_transverse()
         return d2
 
     def maximum_d(self, load):
         fx, fy, fz = load  # works both with lists and arrays
         k = self.K_ty()
-        d1 = self.w - abs(fy) / (k * self.m.get_stress() * self.t)  # Eq 3.1 from Overleaf
+        d1 = self.w - abs(fz) / (k * self.m.get_stress() * self.t)  # Eq 3.1 from Overleaf
         d2 = 2 * math.sqrt((self.w/2)**2 - (abs(fz)/(2*k*self.m.get_shear()*self.t))**2)  # Eq 3.7 from Overleaf
         d_list = sorted([d1, d2])
         return d_list[0]
@@ -179,11 +179,11 @@ class Flange:
         # Needs to be checked, probably incorrect
         fx, fy, fz = load
 
-        if fy/(self.t * (self.w - self.d)*self.K_t()) > self.m.get_stress():  # From equation 3.1
+        if fz/(self.t * (self.w - self.d)*self.K_t()) > self.m.get_stress():  # From equation 3.1
             failure = True
-        elif fx/((self.d * self.t)*self.K_ty()) > self.m.get_stress():  # From equation 3.3
+        elif fy/((self.d * self.t)*self.K_ty()) > self.m.get_stress():  # From equation 3.3
             failure = True
-        elif fz/((self.d * self.t)*self.K_bry()) > self.m.get_bear():  # From equation 3.5
+        elif fz/((self.d * self.t)*self.K_bry()) > self.m.get_stress():  # From equation 3.5
             failure = True
         else:
             failure = False
