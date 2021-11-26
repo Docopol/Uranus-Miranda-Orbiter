@@ -150,7 +150,7 @@ case2 = (Ti6Al4v, 0.0379)
 cases = (case1,case2)
 for case in cases:
     mass_min = 100
-    for t in np.linspace(0.1,0.00005,301):
+    for t in np.linspace(0.1,0.00005,501):
         for bolt in bolt_D_standarts:
             D=bolt[0]/1000
             for bolt_mat in materials_all:
