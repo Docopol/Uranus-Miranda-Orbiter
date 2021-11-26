@@ -5,8 +5,8 @@ T_ref = 288
 T_max = 298.5
 T_min = 279
 
-A_sm = ...
-Phi = ...
+A_sm = ... # probably the area calculated with the diameter of the bolt
+Phi = ... # no f clue lmao, wtf are they talking about, phi is the force ratio, but what the hell does that mean
 
 DT_max = T_max - T_ref
 DT_min = T_min - T_ref
