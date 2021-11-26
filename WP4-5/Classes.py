@@ -118,18 +118,18 @@ class Flange:
         def t_yield():  # Eq 3.1 from Overleaf
             area = (self.w-self.d)  # per unit thickness
             k = self.K_ty()
-            return fz / (k * self.m.get_stress(safety_factor) * area)
+            return fz / (k * self.m.get_stress() * area)
 
         def t_bearing():  # Eq 3.3 from Overleaf
             k_bry = self.K_bry()
-            return fz / (k_bry * self.m.get_bear(safety_factor) * self.d)
+            return fz / (k_bry * self.m.get_bear() * self.d)
 
         def t_shear():  # Eq 3.7 from Overleaf
             k_ty = self.K_ty()
-            return fy / (k_ty * self.m.get_stress(safety_factor) * self.d)
+            return fy / (k_ty * self.m.get_stress() * self.d)
 
         def bending():
-            return 6 * fy * self.l / (self.m.get_stress(safety_factor) * self.w**2)  # From failure due to bending around x
+            return 6 * fy * self.l / (self.m.get_stress() * self.w**2)  # From failure due to bending around x
 
         t1 = t_yield()
         t2 = t_bearing()
@@ -145,10 +145,10 @@ class Flange:
 
         def d_bearing():  # Eq 3.3 from Overleaf
             k_bry = self.K_bry()
-            return abs(fy) / (k_bry * self.m.get_bear(safety_factor) * self.t)
+            return abs(fy) / (k_bry * self.m.get_bear() * self.t)
 
         k_ty = self.K_ty()
-        d1 = fy / (k_ty * self.m.get_stress(safety_factor) * self.t)
+        d1 = fy / (k_ty * self.m.get_stress() * self.t)
         d2 = d_bearing()
 
         d_list = [d1, d2]
