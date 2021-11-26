@@ -62,6 +62,7 @@ Al7075T6 = Material( # done
     density=2810,
     TEC=23.6 * 10 ** -6
 )
+
 Al2024T3 = Material( # done
     name='Al2024-T3',
     Youngs_Modulus=73.1 * 10 ** 9,
@@ -73,6 +74,7 @@ Al2024T3 = Material( # done
     density=2780,
     TEC=23.2 * 10 ** -6
 )
+
 Al2024T4 = Material( # done
     name='Al2024-T4',
     Youngs_Modulus=73.1 * 10 ** 9,
@@ -84,29 +86,32 @@ Al2024T4 = Material( # done
     density=2780,
     TEC=23.2 * 10 ** -6
 )
+
 St8630 = Material(
     name='St8630',
     Youngs_Modulus=187 * 10 ** 9,
     yield_stress=550 * 10 ** 6,
     ultimate_stress=620 * 10 ** 6,
     shear_modulus=72 * 10 ** 9,
-    maximum_shear=290 * 10 ** 6, # yet to be found
-    max_bearing_stress=662 * 10 ** 6, # also not found
+    maximum_shear=1 * 10 ** 6, # ???
+    max_bearing_stress=1 * 10 ** 6, # ??? I really have no idea where to find this anymore
     density=7850,
     TEC=11.2 * 10 ** -6
-) # http://www.matweb.com/search/DataSheet.aspx?MatGUID=8570d3599b5e439391f3c1602e31d0bd
+)
+# http://www.matweb.com/search/DataSheet.aspx?MatGUID=8570d3599b5e439391f3c1602e31d0bd
 
 St4130 = Material( # still NEEDS TO BE DONE
     name='St4130',
-    Youngs_Modulus=73.1 * 10 ** 9,
-    yield_stress=414 * 10 ** 6,
-    ultimate_stress=572 * 10 ** 6,
-    shear_modulus=28 * 10 ** 9,
-    maximum_shear=290 * 10 ** 6,
-    max_bearing_stress=662 * 10 ** 6,
-    density=2800,
-    TEC=25.2 * 10 ** -6
+    Youngs_Modulus=205 * 10 ** 9,
+    yield_stress=435 * 10 ** 6,
+    ultimate_stress=670 * 10 ** 6,
+    shear_modulus=80 * 10 ** 9,
+    maximum_shear=1 * 10 ** 6, # ???
+    max_bearing_stress=1 * 10 ** 6, # ???
+    density=7850,
+    TEC=1 * 10 ** -6 # ???
 )
+# http://www.matweb.com/search/DataSheet.aspx?MatGUID=e1ccebe90cf94502b35c2a4745f63593
 
 Ti6Al4v = Material( # done
     name='Ti-6Al-4v',
@@ -132,6 +137,7 @@ MgAZ91CT6 = Material( # done
     density=1810,
     TEC=26 * 10 ** -6
 )
+# http://www.matweb.com/search/DataSheet.aspx?MatGUID=8c8cad8fe20544508f41b4a1300af4a1
 
 # more materials
 # aluminium = Material(
@@ -166,7 +172,7 @@ MgAZ91CT6 = Material( # done
 material_dict = {'Al2014T6': Al2014T6, 'Al7075T6': Al7075T6, 'Al2024T3': Al2024T3, 'Al2024T4': Al2024T4,
                  'St8630': St8630, 'St4130': St4130, 'MgAZ91CT6': MgAZ91CT6, 'Ti6Al4v': Ti6Al4v}
 
-# Standart Metric Bolt diameters in mm (Bolt D, Nut D, Nut thickness)
+# Standard Metric Bolt diameters in mm (Bolt D, Nut D, Nut thickness)
 bolt_D_standarts = (
 (1.6,3.02,0.048),
 (2,3.82,0.05),
