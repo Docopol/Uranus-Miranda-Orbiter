@@ -7,14 +7,14 @@ fx, fy, fz, mx, my, mz = 176.5197, 1059.1182, 1972.4157782608693, 162.398124, 27
 
 
 def check_failure(material, t, w, d):
-    sigma = fz / (t * (w - d) * K_t(material, w, d))*1.5
-    sigma_t = fy / ((d * t) * K_ty(material, t, w, d))*1.5
-    sigma_br = fz / ((d * t) * K_bry(w, d))*1.5
-    if sigma >= material.get_stress():  # From equation 3.1
+    sigma = fz / (t * (w - d) * K_t(material, w, d))
+    sigma_t = fy / ((d * t) * K_ty(material, t, w, d))
+    sigma_br = fz / ((d * t) * K_bry(w, d))
+    if sigma*1.5 >= material.get_stress():  # From equation 3.1
         failure = True
-    elif sigma_t >= material.get_stress():  # From equation 3.3
+    elif sigma_t*1.5 >= material.get_stress():  # From equation 3.3
         failure = True
-    elif sigma_br >= material.get_stress():  # From equation 3.5
+    elif sigma_br*1.5 >= material.get_stress():  # From equation 3.5
         failure = True
     else:
         failure = False
