@@ -98,11 +98,11 @@ def massBackPlate (material,W,t):
 def massBolt (material,D_in,D_out,h,L):
     V = math.pi * D_in**2 / 4 * (L-2*h) + D_out**2 * math.pi / 4 * magic_Ratio * 2 * h 
     return V * material.d / (1000**3)
-SFs = GetSFs(D, thickness, w, h, n, Al2024T3, St4130)
+SFs = GetSFs(D, thickness, w, h, n, Al2014T6, StA992)
 
 print("Safety Factors Backplate/Fasteners: Shear, Pull-through, Tension")
 print(SFs)
-mass_min = massBackPlate(Al2024T3,W,thickness) + n * massBolt(St4130,D, D*1.5,D/1.5,2*thickness+2*D/1.5)
+mass_min = massBackPlate(Al2014T6,W,thickness) + n * massBolt(StA992,D, D*1.5,D/1.5,2*thickness+2*D/1.5)
 
 while (min(SFs) > 1.5):  # constant dimensions
 #while (min(SFs)>1.5):
@@ -110,14 +110,14 @@ while (min(SFs) > 1.5):  # constant dimensions
     w = w_over_t * thickness
     h = w
     D = D_over_t * thickness
-    SFs = GetSFs(D, thickness, w, h, n, Al2024T3, St4130)
+    SFs = GetSFs(D, thickness, w, h, n, Al2014T6, StA992)
     
 thickness = thickness + 0.00025
 w = w_over_t * thickness
 h = w
 W = W_over_w * w
 D = D_over_t * thickness
-SFs = GetSFs(D, thickness, w, h, n, Al2024T3, St4130)
+SFs = GetSFs(D, thickness, w, h, n, Al2014T6, StA992)
 
 mass_back_plate = W**2 * thickness * Al2014T6.get_density()
 # print("")
@@ -133,11 +133,11 @@ mass_back_plate = W**2 * thickness * Al2014T6.get_density()
 print("")
 print("")
 
-aluminiums = (Al2014T6,Al2024T3,Al2024T4,Al7075T6)
-steels = (St4130,St8630)
+#aluminiums = (Al2014T6,Al2014T6,Al2024T4,Al7075T6)
+#steels = (StA992,St8630)
 #magnesium = MgAZ91CT6
 
-materials_all = (Al2014T6,Al2024T3,Al2024T4,Al7075T6,St4130,St8630,MgAZ91CT6, Ti6Al4v)
+materials_all = (Al2014T6,Al6061T6,StA992,MgAM60,Ti6Al4V)
 #print(materials_all)
 #materials_all.append(MgAZ91CT6)
 #print(materials_all)
@@ -145,12 +145,18 @@ materials_all = (Al2014T6,Al2024T3,Al2024T4,Al7075T6,St4130,St8630,MgAZ91CT6, Ti
 optimal_Values = (0,0,0,0)
 #print("test")
 
-case1 = (Al7075T6, 0.0356)
-case2 = (Ti6Al4v, 0.0379)
-cases = (case1,case2)
+case1 = (Al2014T6, 0.0379)
+case2 = (Ti6Al4V, 0.0379)
+case3 = (Al6061T6, 0.0379)
+case4 = (MgAM60, 0.0379)
+case5 = (StA992, 0.0379)
+#case3 = ()
+cases = (case1,case2,case3,case4,case5)
 for case in cases:
     mass_min = 100
-    for t in np.linspace(0.1,0.00005,501):
+    mass_best_bolt = 100
+    mass_best_plate = 100
+    for t in np.linspace(0.01,0.0005,1001):
         for bolt in bolt_D_standarts:
             D=bolt[0]/1000
             for bolt_mat in materials_all:
@@ -159,18 +165,24 @@ for case in cases:
                 if min(GetSFs(D, t, w,h,n, plate_mat, bolt_mat))>1.5:
                     #h=w
                     W = w + 4*D
-                    mass = massBackPlate(plate_mat, W, t) + n * massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
-            
+                    mass_plate = massBackPlate(plate_mat, W, t)
+                    mass_bolt = massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
+                    #mass = massBackPlate(plate_mat, W, t) + n * massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
+                    mass = mass_plate + n*mass_bolt
+
                     if mass<mass_min:
                         optimal_Values=(D,t,w,W)
                         mass_min = mass
+                        mass_best_bolt = mass_bolt
+                        mass_best_plate = mass_plate
                         best_bolt = bolt
+    print("Plate material: {}, Bolt material: {}".format(case[0].n, bolt_mat.n))
     print("Optimal fastener diameter, thickness, distance between fasteners, width")
     print(optimal_Values)
     #print("")
-    print("Optimal mass: ",mass_min)
+    print("Total mass: {}, Plate mass: {}, single Bolt mass: {}, total Bolt mass: {}".format(mass_min,mass_best_plate,mass_best_bolt, mass_best_bolt*n))
     #print("")
-    print("Plate material: {}, Bolt material: {}".format(case[0].n, bolt_mat.n))
+    
     print("Bolt diameter: {}, Bolt length: {}, Nut/head width: {}, Nut/head thickness: {}".format(best_bolt[0], optimal_Values[1]*2000+best_bolt[2]*2 + 2*best_bolt[3],best_bolt[1], best_bolt[2]))
     print("")
     print("")
