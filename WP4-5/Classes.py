@@ -74,7 +74,7 @@ class Flange:
             k = c4
         elif mat == 'St4130' or mat == 'St8630' or mat == 'St-A992':
             k = c1
-        elif mat == 'MgAZ91C-T6':
+        elif mat == 'MgAZ91C-T6' or mat == 'Mg-Am60':
             k = c7
         else:
             k = (c1+c2+c3+c4+c5+c6+c7)/7

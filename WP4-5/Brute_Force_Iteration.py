@@ -43,9 +43,9 @@ def K_t(material, w, d):
         k = (c3 + c4) / 2
     elif matn == 'Al2024-T3':
         k = c4
-    elif matn == 'St4130' or matn == 'St8630':
+    elif matn == 'St4130' or matn == 'St8630' or matn == 'St-A992':
         k = c1
-    elif matn == 'MgAZ91C-T6':
+    elif matn == 'MgAZ91C-T6' or matn == 'Mg-Am60':
         k = c7
     else:
         k = (c1 + c2 + c3 + c4 + c5 + c6 + c7) / 7
@@ -117,7 +117,7 @@ def mass(material, w, t, d, l):
     return volume * material.get_density()
 
 
-mat = Al7075T6
+mat = MgAM60
 trange = np.linspace(10*10**(-3), 0.5*10**(-3), 41)
 wrange = np.linspace(100*10**(-3), 8*10**(-3), 41)
 drange = np.linspace(80*10**(-3), 5*10**(-3), 41)
