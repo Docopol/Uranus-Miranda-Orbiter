@@ -8,7 +8,7 @@ class Material:
         self.sh = maximum_shear
         self.bear = max_bearing_stress
         self.d = density
-        self.t = TEC # Thermal Expansion Coefficient
+        self.t = TEC  # Thermal Expansion Coefficient
 
 
     def get_stress(self, safety_factor=1):
