@@ -2,24 +2,27 @@ import numpy as np
 import math
 # from Iterations_Lug import *
 # from Classes import Flange, Loads
-from Constants import Material, Al2014T6
-fx, fy, fz, mx, my, mz = 353.0394,1059.1182,3944.8315565217385,162.398124,275.37073200000003,162.398124
+from Constants import *
+fx, fy, fz, mx, my, mz = 353.0394,1059.1182,4036.9287913043477,162.398124,282.43152000000003,162.398124
 
 
-def check_failure(material, t, w, d):
+def check_failure(material, t, w, d, l):
     sigma = fz / (t * (w - d) * K_t(material, w, d))
     sigma_t = fy / ((d * t) * K_ty(material, t, w, d))
-    sigma_br = fz / ((d * t) * K_bry(w, d))
+    sigma_br = fz / ((d * t) * K_bry(t, w, d))
+    sigma_ben = 6 * fy * l / (t * w ** 2)
     if sigma*1.5 >= material.get_stress():  # From equation 3.1
         failure = True
     elif sigma_t*1.5 >= material.get_stress():  # From equation 3.3
         failure = True
     elif sigma_br*1.5 >= material.get_stress():  # From equation 3.5
         failure = True
+    elif sigma_ben*1.5 >= material.get_stress():
+        failure = True
     else:
         failure = False
 
-    return failure, sigma/10**6, sigma_t/10**6, sigma_br/10**6
+    return failure, sigma/10**6, sigma_t/10**6, sigma_br/10**6, sigma_ben/10**6
 
 
 def K_t(material, w, d):
@@ -40,9 +43,9 @@ def K_t(material, w, d):
         k = (c3 + c4) / 2
     elif matn == 'Al2024-T3':
         k = c4
-    elif matn == 'St4130' or matn == 'St8630':
+    elif matn == 'St4130' or matn == 'St8630' or matn == 'St-A992':
         k = c1
-    elif matn == 'MgAZ91C-T6':
+    elif matn == 'MgAZ91C-T6' or matn == 'Mg-Am60':
         k = c7
     else:
         k = (c1 + c2 + c3 + c4 + c5 + c6 + c7) / 7
@@ -67,7 +70,7 @@ def K_ty(material, t, w, d):
     return k
 
 
-def K_bry(w, d):
+def K_bry(t, w, d):
     r = t / d
 
     if r <= 0.06:
@@ -115,12 +118,14 @@ def mass(material, w, t, d, l):
 
 
 mat = Al2014T6
-trange = np.linspace(10*10**(-3), 1*10**(-3), 26)
-wrange = np.linspace(100*10**(-3), 8*10**(-3), 26)
-drange = np.linspace(80*10**(-3), 5*10**(-3), 26)
-lrange = np.linspace(100*10**(-3), 20*10**(-3), 26)
+trange = np.linspace(10*10**(-3), 0.5*10**(-3), 41)
+wrange = np.linspace(100*10**(-3), 8*10**(-3), 41)
+drange = np.linspace(80*10**(-3), 5*10**(-3), 41)
+lrange = np.linspace(100*10**(-3), 20*10**(-3), 41)
 
 m_i = 10000000
+
+
 
 for t in trange:
     for w in wrange:
@@ -131,12 +136,13 @@ for t in trange:
                 if l <= w/2 or 1/2 * math.pi * (w / 2) ** 2 - math.pi * (d / 2) ** 2 + w * l <= 0:
                     continue
                 else:
-                    fail = check_failure(mat, t, w, d)[0]
+                    fail = check_failure(mat, t, w, d, l)[0]
                     if fail:
                         break
                     else:
                         m = mass(mat, w, t, d, l)
-                        s, s_t, s_br = check_failure(mat, t, w, d)[1:]
+                        s, s_t, s_br, s_ben = check_failure(mat, t, w, d, l)[1:]
                         if m < m_i:
                             m_i = m
-                            print("mass (g) - {}, thickness - {}, width - {}, diameter - {}, length - {}, sigma - {}, sigma_t - {}, sigma_br - {}".format(m_i*1000, t, w, d, l, s, s_t, s_br))
+                            print("mass (g) - {}, thickness - {}, width - {}, diameter - {}, length - {}, sigma - {}, sigma_t - {}, sigma_br - {}, sigma_ben - {}".format(m_i*1000, t, w, d, l, s, s_t, s_br, s_ben))
+

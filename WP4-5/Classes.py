@@ -160,8 +160,8 @@ class Flange:
         fx, fy, fz = load  # works both with lists and arrays
         safety_factor = 1.5
 
-        k = self.K_t()
-        d1 = self.w - fz / (k * self.m.get_stress(safety_factor) * self.t)  # Eq 3.1 from Overleaf
+        k = self.K_ty()
+        d1 = self.w - abs(fz) / (k * self.m.get_stress(safety_factor) * self.t)  # Eq 3.1 from Overleaf
         return d1
 
     def minimum_w(self, load):
@@ -209,8 +209,8 @@ class Flange:
         o3 = fz/((self.d * self.t)*self.K_bry())
         o4 = 6 * fy * self.l / (self.t * self.w**2)
 
-        o = max([o1, o2, o3, o4])
-        ms = self.m.get_stress() / o - 1
+        o = min([o1, o2, o3, o4])
+        ms = o / self.m.get_stress()
 
         if o == o1:
             f_type = 'tension'
@@ -259,24 +259,28 @@ class Lug:  # Assumes flange separation will be the same and flanges will be ide
 
     def minimum_t(self, loads):
         fx, fy, fz = loads
+        fx = fx/self.n
         fy = fy/self.n
         fz = fz/self.n
         return self.f.minimum_t((fx, fy, fz))
 
     def minimum_d(self, loads):
         fx, fy, fz = loads
+        fx = fx
         fy = fy / self.n
         fz = fz / self.n
         return self.f.minimum_d((fx, fy, fz))
 
     def maximum_d(self, loads):
         fx, fy, fz = loads
+        fx = fx / self.n
         fy = fy / self.n
         fz = fz / self.n
         return self.f.maximum_d((fx, fy, fz))
 
     def minimum_w(self, loads):
         fx, fy, fz = loads
+        fx = fx / self.n
         fy = fy / self.n
         fz = fz / self.n
         return self.f.minimum_w((fx, fy, fz))
@@ -286,6 +290,7 @@ class Lug:  # Assumes flange separation will be the same and flanges will be ide
 
     def lower_bound_t(self, loads):
         fx, fy, fz = loads
+        fx = fx / self.n
         fy = fy / self.n
 
         material = self.f.get_material()
@@ -322,20 +327,20 @@ class Double_lug:   # A double lug
 
     def min_t(self, force):
         forces = self.loads(force)
-        top = self.tl.minimum_t(forces)
-        bottom = self.bl.minimum_t(forces)
+        top = self.tl.minimum_t(forces[0])
+        bottom = self.bl.minimum_t(forces[1])
         return [top, bottom]
 
     def min_d(self, force):
         forces = self.loads(force)
-        top = self.tl.minimum_d(forces)
-        bottom = self.bl.minimum_d(forces)
+        top = self.tl.minimum_d(forces[0])
+        bottom = self.bl.minimum_d(forces[1])
         return [top, bottom]
 
     def min_w(self, force):
         forces = self.loads(force)
-        top = self.tl.minimum_w(forces)
-        bottom = self.bl.minimum_w(forces)
+        top = self.tl.minimum_w(forces[0])
+        bottom = self.bl.minimum_w(forces[1])
         return [top, bottom]
 
     def mass(self):
@@ -343,8 +348,7 @@ class Double_lug:   # A double lug
         bottom = self.bl.mass()
         return [top, bottom]
 
-
-# test
+#test
 class Plate:
     def __init__(self, number_fasteners, fastener_diameter, plate_thickness, plate_width, plate_height):
         self.n = number_fasteners
