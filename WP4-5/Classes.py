@@ -122,7 +122,7 @@ class Flange:
 
         def t_bearing():  # Eq 3.3 from Overleaf
             k_bry = self.K_bry()
-            return fz / (k_bry * self.m.get_bear() * self.d)
+            return fz / (k_bry * self.m.get_stress() * self.d)
 
         def t_shear():  # Eq 3.7 from Overleaf
             k_ty = self.K_ty()
@@ -145,7 +145,7 @@ class Flange:
 
         def d_bearing():  # Eq 3.3 from Overleaf
             k_bry = self.K_bry()
-            return abs(fy) / (k_bry * self.m.get_bear() * self.t)
+            return abs(fy) / (k_bry * self.m.get_stress() * self.t)
 
         k_ty = self.K_ty()
         d1 = fy / (k_ty * self.m.get_stress() * self.t)
