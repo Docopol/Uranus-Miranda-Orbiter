@@ -117,7 +117,7 @@ class Flange:
         # Failure due to tensile forces - Extracted from Bruh
         def t_yield():  # Eq 3.1 from Overleaf
             area = (self.w-self.d)  # per unit thickness
-            k = self.K_ty()
+            k = self.K_t()
             return fz / (k * self.m.get_stress() * area)
 
         def t_bearing():  # Eq 3.3 from Overleaf

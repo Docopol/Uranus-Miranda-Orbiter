@@ -3,7 +3,7 @@ import math
 # from Iterations_Lug import *
 # from Classes import Flange, Loads
 from Constants import *
-fx, fy, fz, mx, my, mz = 353.0394, 1059.1182, 3944.8315565217385, 162.398124, 275.37073200000003, 162.398124
+fx, fy, fz, mx, my, mz = 353.0394,1059.1182,4036.9287913043477,162.398124,282.43152000000003,162.398124
 
 
 def check_failure(material, t, w, d, l):
@@ -117,7 +117,7 @@ def mass(material, w, t, d, l):
     return volume * material.get_density()
 
 
-mat = MgAM60
+mat = Al7075T6
 trange = np.linspace(10*10**(-3), 0.5*10**(-3), 41)
 wrange = np.linspace(100*10**(-3), 8*10**(-3), 41)
 drange = np.linspace(80*10**(-3), 5*10**(-3), 41)
