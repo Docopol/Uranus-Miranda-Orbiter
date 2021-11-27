@@ -9,7 +9,7 @@ fx, fy, fz, mx, my, mz = 353.0394, 1059.1182, 3944.8315565217385, 162.398124, 27
 def check_failure(material, t, w, d, l):
     sigma = fz / (t * (w - d) * K_t(material, w, d))
     sigma_t = fy / ((d * t) * K_ty(material, t, w, d))
-    sigma_br = fz / ((d * t) * K_bry(w, d))
+    sigma_br = fz / ((d * t) * K_bry(t, w, d))
     sigma_ben = 6 * fy * l / (t * w ** 2)
     if sigma*1.5 >= material.get_stress():  # From equation 3.1
         failure = True
@@ -70,7 +70,7 @@ def K_ty(material, t, w, d):
     return k
 
 
-def K_bry(w, d):
+def K_bry(t, w, d):
     r = t / d
 
     if r <= 0.06:
@@ -117,13 +117,15 @@ def mass(material, w, t, d, l):
     return volume * material.get_density()
 
 
-mat = Ti6Al4V
+mat = Al7075T6
 trange = np.linspace(10*10**(-3), 0.5*10**(-3), 41)
 wrange = np.linspace(100*10**(-3), 8*10**(-3), 41)
 drange = np.linspace(80*10**(-3), 5*10**(-3), 41)
 lrange = np.linspace(100*10**(-3), 20*10**(-3), 41)
 
 m_i = 10000000
+
+
 
 for t in trange:
     for w in wrange:
@@ -143,3 +145,4 @@ for t in trange:
                         if m < m_i:
                             m_i = m
                             print("mass (g) - {}, thickness - {}, width - {}, diameter - {}, length - {}, sigma - {}, sigma_t - {}, sigma_br - {}, sigma_ben - {}".format(m_i*1000, t, w, d, l, s, s_t, s_br, s_ben))
+
