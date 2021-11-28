@@ -147,12 +147,12 @@ optimal_Values = (0,0,0,0)
 #print("test")
 
 case1 = (Al2014T6, 0.0379)
-case2 = (Ti6Al4V, 0.0379)
-case3 = (Al6061T6, 0.0379)
-case4 = (MgAM60, 0.0379)
-case5 = (StA992, 0.0379)
+#case2 = (Ti6Al4V, 0.0379)
+#case3 = (Al6061T6, 0.0379)
+#case4 = (MgAM60, 0.0379)
+#case5 = (StA992, 0.0379)
 #case3 = ()
-cases = (case1,case2,case3,case4,case5)
+cases = (case1)#,case2,case3,case4,case5)
 for case in cases:
     mass_min = 100
     mass_best_bolt = 100
