@@ -416,27 +416,28 @@ class Plate:
     #def forces_due_moment(self, , ):
     #    ...
 
-    def pull_through_fail(self,n_f, D_fin, D_fout, r_f, t_wall, t_lug, M_ASRG, cg_y):
+    def pull_through_fail(self,n_f, D_fin, D_fout, r_f, t_wall, t_lug, M_ASRG, cg_z, cg_y):
         # D_fin is inner diameter of fastener (numppy array)
         # D_fout is outer
         # r_f is fastener coordinates (2D numpy array...
-        # ... of the form [[x1, x2, xn], [z1, z2, zn]])
+        # ... of the form [[x1, x2, xn], [y1, y2, yn]])
         # ^^^ (0,0) x-z axis asrg centre of mass
         g = 9.81
+        r_f = np.asarray(r_f)
         # t is the thickness of s/c wall or lug plate
         #n_f = len(D_fin)  # number of fasteners
         F_y = 2 * g * M_ASRG /n_f  # normal force
-        Mx = 6 * g * M_ASRG * cg_y  # moment about x axis
-        Mz = 2 * g * M_ASRG * cg_y  # moment about z axis
+        Mx = 6 * g * M_ASRG * cg_z  # moment about x axis
+        My = 2 * g * M_ASRG * cg_y  # moment about y axis
         # cg_y is distance from lug to center of mass of ASRG
         # now we calculate the normal forces caused by the moments:
         A_n = np.pi * (D_fout ** 2 - D_fin ** 2) / 4  # normal area
         F_Mx = Mx * A_n * r_f[1] / np.sum(A_n * (r_f[1] ** 2))
-        F_Mz = Mz * A_n * r_f[0] / np.sum(A_n * (np.abs(r_f[0]) ** 2))
+        F_My = My * A_n * r_f[0] / np.sum(A_n * (np.abs(r_f[0]) ** 2))
         # r_f[0] is considered always positive so we design for the highest tensile load
         # on both sides of the lug
         # total normal force:
-        F_tot = F_y + F_Mx + F_Mz
+        F_tot = F_y + F_Mx + F_My
         # stresses:
         sigma = F_tot / A_n  # normal stress
         A_s = np.pi * D_fin * (t_wall + t_lug)  # shear area
@@ -444,6 +445,22 @@ class Plate:
         Y = np.sqrt((sigma ** 2) + 3 * (tau ** 2))
         # Y is the total normal stress
         # which has to be below the yield stresses of the wall and lug materials.
+        return Y
+
+def pull_through_fail_standalone(n_f, D_fin, D_fout, r_f, t_wall, t_lug, M_ASRG,cg_z, cg_y):
+        g = 9.81
+        r_f = np.asarray(r_f)
+        F_y = 2 * g * M_ASRG /n_f  # normal force
+        Mx = 6 * g * M_ASRG * cg_z  # moment about x axis
+        Mz = 2 * g * M_ASRG * cg_y  # moment about z axis
+        A_n = math.pi * (D_fout ** 2 - D_fin ** 2) / 4  # normal area
+        F_Mx = Mx * A_n * r_f[1] / np.sum(A_n * (r_f[1] ** 2))
+        F_Mz = Mz * A_n * r_f[0] / np.sum(A_n * (np.abs(r_f[0]) ** 2))
+        F_tot = F_y + F_Mx + F_Mz
+        sigma = F_tot / A_n  # normal stress
+        A_s = np.pi * D_fin * (t_wall + t_lug)  # shear area
+        tau = F_tot / A_s  # shear stress
+        Y = np.sqrt((sigma ** 2) + 3 * (tau ** 2))
         return Y
 
 

@@ -63,14 +63,14 @@ Al7075T6 = Material( # done
     TEC=23.6e-6
 )
 
-# Al2024T3 = Material( # done
-#     name='Al2024-T3',
-#     Youngs_Modulus=73.1 * 10 ** 9,
-#     yield_stress=345 * 10 ** 6,
-#     density=2780,
-#     TEC=23.2 * 10 ** -6
-# )
-#
+Al2024T3 = Material( # done
+    name='Al2024-T3',
+    Youngs_Modulus=73.1 * 10 ** 9,
+    yield_stress=345 * 10 ** 6,
+    density=2780,
+    TEC=23.2 * 10 ** -6
+)
+
 # Al2024T4 = Material( # done
 #     name='Al2024-T4',
 #     Youngs_Modulus=73.1 * 10 ** 9,
@@ -138,4 +138,4 @@ bolt_D_standarts = (
 )
 
 
-magic_Ratio = 1.10266
+hex_circ_Ratio = 1.10266
