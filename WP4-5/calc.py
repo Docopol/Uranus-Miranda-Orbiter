@@ -10,6 +10,7 @@ l_rtg = 0.760
 r_tot = l_rtg/2 + l_gap
 h_rtg = 0.456
 w_rtg = 0.390
+print(r_tot)
 
 wx = a_x * m
 wy = a_y * m
