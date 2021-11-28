@@ -207,17 +207,6 @@ class Flange:
         return ms, f_type
 
 
-class Double_lug:
-    def __init__(self, top_lug, bottom_lug, separation, dist_to_cg):
-        self.tl = top_lug
-        self.bl = bottom_lug
-        self.h = separation
-        self.r = dist_to_cg
-
-    def get_lugs(self):
-        return [self.tl, self.bl]
-
-
 class Plate:
     def __init__(self, number_fasteners, fastener_diameter, plate_thickness, plate_width, plate_height):
         self.n = number_fasteners

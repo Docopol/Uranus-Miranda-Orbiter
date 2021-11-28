@@ -1,4 +1,4 @@
-from Classes import Flange, Double_lug
+from Classes import Flange
 from Constants import material_dict
 from calc import f_x_bot, f_y_bot, f_z_bot, M_y_bot
 
@@ -69,10 +69,8 @@ def iterate_2(fla):
 
 
 def second_iteration(dob_lug):
-    flan = dob_lug.get_lugs()[0]
-
-    w, t, d, l = flan.get_dimensions()
-    mat = flan.get_material()
+    w, t, d, l = dob_lug.get_dimensions()
+    mat = dob_lug.get_material()
     f_list = list()
     m_list = list()
     while w > 0.01:
@@ -129,16 +127,8 @@ for item in material_dict:
         length=l_initial
     )
 
-    separation = 0
-    d_2 = Double_lug(
-        top_lug=flange,
-        bottom_lug=flange,
-        separation=separation,
-        dist_to_cg=distance_to_rtgs_cg
-    )
-
     loads = [f_x_bot, f_y_bot, f_z_bot]
-    flange_config = second_iteration(dob_lug=d_2)
+    flange_config = second_iteration(dob_lug=flange)
     ms, tp = flange_config.margin_of_safety(loads, M_y_bot)
     print('Flange: (w, t, d, l)' + str(flange_config.get_dimensions()) +
           ' has a mass of ' + str(1000 * flange_config.mass()) + ' g')
