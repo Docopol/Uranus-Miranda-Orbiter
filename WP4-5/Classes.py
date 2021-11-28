@@ -114,7 +114,7 @@ class Flange:
             failure = True
         elif 6 * fy * self.l / (self.t * self.w ** 2) > self.m.get_stress(safety_factor):
             failure = True
-        elif 6 * (fx * self.l + m_y) / (self.w * self.t ** 2) > self.m.get_stress(safety_factor):
+        elif 12 * (fx * self.l/2 + m_y) / (self.w * self.t ** 2) > self.m.get_stress(safety_factor):
             failure = True
         else:
             failure = False
@@ -142,7 +142,7 @@ class Flange:
             return 6 * fy * self.l / (self.m.get_stress(safety_factor) * self.w ** 2)
 
         def bending_y():
-            return math.sqrt(6 * (fx * self.l + m_y) / (self.m.get_stress(safety_factor) * self.w))
+            return math.sqrt(12 * (fx * self.l/2 + m_y) / (self.m.get_stress(safety_factor) * self.w))
 
         t1 = t_yield()
         t2 = t_bearing()
@@ -188,7 +188,7 @@ class Flange:
         o2 = fy / ((self.d * self.t) * self.K_ty())
         o3 = fz / ((self.d * self.t) * self.K_bry())
         o4 = 6 * fy * self.l / (self.t * self.w ** 2)
-        o5 = 6 * (fx * self.l + m_y) / (self.w * self.t ** 2)
+        o5 = 12 * (fx * self.l/2 + m_y) / (self.w * self.t ** 2)
 
         o = max([o1, o2, o3, o4, o5])
         ms = self.m.get_stress() / o - 1

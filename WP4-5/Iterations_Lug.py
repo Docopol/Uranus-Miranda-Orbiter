@@ -72,7 +72,6 @@ def second_iteration(dob_lug):
     flan = dob_lug.get_lugs()[0]
 
     w, t, d, l = flan.get_dimensions()
-    ratio = l / w ** 2
     mat = flan.get_material()
     f_list = list()
     m_list = list()
@@ -94,7 +93,7 @@ def second_iteration(dob_lug):
             f_list.append(fl)
             m_list.append(mass)
             w -= 0.0001
-            l = ratio * w**2
+            l = (mat.get_stress() * w * t**2 / 6 - M_y_bot)*2/f_x_bot
         else:
             break
     return f_list[m_list.index(min(m_list))]
@@ -106,19 +105,18 @@ w_initial = 0.04445
 t_initial = 0.01
 d_initial = 0.034925
 l_initial = 0.053975
-clearance = 0.0516128
 
 flange = Flange(
         width=w_initial,
         lug_thickness=t_initial,
         hinge_diameter=d_initial,
-        material=material_dict['St4130'],
+        material=material_dict['Al2014T6'],
         length=l_initial
     )
 
 loads = [f_x_bot, f_y_bot/2, f_z_bot/2]
 ms, tp = flange.margin_of_safety(loads, M_y_bot)
-print(f'Initial iteration has a safety factor of {ms}, assuming it to be a single flange system')
+print(f'Initial iteration has a safety factor of {ms}, and has a mass of {1000*flange.mass()} g')
 for item in material_dict:
     print('\n' + item)
     print('Double Flange:')
