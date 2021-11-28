@@ -8,7 +8,7 @@ def maxT_stress(plt_mat, wll_mat, fas_mat, D_fi, D_fo, D_Nut, t_w, t_p):
     T_max = 298.5
     T_min = 279
 
-    alpha_a = wll_mat.get_TEC()  # Thermal expansion coefficients are defined
+    alpha_a = wll_mat.get_TEC()
     alpha_b = fas_mat.get_TEC()
     alpha_c = plt_mat.get_TEC()
 
