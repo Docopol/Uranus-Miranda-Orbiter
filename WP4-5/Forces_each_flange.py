@@ -8,9 +8,9 @@ a_x = a_z = g*2.0
 l_gap = 0.02 #ASSUMED distance between ASRG and S/C 20 mm
 
 # Of ASRG:
-l_rtg = 0.780
-l_tot = l_rtg + l_gap
-h_rtg = 0.460
+l_rtg = 0.760
+r_tot = l_rtg/2 + l_gap
+h_rtg = 0.456
 w_rtg = 0.390
 
 wx = a_x * m
@@ -21,10 +21,10 @@ wz = a_z * m
 # PER FLANGE
 f_tot_x = 1/2 * wx
 f_tot_y = 1/2 * wy
-f_tot_z = 1/2 * wz + wy * l_tot/h_rtg
+f_tot_z = 1/2 * wz + wy * r_tot/h_rtg
 
 M_tot_x = wz * h_rtg/2
-M_tot_y = wx * l_tot/2
+M_tot_y = wx * r_tot
 M_tot_z = wx * h_rtg/2
 
 print(f_tot_x)
