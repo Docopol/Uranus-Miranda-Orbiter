@@ -33,21 +33,6 @@ def iterate_2(fla):
         if not f.check_failure(loads, M_y_bot):
             t_list.append(min_t)
             d_list.append(diameter)
-        else:
-            failure = True
-            while failure:
-                min_t += 0.0001
-                f = Flange(
-                    width=w,
-                    lug_thickness=min_t,
-                    hinge_diameter=diameter,
-                    material=material,
-                    length=l
-                )
-                if not f.check_failure(loads, M_y_bot):
-                    t_list.append(min_t)
-                    d_list.append(diameter)
-                    failure = False
         diameter -= 0.00001
 
     m = 1000
