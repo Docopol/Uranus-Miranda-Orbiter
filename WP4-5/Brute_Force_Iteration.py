@@ -8,19 +8,22 @@ def check_failure(material, t, w, d, l):
     sigma = fz / (t * (w - d) * K_t(material, w, d))
     sigma_t = fy / ((d * t) * K_ty(material, t, w, d))
     sigma_br = fz / ((d * t) * K_bry(t, w, d))
-    sigma_ben = 6 * fy * l / (t * w ** 2)
+    sigma_ben_x = 6 * fx * l / (t**2 * w)
+    sigma_ben_y = 6 * fy * l / (t * w ** 2)
     if sigma*1.5 >= material.get_stress():  # From equation 3.1
         failure = True
     elif sigma_t*1.5 >= material.get_stress():  # From equation 3.3
         failure = True
     elif sigma_br*1.5 >= material.get_stress():  # From equation 3.5
         failure = True
-    elif sigma_ben*1.5 >= material.get_stress():
+    elif sigma_ben_x*1.5 >= material.get_stress():
+        failure = True
+    elif sigma_ben_y*1.5 >= material.get_stress():
         failure = True
     else:
         failure = False
 
-    return failure, sigma/10**6, sigma_t/10**6, sigma_br/10**6, sigma_ben/10**6
+    return failure, sigma/10**6, sigma_t/10**6, sigma_br/10**6, sigma_ben_x/10**6, sigma_ben_y/10**6
 
 
 def K_t(material, w, d):
@@ -139,8 +142,8 @@ for t in trange:
                         break
                     else:
                         m = mass(mat, w, t, d, l)
-                        s, s_t, s_br, s_ben = check_failure(mat, t, w, d, l)[1:]
+                        s, s_t, s_br, s_ben_x, s_ben_y = check_failure(mat, t, w, d, l)[1:]
                         if m < m_i:
                             m_i = m
-                            print("mass (g) - {}, thickness - {}, width - {}, diameter - {}, length - {}, sigma - {}, sigma_t - {}, sigma_br - {}, sigma_ben - {}".format(m_i*1000, t, w, d, l, s, s_t, s_br, s_ben))
+                            print("mass (g) - {}, thickness - {}, width - {}, diameter - {}, length - {}, sigma - {}, sigma_t - {}, sigma_br - {}, sigma_ben_x - {}, sigma_ben_y - {}".format(m_i*1000, t, w, d, l, s, s_t, s_br, s_ben_x, s_ben_y))
 
