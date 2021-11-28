@@ -1,6 +1,5 @@
-from Classes import Flange, Lug, Double_lug
+from Classes import Flange, Double_lug
 from Constants import material_dict
-import matplotlib.pyplot as plt
 from calc import f_x_bot, f_y_bot, f_z_bot, M_y_bot
 
 
@@ -69,9 +68,8 @@ def iterate_2(fla):
     return flan, m
 
 
-def second_iteration(dob_lug):  # Check, it does not work
-    # Explore variations in length and width, using the minimum thickness stablished by bending moments
-    lug = dob_lug.get_lugs()[0]  # Assumes both are the same
+def second_iteration(dob_lug):
+    lug = dob_lug.get_lugs()[0]
     if isinstance(lug, Lug):
         flan = lug.get_flange()
     else:
@@ -106,11 +104,8 @@ def second_iteration(dob_lug):  # Check, it does not work
     return f_list[m_list.index(min(m_list))]
 
 
-separation = 0.56
 distance_to_rtgs_cg = 0.38
 
-# Initial values for the itteration
-# Obtained from BDCB-13 -- https://www.hydrauliccylindersinc.com/product/clevis-bracket/
 w_initial = 0.04445
 t_initial = 0.01
 d_initial = 0.034925
@@ -130,7 +125,7 @@ ms, tp = flange.margin_of_safety(loads, M_y_bot)
 print(f'Initial iteration has a safety factor of {ms}, assuming it to be a single flange system')
 for item in material_dict:
     print('\n' + item)
-    print('Double Lug:')
+    print('Double Flange:')
 
     flange = Flange(
         width=w_initial,
@@ -140,24 +135,7 @@ for item in material_dict:
         length=l_initial
     )
 
-    lug = Lug(flange=flange, separation=clearance, number=2)
-
-    d_2 = Double_lug(
-        top_lug=lug,
-        bottom_lug=lug,
-        separation=separation,
-        dist_to_cg=distance_to_rtgs_cg
-    )
-
-    loads = [f_x_bot, f_y_bot / 2, f_z_bot / 2]
-    flange_config = second_iteration(dob_lug=d_2)
-    ms, tp = flange_config.margin_of_safety(loads, M_y_bot)
-    print('Flange: (w, t, d, l)' + str(flange_config.get_dimensions()) +
-          ' has a mass of ' + str(1000*flange_config.mass()) + ' g')
-    print(f'With a margin of safety of {ms} - Failure due to {tp}')
-
-    print('\nDouble Flange:')
-
+    separation = 0
     d_2 = Double_lug(
         top_lug=flange,
         bottom_lug=flange,
