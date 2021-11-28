@@ -1,20 +1,13 @@
 from Classes import *
 from calc import f_x_bot, f_y_bot, f_z_bot, M_y_bot
-#from Iterations_Lug import *
 from Constants import *
 import math
 import numpy as np
 import time
-#from Brute_Force_Iteration import *
 start_time = time.time()
 h_rtg = 0.456
 l_rtg = 0.4
-#print("--- %s seconds ---" % (time.time() - start_time))
 
-# F_y = 2118.2364
-# F_z = 4069.2436105263155
-# F_x = 353.0394
-# M_y = 141.21576000000002
 gap = 0.02
 thickness = 0.01
 
@@ -22,8 +15,6 @@ F = Loads(f_x_bot, f_y_bot, f_z_bot, 0, M_y_bot, 0)
 print(F.F_z)
 n = 4 #number of bolts
 
-#w = 0.200
-#h = w
 
 def inch_to_m(l):
     return l*2.54/100
@@ -41,10 +32,6 @@ def GetSFs (D_1st,thickness,w,h,n,material_plate, material_bolt):
     cord = [[-w/2,-h/2],[-w/2,h/2],[w/2,h/2],[w/2,-h/2]]
 
     plate_cg = plate.get_cg(cord)
-
-    plate_force_cg = plate.force_cg(F.F_x,F.F_y,n)
-
-    plate_moment_cg = plate.moment_cg(plate_cg, [0,0], F.F_x, F.F_y)
 
     plate_ftdm = plate.force_due_to_moment(cord, plate_cg, 0)
 
@@ -124,11 +111,9 @@ for t in np.linspace(0.01,0.0005,1001):
             w = w_lug + D
             if min(GetSFs(D, t, w,w,n, plate_mat, bolt_mat))>1.5:
                 
-                #h=w
                 W = w + 4*D
                 mass_plate = massBackPlate(plate_mat, W, t,D)
                 mass_bolt = massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
-                #mass = massBackPlate(plate_mat, W, t) + n * massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
                 mass = mass_plate + n*mass_bolt
 
                 if mass<mass_min:
@@ -140,9 +125,7 @@ for t in np.linspace(0.01,0.0005,1001):
 print("Plate material: {}, Bolt material: {}".format(plate_mat.n, bolt_mat.n))
 print("Optimal fastener diameter, thickness, distance between fasteners, width")
 print(optimal_Values)
-#print("")
 print("Total mass: {}, Plate mass: {}, single Bolt mass: {}, total Bolt mass: {}".format(mass_min,mass_best_plate,mass_best_bolt, mass_best_bolt*n))
-#print("")
 
 
 print("Bolt diameter: {}, Bolt length: {}, Nut/head width: {}, Nut/head thickness: {}".format(best_bolt[0], optimal_Values[1]*2000+best_bolt[2]*2 + 2*best_bolt[3],best_bolt[1], best_bolt[2]))
@@ -150,7 +133,6 @@ print("")
 print("")
 print("")
 d = optimal_Values[2]/2
-#print(d)
 cord_for_pullthrough_wall = [[-d,-d,d,d,-d,-d,d,d],[-d-h_rtg/2,d-h_rtg/2,-d-h_rtg/2,d-h_rtg/2,-d+h_rtg/2,d+h_rtg/2,-d+h_rtg/2,d+h_rtg/2]]
 
 wall_stress = pull_through_fail_standalone(4,best_bolt[0]/1000,best_bolt[1]/1000,cord_for_pullthrough_wall,optimal_Values[1],optimal_Values[1],36,l_rtg,h_rtg/2)
