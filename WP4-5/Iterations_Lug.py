@@ -69,11 +69,7 @@ def iterate_2(fla):
 
 
 def second_iteration(dob_lug):
-    lug = dob_lug.get_lugs()[0]
-    if isinstance(lug, Lug):
-        flan = lug.get_flange()
-    else:
-        flan = lug
+    flan = dob_lug.get_lugs()[0]
 
     w, t, d, l = flan.get_dimensions()
     ratio = l / w ** 2
