@@ -30,6 +30,9 @@ class Flange:
             r = 0.6
 
         x = self.w / (2 * self.d)
+        if x > 4:
+            x = 4
+
         if r == 0.06:
             k = -0.00235*x**6 + 0.3448*x**5 - 2.0373*x**4 + 6.2116*x**3 - 10.396*x**2 + 9.3121*x - 2.7106
         elif r == 0.08:
@@ -50,7 +53,7 @@ class Flange:
             k = -0.0048*x**6 + 0.0626*x**5 - 0.343*x**4 + 1.1103*x**3 - 2.5736*x**2 + 4.1826*x - 1.5554
 
         if k < 0:
-            k = 0
+            k = 0.01
 
         return k
 
@@ -81,7 +84,7 @@ class Flange:
         else:
             k = (c1+c2+c3+c4+c5+c6+c7)/7
 
-        ms = 0.15  # Margin of safety
+        ms = 0.15
         k += ms
         return k
 
@@ -98,35 +101,56 @@ class Flange:
         k += ms
         return k
 
-    def minimum_t(self, load):
+    def check_failure(self, load, m_y):
         fx, fy, fz = load
         safety_factor = 1.5
 
-        # Failure due to tensile forces - Extracted from Bruh
-        def t_yield():  # Eq 3.1 from Overleaf
-            area = (self.w-self.d)  # per unit thickness
+        if fz/(self.t * (self.w - self.d)*self.K_t()) > self.m.get_stress(safety_factor):
+            failure = True
+        elif fy/((self.d * self.t)*self.K_ty()) > self.m.get_stress(safety_factor):
+            failure = True
+        elif fz/((self.d * self.t)*self.K_bry()) > self.m.get_stress(safety_factor):
+            failure = True
+        elif 6 * fy * self.l / (self.t * self.w**2) > self.m.get_stress(safety_factor):
+            failure = True
+        elif 6 * (fx * self.l + m_y) / (self.w * self.t**2) > self.m.get_stress(safety_factor):
+            failure = True
+        else:
+            failure = False
+
+        return failure
+
+    def minimum_t(self, load, m_y):
+        fx, fy, fz = load
+        safety_factor = 1.5
+
+        def t_yield():
+            area = (self.w-self.d)
             k = self.K_t()
             return fz / (k * self.m.get_stress(safety_factor) * area)
 
-        def t_bearing():  # Eq 3.3 from Overleaf
+        def t_bearing():
             k_bry = self.K_bry()
             return fz / (k_bry * self.m.get_stress(safety_factor) * self.d)
 
-        def t_shear():  # Eq 3.7 from Overleaf
+        def t_shear():
             k_ty = self.K_ty()
             return fy / (k_ty * self.m.get_stress(safety_factor) * self.d)
 
-        def bending():
-            # From failure due to bending around x
+        def bending_x():
             return 6 * fy * self.l / (self.m.get_stress(safety_factor) * self.w**2)
+
+        def bending_y():
+            return math.sqrt(6 * (fx * self.l + m_y) / (self.m.get_stress(safety_factor) * self.w))
 
         t1 = t_yield()
         t2 = t_bearing()
         t3 = t_shear()
-        t4 = bending()
+        t4 = bending_x()
+        t5 = bending_y()
 
-        thickness = [t1, t2, t3, t4]
-        return max(thickness)
+        min_t = max([t1, t2, t3, t4, t5])
+        return min_t
 
     def minimum_d(self, load):
         fx, fy, fz = load  # works both with lists and arrays
@@ -151,53 +175,22 @@ class Flange:
         d1 = self.w - abs(fz) / (k * self.m.get_stress(safety_factor) * self.t)  # Eq 3.1 from Overleaf
         return d1
 
-    def minimum_w(self, load):
-        fx, fy, fz = load
-        safety_factor = 1.5
-
-        w1 = math.sqrt(6*fy*self.l/(self.t*self.m.get_stress(safety_factor)))  # Failure due to bending right before the bolt
-        w2 = fy / (self.K_t() * self.m.get_stress(safety_factor) * self.t) + self.d
-        w_list = [w1, w2]
-        return max(w_list)
-
-    def min_w_2(self, load):
-        fx, fy, fz = load
-        safety_factor = 1.5
-
-        return fy / (self.K_t() * self.m.get_stress(safety_factor) * self.t) + self.d
-
     def mass(self):
         area = self.w * self.l - math.pi * self.d**2 / 8 + math.pi / 2 * (self.w**2 - self.d**2)/4
         volume = area * self.t
         return volume * self.m.get_density()
 
-    def check_failure(self, load):
-        fx, fy, fz = load
-        safety_factor = 1.5
-
-        if fz/(self.t * (self.w - self.d)*self.K_t()) > self.m.get_stress(safety_factor):  # From equation 3.1
-            failure = True
-        elif fy/((self.d * self.t)*self.K_ty()) > self.m.get_stress(safety_factor):  # From equation 3.3
-            failure = True
-        elif fz/((self.d * self.t)*self.K_bry()) > self.m.get_stress(safety_factor):  # From equation 3.5
-            failure = True
-        elif 6 * fy * self.l / (self.t * self.w**2) > self.m.get_stress(safety_factor):
-            failure = True
-        else:
-            failure = False
-
-        return failure
-
-    def margin_of_safety(self, load):
+    def margin_of_safety(self, load, m_y):
         fx, fy, fz = load
 
         o1 = fz/(self.t * (self.w - self.d)*self.K_t())
         o2 = fy/((self.d * self.t)*self.K_ty())
         o3 = fz/((self.d * self.t)*self.K_bry())
         o4 = 6 * fy * self.l / (self.t * self.w**2)
+        o5 = 6 * (fx * self.l + m_y) / (self.w * self.t**2)
 
-        o = min([o1, o2, o3, o4])
-        ms = o / self.m.get_stress()
+        o = max([o1, o2, o3, o4, o5])
+        ms = self.m.get_stress() / o - 1
 
         if o == o1:
             f_type = 'tension'
@@ -205,28 +198,12 @@ class Flange:
             f_type = 'yield'
         elif o == o3:
             f_type = 'bearing'
+        elif o == o4:
+            f_type = 'bending around x'
         else:
-            f_type = 'bending'
+            f_type = 'bending around y'
 
         return ms, f_type
-
-    def loading(self, loads):  # assuming w to be constant
-        fx, fy, fz = loads
-        safety_factor = 1.5
-              
-        # Coefficient functions need to be finished and this has to be checked.
-        p_bry = self.K_bry() * self.m.get_stress(safety_factor) * self.d * (self.w + self.d) / 2
-        p_y = (self.w**2 - self.d**2) / 2 * self.K_ty() * self.m.get_stress(safety_factor)
-
-        if p_bry < p_y:
-            min_l = p_bry
-        else:
-            min_l = p_y
-        
-        # These both should be equal according to the Ra and Rtr equations
-        p_ty_1 = (fy**1.6 / (1 - abs(fz)**1.6 / min_l**1.6))**(1/1.6)
-        p_ty_2 = self.K_t() * self.m.get_stress(safety_factor) * self.d * self.t
-        return p_bry, p_y, p_ty_1, p_ty_2
 
 
 class Lug:  # Assumes flange separation will be the same and flanges will be identical

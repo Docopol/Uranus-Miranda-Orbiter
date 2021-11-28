@@ -1,27 +1,19 @@
 from Classes import Flange, Lug, Double_lug
 from Constants import material_dict
-import numpy as np
 import matplotlib.pyplot as plt
+from calc import f_x_bot, f_y_bot, f_z_bot, M_y_bot
 
 
-def iterate_2(dlug):
-    loading = dlug.loads(loads)
+def iterate_2(fla):
+    flan = fla
+    w, t, d, l = flan.get_dimensions()
+    material = flan.get_material()
 
-    lug = dlug.get_lugs()[0]  # Assumes both are the same
-    if isinstance(lug, Lug):
-        loading[1] = loading[1] / 2
-        loading[2] = loading[2] / 2
-        fl = lug.get_flange()
-    else:
-        fl = lug
-
-    w, t, d, l = fl.get_dimensions()
-    material = fl.get_material()
-
-    d_min = fl.minimum_d(loading)
-    d_max = fl.maximum_d(loading)
+    d_min = flan.minimum_d(loads)
+    d_max = flan.maximum_d(loads)
 
     t_list = list()
+    d_list = list()
     diameter = d_max
     while diameter > d_min:
         fl = Flange(
@@ -31,74 +23,88 @@ def iterate_2(dlug):
             material=material,
             length=l
         )
-        t_list.append((diameter, fl.minimum_t(loading)))
+        min_t = fl.minimum_t(loads, M_y_bot)
+        f = Flange(
+            width=w,
+            lug_thickness=min_t,
+            hinge_diameter=diameter,
+            material=material,
+            length=l
+        )
+        if not f.check_failure(loads, M_y_bot):
+            t_list.append(min_t)
+            d_list.append(diameter)
+        else:
+            failure = True
+            while failure:
+                min_t += 0.0001
+                f = Flange(
+                    width=w,
+                    lug_thickness=min_t,
+                    hinge_diameter=diameter,
+                    material=material,
+                    length=l
+                )
+                if not f.check_failure(loads, M_y_bot):
+                    t_list.append(min_t)
+                    d_list.append(diameter)
+                    failure = False
         diameter -= 0.00001
 
-    # Plot results
-    d_list = list()
-    th_list = list()
-    for i in t_list:
-        d_list.append(round(1000*i[0], 2))
-        th_list.append(round(1000*i[1], 2))
-    plt.plot(d_list, th_list)
-    plt.xlabel('Diameter [mm]')
-    plt.ylabel('Thickness [mm]')
-    plt.legend(['Minimum thickness'])
-    plt.grid()
-    plt.show()
-
     m = 1000
-    for i in range(len(th_list)):
+    for i in range(len(t_list)):
         f = Flange(
-            width=w_initial,
-            lug_thickness=th_list[i] / 1000,
-            hinge_diameter=d_list[i] / 1000,
+            width=w,
+            lug_thickness=t_list[i],
+            hinge_diameter=d_list[i],
             material=material,
-            length=l_initial
+            length=l
         )
         mass = f.mass()
-        if not f.check_failure(loading) and 0 < mass < m:
+        ms, ty = f.margin_of_safety(loads, M_y_bot)
+        if ms > 0.4 and 0 < mass < m:
             m = mass
-            fl = f
+            flan = f
 
-    return fl
+    return flan, m
 
 
 def second_iteration(dob_lug):  # Check, it does not work
     # Explore variations in length and width, using the minimum thickness stablished by bending moments
-    fl = iterate_2(dob_lug)
+    lug = dob_lug.get_lugs()[0]  # Assumes both are the same
+    if isinstance(lug, Lug):
+        flan = lug.get_flange()
+    else:
+        flan = lug
 
-    loading = dob_lug.loads(loads)
-    if isinstance(dob_lug.get_lugs()[0], Lug):
-        loading[1] = loading[1] / 2
-        loading[2] = loading[2] / 2
-
-    w, t, d, l = fl.get_dimensions()
-    ratio = l / w**2
-
-    while w > 1.1*d:
-        w -= 0.00001
-        l = ratio * w**2
+    w, t, d, l = flan.get_dimensions()
+    ratio = l / w ** 2
+    mat = flan.get_material()
+    f_list = list()
+    m_list = list()
+    while w > 0.01:
         if l < w/2:
             break
+        if d > w:
+            d = 0.9*w
         flan = Flange(
             width=w,
             lug_thickness=t,
             hinge_diameter=d,
-            material=fl.get_material(),
+            material=mat,
             length=l
         )
-        if not fl.check_failure(loading) and flan.mass() > 0:
-                fl = flan
-    return fl
 
+        fl, mass = iterate_2(flan)
+        if mass > 0:
+            f_list.append(fl)
+            m_list.append(mass)
+            w -= 0.0001
+            l = ratio * w**2
+        else:
+            break
+    return f_list[m_list.index(min(m_list))]
 
-# Loads not taking into account the moment generated
-g = 9.80665
-rtg_mass = 108
-number_of_rtgs = 3
-accelerations = np.array([2, 6, 2])
-loads = rtg_mass / number_of_rtgs * g * accelerations
 
 separation = 0.56
 distance_to_rtgs_cg = 0.38
@@ -111,7 +117,17 @@ d_initial = 0.034925
 l_initial = 0.053975
 clearance = 0.0516128
 
+flange = Flange(
+        width=w_initial,
+        lug_thickness=t_initial,
+        hinge_diameter=d_initial,
+        material=material_dict['St4130'],
+        length=l_initial
+    )
 
+loads = [f_x_bot, f_y_bot/2, f_z_bot/2]
+ms, tp = flange.margin_of_safety(loads, M_y_bot)
+print(f'Initial iteration has a safety factor of {ms}, assuming it to be a single flange system')
 for item in material_dict:
     print('\n' + item)
     print('Double Lug:')
@@ -133,11 +149,9 @@ for item in material_dict:
         dist_to_cg=distance_to_rtgs_cg
     )
 
+    loads = [f_x_bot, f_y_bot / 2, f_z_bot / 2]
     flange_config = second_iteration(dob_lug=d_2)
-    loading = d_2.loads(loads)
-    loading[1] = loading[1] / 2
-    loading[2] = loading[2] / 2
-    ms, tp = flange_config.margin_of_safety(loading)
+    ms, tp = flange_config.margin_of_safety(loads, M_y_bot)
     print('Flange: (w, t, d, l)' + str(flange_config.get_dimensions()) +
           ' has a mass of ' + str(1000*flange_config.mass()) + ' g')
     print(f'With a margin of safety of {ms} - Failure due to {tp}')
@@ -151,9 +165,9 @@ for item in material_dict:
         dist_to_cg=distance_to_rtgs_cg
     )
 
+    loads = [f_x_bot, f_y_bot, f_z_bot]
     flange_config = second_iteration(dob_lug=d_2)
-    loading = d_2.loads(loads)
-    ms, tp = flange_config.margin_of_safety(loading)
+    ms, tp = flange_config.margin_of_safety(loads, M_y_bot)
     print('Flange: (w, t, d, l)' + str(flange_config.get_dimensions()) +
           ' has a mass of ' + str(1000 * flange_config.mass()) + ' g')
     print(f'With a margin of safety of {ms} - Failure due to {tp}')
