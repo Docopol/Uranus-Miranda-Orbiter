@@ -30,7 +30,7 @@ delta_a = (4*(t_w+t_p))/(plt_mat_E*np.pi*(D_fo**2 - D_fi**2))
 delta_b = ...  # (1/fas_mat.get_E())*sum(L_i/A_i)+(L_nsub)/(E_n*A_nom)  # not finished
 Phi = delta_a/(delta_a + delta_b)  # force ratio
 
-A_sm = np.pi*(D_fi/2)**2  # Stiffness Area.... probably
+A_sm = np.pi*(D_fi/2)**2
 
 
 def maxT_stress(DT, E, A_sm, alpha_b, alpha_c, Phi):
