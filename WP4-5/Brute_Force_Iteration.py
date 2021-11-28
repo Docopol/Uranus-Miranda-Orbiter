@@ -127,7 +127,6 @@ lrange = np.linspace(100*10**(-3), 20*10**(-3), 41)
 m_i = 10000000
 
 
-
 for t in trange:
     for w in wrange:
         for d in drange:
