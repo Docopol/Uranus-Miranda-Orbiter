@@ -12,8 +12,7 @@ def maxT_stress(plt_mat, wll_mat, fas_mat, D_fi, D_fo, D_Nut, t_w, t_p):
     alpha_b = fas_mat.get_TEC()
     alpha_c = plt_mat.get_TEC()
 
-    alpha_c = (t_w * alpha_a + t_p * alpha_c) / (
-            t_w + t_p)
+    alpha_c = (t_w * alpha_a + t_p * alpha_c) / (t_w + t_p)
 
     plt_mat_E = (t_w * wll_mat.get_E() + t_p * plt_mat.get_E()) / (t_w + t_p)
 
