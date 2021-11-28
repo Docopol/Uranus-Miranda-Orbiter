@@ -1,5 +1,5 @@
 from Classes import *
-from calc import Force_upper_x, Force_upper_y, Force_upper_z, Moment_upper_y
+from calc import f_x_bot, f_y_bot, f_z_bot, M_y_bot
 #from Iterations_Lug import *
 from Constants import *
 import math
@@ -17,7 +17,7 @@ start_time = time.time()
 gap = 0.02
 thickness = 0.01
 
-F = Loads(Force_upper_x, Force_upper_y, Force_upper_z, 0, Moment_upper_y, 0)
+F = Loads(f_x_bot, f_y_bot, f_z_bot, 0, M_y_bot, 0)
 print(F.F_z)
 n = 4 #number of bolts
 
@@ -146,7 +146,7 @@ materials_all = (Al2014T6,Al6061T6,StA992,MgAM60,Ti6Al4V)
 optimal_Values = (0,0,0,0)
 #print("test")
 
-case1 = (Al2014T6, 0.0379)
+case1 = [Al2014T6, 0.0379]
 #case2 = (Ti6Al4V, 0.0379)
 #case3 = (Al6061T6, 0.0379)
 #case4 = (MgAM60, 0.0379)
@@ -161,8 +161,8 @@ for case in cases:
         for bolt in bolt_D_standarts:
             D=bolt[0]/1000
             for bolt_mat in materials_all:
-                plate_mat = case[0]
-                w = case[1] + D
+                plate_mat = Al2014T6
+                w = 0.0379 + D
                 if min(GetSFs(D, t, w,h,n, plate_mat, bolt_mat))>1.5:
                     #h=w
                     W = w + 4*D
@@ -177,7 +177,7 @@ for case in cases:
                         mass_best_bolt = mass_bolt
                         mass_best_plate = mass_plate
                         best_bolt = bolt
-    print("Plate material: {}, Bolt material: {}".format(case[0].n, bolt_mat.n))
+    print("Plate material: {}, Bolt material: {}".format(plate_mat.n, bolt_mat.n))
     print("Optimal fastener diameter, thickness, distance between fasteners, width")
     print(optimal_Values)
     #print("")
