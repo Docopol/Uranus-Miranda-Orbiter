@@ -86,28 +86,14 @@ class Flange:
         return k
 
     def K_ty(self):
-        mat = self.m.get_name()
         A1 = self.t * (self.w - self.d*math.sqrt(1/2))/2
         A2 = self.t * (self.w - self.d)/2
         A_av = 6/(4/A1+2/A2)
         A_br = self.t * self.d
         x = A_av/A_br
-        c1 = -0.2366*x**2 + 1.54*x - 0.0309
-        c2 = -0.8194*x**6 + 2.5843*x**5 - 2.87*x**4 + 1.2954*x**3 - 0.4232*x**2 + 1.5356*x - 0.0304
-        c3 = 0.0718*x**3 - 0.5166*x**2 + 1.5215*x - 0.0359
-        c4 = -1.5361*x**6 + 7.9951*x**5 - 14.739*x**4 + 11.609*x**3 - 4.3256*x**2 + 2.1408*x - 0.0721
-        c5 = -0.1253*x**3 - 0.1129*x**2 + 1.2153*x - 0.0111
-        c6 = -0.0873*x**3 - 0.1935*x**2 + 1.2441*x - 0.0133
-        c7 = -0.242*x**2 + 1.0965*x - 0.003
-        c8 = 1.4656*x**6 - 7.4934*x**5 + 14.667*x**4 - 13.188*x**3 + 4.4282*x**2 + 0.7954*x - 0.0056
-        c9 = -0.0947*x**4 + 0.4914*x**3 - 1.1647*x**2 + 1.3826*x - 0.0194
-        c10 = 0.4484*x**2 - 0.0447*x + 0.0001
-        c11 = 1.9726*x**6 - 8.4645*x**5 + 13.297*x**4 - 8.6092*x**3 + 0.8764*x**2 + 1.4643*x - 0.0307
-        c12 = 1.2405*x**6 - 5.3292*x**5 + 8.2543*x**4 - 4.9309*x**3 - 0.1979*x**2 + 1.456*x - 0.0273
-        c13 = -0.2955*x*6 + 2.1496**x*5 - 5.871*x**4 + 7.8546*x**3 - 5.5334*x**2 + 2.0576*x - 0.042
-        c14 = -1.4426*x**6 + 6.6839*x**5 - 12.17*x**4 + 11.014*x**3 - 5.1856*x**2 + 1.2488*x - 0.0063
 
-        k = c3
+        k = 0.0718*x**3 - 0.5166*x**2 + 1.5215*x - 0.0359
+
         ms = 0.15
         k += ms
         return k
@@ -131,7 +117,8 @@ class Flange:
             return fy / (k_ty * self.m.get_stress(safety_factor) * self.d)
 
         def bending():
-            return 6 * fy * self.l / (self.m.get_stress(safety_factor) * self.w**2)  # From failure due to bending around x
+            # From failure due to bending around x
+            return 6 * fy * self.l / (self.m.get_stress(safety_factor) * self.w**2)
 
         t1 = t_yield()
         t2 = t_bearing()
