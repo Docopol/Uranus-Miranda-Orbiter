@@ -72,7 +72,7 @@ class Flange:
         c7 = 0.0059 * x ** 5 - 0.0862 * x ** 4 + 0.4716 * x ** 3 - 1.172 * x ** 2 + 1.0229 * x + 0.7781
         if mat == 'Al2014-T6':
             k = (c1 + c2 + c4 + c5) / 4
-        elif mat == 'Al7075-T6':
+        elif mat == 'Al7075-T6' or matn == 'Al6061-T6':
             k = (c1 + c2 + c4) / 3
         elif mat == 'Al2024-T4':
             k = (c3 + c4) / 2
