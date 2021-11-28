@@ -159,12 +159,13 @@ materials_all = (Al2014T6,Al6061T6,StA992,MgAM60,Ti6Al4V)
 mass_min = 100
 mass_best_bolt = 100
 mass_best_plate = 100
+w_lug = 0.0471
 for t in np.linspace(0.01,0.0005,1001):
     for bolt in bolt_D_standarts:
         D=bolt[0]/1000
         for bolt_mat in materials_all:
             plate_mat = Al2014T6
-            w = 0.0379 + D
+            w = w_lug + D
             if min(GetSFs(D, t, w,w,n, plate_mat, bolt_mat))>1.5:
                 
                 #h=w
@@ -199,5 +200,6 @@ cord_for_pullthrough_wall = [[-d,-d,d,d,-d,-d,d,d],[-d-h_rtg/2,d-h_rtg/2,-d-h_rt
 wall_stress = pull_through_fail_standalone(4,best_bolt[0]/1000,best_bolt[1]/1000,cord_for_pullthrough_wall,optimal_Values[1],optimal_Values[1],36,l_rtg,h_rtg/2)
 
 print(Al2024T3.y/max(wall_stress))
+print(max(wall_stress))
 
 print("--- runtime: %s seconds ---" % (time.time() - start_time))
