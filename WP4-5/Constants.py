@@ -114,8 +114,8 @@ MgAZ91CT6 = Material( # done
 # http://www.matweb.com/search/DataSheet.aspx?MatGUID=8c8cad8fe20544508f41b4a1300af4a1
 
 
-# material_dict = {'Al2014T6': Al2014T6, 'Al7075T6': Al7075T6, 'Al2024T3': Al2024T3, 'Al2024T4': Al2024T4,
-#                  'St8630': St8630, 'St4130': St4130, 'MgAZ91CT6': MgAZ91CT6, 'Ti6Al4v': Ti6Al4v}
+material_dict = {'Al2014T6': Al2014T6, 'Al7075T6': Al7075T6, 'Al6061T6': Al6061T6, 'MgAM60': MgAM60,
+                 'StA992': StA992, 'St8630': St8630, 'St4130': St4130, 'MgAZ91CT6': MgAZ91CT6, 'Ti6Al4V': Ti6Al4V}
 
 # Standard Metric Bolt diameters  (Bolt D, Nut D, Nut height, pitch)
 bolt_D_standarts = (

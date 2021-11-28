@@ -8,11 +8,18 @@ def iterate_2(dlug):
     loading = dlug.loads(loads)
 
     lug = dlug.get_lugs()[0]  # Assumes both are the same
-    w, t, d, l = lug.get_dimensions()
-    material = lug.get_material()
+    if isinstance(lug, Lug):
+        loading[1] = loading[1] / 2
+        loading[2] = loading[2] / 2
+        fl = lug.get_flange()
+    else:
+        fl = lug
 
-    d_min = lug.minimum_d(loading)
-    d_max = lug.maximum_d(loading)
+    w, t, d, l = fl.get_dimensions()
+    material = fl.get_material()
+
+    d_min = fl.minimum_d(loading)
+    d_max = fl.maximum_d(loading)
 
     t_list = list()
     diameter = d_max
@@ -24,13 +31,8 @@ def iterate_2(dlug):
             material=material,
             length=l
         )
-        lug = Lug(
-            flange=fl,
-            number=2,
-            separation=separation
-        )
-        t_list.append((diameter, lug.minimum_t(loading)))
-        diameter -= 0.0001*d_max
+        t_list.append((diameter, fl.minimum_t(loading)))
+        diameter -= 0.00001
 
     # Plot results
     d_list = list()
@@ -41,12 +43,12 @@ def iterate_2(dlug):
     # plt.plot(d_list, th_list)
     # plt.xlabel('Diameter [mm]')
     # plt.ylabel('Thickness [mm]')
-    # plt.legend(['Minimum thickness top lug', 'Minimum thickness bottom lug', 'Top lug', 'Bottom lug'])
+    # plt.legend(['Minimum thickness'])
     # plt.grid()
     # plt.show()
 
     m = 1000
-    for i in range(len(t_list)):
+    for i in range(len(th_list)):
         f = Flange(
             width=w_initial,
             lug_thickness=th_list[i] / 1000,
@@ -55,9 +57,10 @@ def iterate_2(dlug):
             length=l_initial
         )
         mass = f.mass()
-        if 0 < mass < m and not f.check_failure(loading):
-            m = f.mass()
+        if not f.check_failure(loading) and 0 < mass < m:
+            m = mass
             fl = f
+
     return fl
 
 
