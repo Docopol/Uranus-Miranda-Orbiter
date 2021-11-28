@@ -40,12 +40,12 @@ def iterate_2(dlug):
     for i in t_list:
         d_list.append(round(1000*i[0], 2))
         th_list.append(round(1000*i[1], 2))
-    # plt.plot(d_list, th_list)
-    # plt.xlabel('Diameter [mm]')
-    # plt.ylabel('Thickness [mm]')
-    # plt.legend(['Minimum thickness'])
-    # plt.grid()
-    # plt.show()
+    plt.plot(d_list, th_list)
+    plt.xlabel('Diameter [mm]')
+    plt.ylabel('Thickness [mm]')
+    plt.legend(['Minimum thickness'])
+    plt.grid()
+    plt.show()
 
     m = 1000
     for i in range(len(th_list)):
@@ -111,9 +111,10 @@ d_initial = 0.034925
 l_initial = 0.053975
 clearance = 0.0516128
 
-print('Double Lug:')
+
 for item in material_dict:
     print('\n' + item)
+    print('Double Lug:')
 
     flange = Flange(
         width=w_initial,
