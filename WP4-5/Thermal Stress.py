@@ -26,7 +26,7 @@ alpha_c = plt_mat.get_TEC()
 
 alpha_c = (t_w*alpha_a+t_p*alpha_c)/(t_w+t_p)
 
-delta_a = (4*(t_w+t_p))/(plt_mat.get_E()*np.pi*(D_fo**2 - D_fi**2))
+delta_a = (4*(t_w+t_p))/(plt_mat_E*np.pi*(D_fo**2 - D_fi**2))
 delta_b = ...  # (1/fas_mat.get_E())*sum(L_i/A_i)+(L_nsub)/(E_n*A_nom)  # not finished
 Phi = delta_a/(delta_a + delta_b)  # force ratio
 
@@ -34,7 +34,7 @@ A_sm = np.pi*(D_fi/2)**2  # Stiffness Area.... probably
 
 
 def maxT_stress(DT, E, A_sm, alpha_b, alpha_c, Phi):
-    return (alpha_c - alpha_b) * DT * plt_mat_E * A_sm * (1 - Phi)
+    return (alpha_c - alpha_b) * DT * E * A_sm * (1 - Phi)
 
 
 print("thermal stress at maximum temp:", maxT_stress(DT_max, fas_mat.get_E(), A_sm, alpha_b, alpha_c, Phi))
