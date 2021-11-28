@@ -1,9 +1,7 @@
 import numpy as np
 import math
-# from Iterations_Lug import *
-# from Classes import Flange, Loads
 from Constants import *
-fx, fy, fz, mx, my, mz = 353.0394,1059.1182,2211.141505263158,160.9859664,282.43152000000003,160.9859664
+fx, fy, fz = 353.0394,1059.1182,1105.570752631579
 
 
 def check_failure(material, t, w, d, l):

@@ -19,17 +19,11 @@ wz = a_z * m
 
 
 # PER FLANGE
-f_tot_x = 1/2 * wx
-f_tot_y = 1/2 * wy
-f_tot_z = 1/2 * wz + wy * r_tot/h_rtg
+f_tot_x = (1/2 * wx)
+f_tot_y = 1/2 * (wy)
+f_tot_z = 1/2 * (1/2 * wz + wy * r_tot/h_rtg)
 
-M_tot_x = wz * h_rtg/2
-M_tot_y = wx * r_tot
-M_tot_z = wx * h_rtg/2
+M_tot_y = (1/2 * wx * r_tot)
 
-print(f_tot_x)
-print(f_tot_y)
-print(f_tot_z)
-print(M_tot_x)
-print(M_tot_y)
-print(M_tot_z)
+print(f'Forces on 1 out of 2 Flanges: Fx={f_tot_x}, Fy={f_tot_y}, Fz={f_tot_z}, My={M_tot_y}')
+
