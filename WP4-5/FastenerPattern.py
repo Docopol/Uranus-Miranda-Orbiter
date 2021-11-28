@@ -102,10 +102,11 @@ print("")
 print("")
 
 materials_all = (Al2014T6,Al6061T6,StA992,MgAM60,Ti6Al4V)
+w_lug = 0.0379
 mass_min = 100
 mass_best_bolt = 100
 mass_best_plate = 100
-w_lug = 0.0379
+
 for t in np.linspace(0.01,0.0005,1001):
     for bolt in bolt_D_standarts:
         D=bolt[0]/1000
