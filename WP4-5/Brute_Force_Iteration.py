@@ -1,14 +1,14 @@
 import numpy as np
 import math
 from Constants import *
-fx, fy, fz = 353.0394,1059.1182,1105.570752631579
+fx, fy, fz, my = 353.0394,1059.1182,1105.570752631579,141.21576000000002
 
 
 def check_failure(material, t, w, d, l):
     sigma = fz / (t * (w - d) * K_t(material, w, d))
     sigma_t = fy / ((d * t) * K_ty(material, t, w, d))
     sigma_br = fz / ((d * t) * K_bry(t, w, d))
-    sigma_ben_x = 6 * fx * l / (t**2 * w)
+    sigma_ben_x = 6 * (fx * l + my) / (t**2 * w)
     sigma_ben_y = 6 * fy * l / (t * w ** 2)
     if sigma*1.5 >= material.get_stress():  # From equation 3.1
         failure = True
