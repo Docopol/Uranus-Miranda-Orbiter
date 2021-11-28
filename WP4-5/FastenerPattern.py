@@ -22,7 +22,6 @@ def inch_to_m(l):
 def GetSFs (D_1st,thickness,w,h,n,material_plate, material_bolt):
     D_not_fail = Min_Fastener_Diameter_Tension(F,material_bolt, n, w, h, gap)
 
-
     SF_Tension_Failure = D_1st/D_not_fail
 
     plate = Plate(n,D_1st, thickness, w+D_1st*1.5, h+D_1st*1.5)
@@ -93,6 +92,10 @@ h = w
 W = W_over_w * w
 D = D_over_t * thickness
 SFs = GetSFs(D, thickness, w, h, n, Al2014T6, StA992)
+d = w/2
+cord_for_pullthrough_wall = [[-d,-d,d,d,-d,-d,d,d],[-d-h_rtg/2,d-h_rtg/2,-d-h_rtg/2,d-h_rtg/2,-d+h_rtg/2,d+h_rtg/2,-d+h_rtg/2,d+h_rtg/2]]
+wall_stress = pull_through_fail_standalone(4,D,D*1.6,cord_for_pullthrough_wall,thickness,thickness,36,l_rtg,h_rtg/2)
+print(max(wall_stress))
 
 mass_back_plate = W**2 * thickness * Al2014T6.get_density()
 print("")
