@@ -43,8 +43,8 @@ fas_mat = Ti6Al4V
 D_fi = 3 * 10 ** -3
 D_fo = 5.32 * 10 ** -3
 D_Nut = 5.32 * 10 ** -3
-t_w = 0.5 * 10 ** -3
+t_w = 2.01 * 10 ** -3
 t_p = 2.01 * 10 ** -3
 
-print("thermal stress at maximum temp:", maxT_stress(plt_mat, wll_mat, fas_mat, D_fi, D_fo, D_Nut, t_w, t_p)[0],"pa")
-print("thermal stress at minimum temp:", maxT_stress(plt_mat, wll_mat, fas_mat, D_fi, D_fo, D_Nut, t_w, t_p)[1],"pa")
+print("thermal stress at maximum temperature:", round(maxT_stress(plt_mat, wll_mat, fas_mat, D_fi, D_fo, D_Nut, t_w, t_p)[0]/1000000,2),"Mpa")
+print("thermal stress at minimum temperature:", round(maxT_stress(plt_mat, wll_mat, fas_mat, D_fi, D_fo, D_Nut, t_w, t_p)[1]/1000000,2),"Mpa")
