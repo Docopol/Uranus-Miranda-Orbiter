@@ -7,7 +7,8 @@ import numpy as np
 import time
 #from Brute_Force_Iteration import *
 start_time = time.time()
-
+h_rtg = 0.456
+l_rtg = 0.4
 #print("--- %s seconds ---" % (time.time() - start_time))
 
 # F_y = 2118.2364
@@ -30,6 +31,7 @@ def inch_to_m(l):
 def GetSFs (D_1st,thickness,w,h,n,material_plate, material_bolt):
     #F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
     D_not_fail = Min_Fastener_Diameter_Tension(F,material_bolt, n, w, h, gap)
+
 
     SF_Tension_Failure = D_1st/D_not_fail
 
@@ -55,7 +57,9 @@ def GetSFs (D_1st,thickness,w,h,n,material_plate, material_bolt):
 
     SF_Shear_Failure = shearYieldStrength / shearStress
 
-    bearing_Stress = plate.pull_through_fail(n,D_1st,D_1st*1.5,np.transpose(cord),thickness,thickness,36.0,gap)
+    cord_for_pullthrough = [[-w/2,-w/2,w/2,w/2,-w/2,-w/2,w/2,w/2],[-h/2-h_rtg/2,h/2-h_rtg/2,-h/2-h_rtg/2,h/2-h_rtg/2,-h/2+h_rtg/2,h/2+h_rtg/2,-h/2+h_rtg/2,h/2+h_rtg/2]]
+
+    bearing_Stress = plate.pull_through_fail(n*2,D_1st,D_1st*1.5,cord_for_pullthrough,thickness,thickness,36.0,l_rtg,h_rtg/2)
 
     bearing_Stress_Max = max(bearing_Stress)
 
@@ -97,7 +101,7 @@ def massBackPlate (material,W,t, D):
     return material.d*A*t
 
 def massBolt (material,D_in,D_out,h,L):
-    V = math.pi * D_in**2 / 4 * (L-2*h) + D_out**2 * math.pi / 4 * magic_Ratio * 2 * h 
+    V = math.pi * D_in**2 / 4 * (L-2*h) + D_out**2 * math.pi / 4 * hex_circ_Ratio * 2 * h 
     return V * material.d / (1000**3)
 SFs = GetSFs(D, thickness, w, h, n, Al2014T6, StA992)
 
@@ -121,8 +125,8 @@ D = D_over_t * thickness
 SFs = GetSFs(D, thickness, w, h, n, Al2014T6, StA992)
 
 mass_back_plate = W**2 * thickness * Al2014T6.get_density()
-# print("")
-# print("")
+print("")
+print("")
 # print("Revised Safety Factors: Shear, Pull-through, Tension")
 # print(SFs)
 # print("Thickness (mm)   ", thickness*1000)
@@ -131,8 +135,6 @@ mass_back_plate = W**2 * thickness * Al2014T6.get_density()
 # print("Fastener diameter (mm)  ",D*1000)
 # print("Mass of Back plate (kg) ", mass_back_plate)
 
-print("")
-print("")
 
 #aluminiums = (Al2014T6,Al2014T6,Al2024T4,Al7075T6)
 #steels = (StA992,St8630)
@@ -143,51 +145,61 @@ materials_all = (Al2014T6,Al6061T6,StA992,MgAM60,Ti6Al4V)
 #materials_all.append(MgAZ91CT6)
 #print(materials_all)
 
-optimal_Values = (0,0,0,0)
+#optimal_Values = (0,0,0,0)
 #print("test")
 
-case1 = [Al2014T6, 0.0379]
+#case1 = [Al2014T6, 0.0379]
 #case2 = (Ti6Al4V, 0.0379)
 #case3 = (Al6061T6, 0.0379)
 #case4 = (MgAM60, 0.0379)
 #case5 = (StA992, 0.0379)
 #case3 = ()
-cases = (case1)#,case2,case3,case4,case5)
-for case in cases:
-    mass_min = 100
-    mass_best_bolt = 100
-    mass_best_plate = 100
-    for t in np.linspace(0.01,0.0005,1001):
-        for bolt in bolt_D_standarts:
-            D=bolt[0]/1000
-            for bolt_mat in materials_all:
-                plate_mat = Al2014T6
-                w = 0.0379 + D
-                if min(GetSFs(D, t, w,h,n, plate_mat, bolt_mat))>1.5:
-                    #h=w
-                    W = w + 4*D
-                    mass_plate = massBackPlate(plate_mat, W, t,D)
-                    mass_bolt = massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
-                    #mass = massBackPlate(plate_mat, W, t) + n * massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
-                    mass = mass_plate + n*mass_bolt
+#cases = (case1)#,case2,case3,case4,case5)
+#for case in cases:
+mass_min = 100
+mass_best_bolt = 100
+mass_best_plate = 100
+w_lug = 0.0471
+for t in np.linspace(0.01,0.0005,1001):
+    for bolt in bolt_D_standarts:
+        D=bolt[0]/1000
+        for bolt_mat in materials_all:
+            plate_mat = Al2014T6
+            w = w_lug + D
+            if min(GetSFs(D, t, w,w,n, plate_mat, bolt_mat))>1.5:
+                
+                #h=w
+                W = w + 4*D
+                mass_plate = massBackPlate(plate_mat, W, t,D)
+                mass_bolt = massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
+                #mass = massBackPlate(plate_mat, W, t) + n * massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
+                mass = mass_plate + n*mass_bolt
 
-                    if mass<mass_min:
-                        optimal_Values=(D,t,w,W)
-                        mass_min = mass
-                        mass_best_bolt = mass_bolt
-                        mass_best_plate = mass_plate
-                        best_bolt = bolt
-    print("Plate material: {}, Bolt material: {}".format(plate_mat.n, bolt_mat.n))
-    print("Optimal fastener diameter, thickness, distance between fasteners, width")
-    print(optimal_Values)
-    #print("")
-    print("Total mass: {}, Plate mass: {}, single Bolt mass: {}, total Bolt mass: {}".format(mass_min,mass_best_plate,mass_best_bolt, mass_best_bolt*n))
-    #print("")
-    
-    print("Bolt diameter: {}, Bolt length: {}, Nut/head width: {}, Nut/head thickness: {}".format(best_bolt[0], optimal_Values[1]*2000+best_bolt[2]*2 + 2*best_bolt[3],best_bolt[1], best_bolt[2]))
-    print("")
-    print("")
-    print("")
+                if mass<mass_min:
+                    optimal_Values=(D,t,w,W)
+                    mass_min = mass
+                    mass_best_bolt = mass_bolt
+                    mass_best_plate = mass_plate
+                    best_bolt = bolt
+print("Plate material: {}, Bolt material: {}".format(plate_mat.n, bolt_mat.n))
+print("Optimal fastener diameter, thickness, distance between fasteners, width")
+print(optimal_Values)
+#print("")
+print("Total mass: {}, Plate mass: {}, single Bolt mass: {}, total Bolt mass: {}".format(mass_min,mass_best_plate,mass_best_bolt, mass_best_bolt*n))
+#print("")
 
+
+print("Bolt diameter: {}, Bolt length: {}, Nut/head width: {}, Nut/head thickness: {}".format(best_bolt[0], optimal_Values[1]*2000+best_bolt[2]*2 + 2*best_bolt[3],best_bolt[1], best_bolt[2]))
+print("")
+print("")
+print("")
+d = optimal_Values[2]/2
+print(d)
+cord_for_pullthrough_wall = [[-d,-d,d,d,-d,-d,d,d],[-d-h_rtg/2,d-h_rtg/2,-d-h_rtg/2,d-h_rtg/2,-d+h_rtg/2,d+h_rtg/2,-d+h_rtg/2,d+h_rtg/2]]
+
+wall_stress = pull_through_fail_standalone(4,best_bolt[0]/1000,best_bolt[1]/1000,cord_for_pullthrough_wall,optimal_Values[1],optimal_Values[1],36,l_rtg,h_rtg/2)
+
+print(Al2024T3.y/max(wall_stress))
+print(max(wall_stress))
 
 print("--- runtime: %s seconds ---" % (time.time() - start_time))
