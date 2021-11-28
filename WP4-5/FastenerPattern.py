@@ -68,21 +68,21 @@ def GetSFs (D_1st,thickness,w,h,n,material_plate, material_bolt):
     return SF_Shear_Failure, SF_bearing_failure, SF_Tension_Failure
 
 flange = Flange(inch_to_m(1+3/4),inch_to_m(1),inch_to_m(1+3/8),Al2014T6,inch_to_m(3))
-lug = Lug(flange,inch_to_m(2.038),2)
+#lug = Lug(flange,inch_to_m(2.038),2)
 
-def getSF_lug(lug):
-    #F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
-    SF_thickness = lug.f.t/lug.minimum_t((F.F_x,F.F_y,F.F_z))
-    SF_diameter_min = lug.f.d/lug.minimum_d((F.F_x,F.F_y,F.F_z))
-    SF_width = lug.f.w/lug.minimum_w((F.F_x,F.F_y,F.F_z))
-    SF_diameter_max = 1/(lug.f.d/lug.maximum_d((F.F_x,F.F_y,F.F_z)))
-    #print(lug.minimum_w((F.F_x,F.F_y,F.F_z)))
-    return SF_diameter_min, SF_diameter_max, SF_thickness, SF_width
+# def getSF_lug(lug):
+#     #F = Loads(353.0394, 2118.2364, 4069.2436105263155, 0, 141.21576000000002, 0)
+#     SF_thickness = lug.f.t/lug.minimum_t((F.F_x,F.F_y,F.F_z))
+#     SF_diameter_min = lug.f.d/lug.minimum_d((F.F_x,F.F_y,F.F_z))
+#     SF_width = lug.f.w/lug.minimum_w((F.F_x,F.F_y,F.F_z))
+#     SF_diameter_max = 1/(lug.f.d/lug.maximum_d((F.F_x,F.F_y,F.F_z)))
+#     #print(lug.minimum_w((F.F_x,F.F_y,F.F_z)))
+#     return SF_diameter_min, SF_diameter_max, SF_thickness, SF_width
 
-print("")
-print("")
-print("Safety Factors Flanges:  diameter min, diameter max, thickness, width")
-print(getSF_lug(lug))
+# print("")
+# print("")
+# print("Safety Factors Flanges:  diameter min, diameter max, thickness, width")
+# print(getSF_lug(lug))
 
 thickness = inch_to_m(7/8)
 D = inch_to_m(5/8)
