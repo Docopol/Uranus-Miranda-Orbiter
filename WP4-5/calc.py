@@ -10,7 +10,7 @@ l_rtg = 0.760
 r_tot = l_rtg/2 + l_gap
 h_rtg = 0.456
 w_rtg = 0.390
-print(r_tot)
+
 
 wx = a_x * m
 wy = a_y * m
@@ -33,5 +33,6 @@ f_z_bot = 1/2 * wz + wy * r_tot/h_rtg
 M_y_bot = 1/2 * wx * r_tot
 
 if __name__ == '__main__':
+    print(r_tot)
     print(f'Top: Fx={f_x_top}, Fy={f_y_top}, Fz={f_z_top}, My={M_y_top}')
     print(f'Bot: Fx={f_x_bot}, Fy={f_y_bot}, Fz={f_z_bot}, My={M_y_bot}')
