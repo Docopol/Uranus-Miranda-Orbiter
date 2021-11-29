@@ -1,8 +1,8 @@
 import math
 import matplotlib.pyplot as plt
-import scipy as sc
+#import scipy as sc
 
-
+"""
 def temperature(d):  # only if 278K < T < 288
     I = I_sun / d ** 2
     f0 = (a * A1 * I + Q_g) / (A2 * stph)
@@ -10,6 +10,10 @@ def temperature(d):  # only if 278K < T < 288
     T = sc.roots(f)
     t = float(str(T[0]).split('+')[0][1:])  # gets the first solution
     return t
+"""
+
+def intensity(d):
+    return (I_sun / d ** 2)
 
 
 I_sun = 30459109.914585304
@@ -24,13 +28,21 @@ Q_g = 3250
 stph = 5.67 * 10 ** (-8)
 I = I_sun / d ** 2
 
+"""
 first = True
 T = temperature(d)
 t_list = list()
+"""
 d_list = list()
+
+I_list = list()
+I_list.append(I)
+d_list.append(d * 10 ** 9 / AU)
 while d < d_U:
     d += 1
-
+    I_list.append(intensity(d))
+    d_list.append(d * 10 ** 9 / AU)
+    """
     if 278 < T < 288:
         T = temperature(d)
     else:
@@ -47,10 +59,11 @@ while d < d_U:
         first = False
     t_list.append(T)
     d_list.append(d * 10**9 / AU)
+    """
 
-print(T)
-plt.plot(d_list, t_list)
+
+plt.plot(d_list, I_list)
 plt.xlabel('Distance [AU]')
-plt.ylabel('Temperature [K]')
+plt.ylabel('Intensity [W/m^2]')
 plt.grid()
 plt.show()
