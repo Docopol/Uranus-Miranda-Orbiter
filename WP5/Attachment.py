@@ -1,4 +1,5 @@
 import numpy as np
+import time
 # Assumptions:
     # The distribution of the attachment system will be symmetrical
     # At least two attachments will be present on each side of the wall (min = 16)
@@ -129,13 +130,37 @@ def mass(density, w, t, d, l):
     return volume * density
 
 
-trange = np.linspace(0.01, 0.0005, 50)
-wrange = np.linspace(0.1, 0.008, 50)
-drange = np.linspace(0.08, 0.005, 50)
-lrange = np.linspace(0.1, 0.02, 50)
-srange = np.linspace(0.05, 0.01, 50)
+n = 10  # Steps in the iteration
+trange = np.linspace(0.01, 0.0005, n)
+wrange = np.linspace(0.1, 0.008, n)
+drange = np.linspace(0.08, 0.005, n)
+lrange = np.linspace(0.1, 0.02, n)
+srange = np.linspace(0.05, 0.01, n)
 
 nrange = np.array([40, 32, 24, 16, 8])
 m_i = 10000000
 
+# Volume can be calculated as t(wl + (pi/8)(w^2-d^2))
+w1, l1 = np.meshgrid(wrange, lrange)
+w2, d1 = np.meshgrid(wrange, drange)
+
+wl = w1*l1
+wd = (np.pi/8)*(w2**2 - d1**2)
+t_arr = np.tile(trange, (len(trange), 1))
+
+# Decompose the arrays into arrays of the same size made out of its columns
+t_array = np.tile(t_arr[:, 0], (len(trange), 1))
+wld = np.tile(wl[:, 0], (n, 1))
+wld += wd
+for i in range(len(wl)-1):
+    z = i + 1
+    x = np.tile(wl[:, z], (len(wld), 1))
+    wld = np.hstack((wld, x.transpose() + wd))
+    x = np.tile(t_arr[:, z], (len(trange), 1))
+    t_array = np.hstack((t_array, x))
+
+
+t_array = np.tile(t_array, (n, 1)).transpose()
+wld = np.tile(wld, (n, 1))
+volumes = t_array * wld
 
