@@ -66,8 +66,8 @@ D_over_t = D/thickness
 h = w
 W_over_w = W/w
 
-def massBackPlate (material,W,t, D):
-    A = W**2 - math.pi * D**2
+def massBackPlate (material,W,t, n,D):
+    A = W**2 - n*math.pi * D**2
     return material.d*A*t
 
 def massBolt (material,D_in,D_out,h,L):
@@ -77,7 +77,7 @@ SFs = GetSFs(D, thickness, w, h, n, Al2014T6, StA992)
 
 print("Safety Factors Backplate/Fasteners: Shear, Pull-through, Tension")
 print(SFs)
-mass_min = massBackPlate(Al2014T6,W,thickness,D) + n * massBolt(StA992,D, D*1.5,D/1.5,2*thickness+2*D/1.5)
+mass_min = massBackPlate(Al2014T6,W,thickness,n,D) + n * massBolt(StA992,D, D*1.5,D/1.5,2*thickness+2*D/1.5)
 
 while (min(SFs) > 1.5):  # constant dimensions
     thickness = thickness - 0.00025
@@ -111,12 +111,12 @@ for t in np.linspace(0.01,0.0005,1001):
     for bolt in bolt_D_standarts:
         D=bolt[0]/1000
         for bolt_mat in materials_all:
-            plate_mat = Al2014T6
+            plate_mat = Al7075T6
             w = w_lug + D
             if min(GetSFs(D, t, w,w,n, plate_mat, bolt_mat))>1.5:
                 
                 W = w + 4*D
-                mass_plate = massBackPlate(plate_mat, W, t,D)
+                mass_plate = massBackPlate(plate_mat, W, t,n,D)
                 mass_bolt = massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
                 mass = mass_plate + n*mass_bolt
 
