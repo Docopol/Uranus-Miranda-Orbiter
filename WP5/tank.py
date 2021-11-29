@@ -1,4 +1,4 @@
-import calc, constants
+import Forces_FBD, constants
 
 class tank(self, diameter, length, thickness, material):
 	self.d = diameter
