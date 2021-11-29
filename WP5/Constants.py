@@ -39,7 +39,7 @@ Al6061T6 = Material(        # done
     TEC=24e-6
 )
 
-MgAM60 = Material(        # done
+MgAM60 = Material(
     name='Mg-Am60',
     Youngs_Modulus=45e9,
     yield_stress=130e6,
@@ -47,7 +47,7 @@ MgAM60 = Material(        # done
     TEC=26e-6
 )
 
-StA992 = Material(        # done
+StA992 = Material(
     name='St-A992',
     Youngs_Modulus=200e9,
     yield_stress=345e6,
@@ -55,7 +55,7 @@ StA992 = Material(        # done
     TEC=12e-6
 )
 
-Al7075T6 = Material( # done
+Al7075T6 = Material(
     name='Al7075-T6',
     Youngs_Modulus=71.7e9,
     yield_stress=503e6,
@@ -63,7 +63,7 @@ Al7075T6 = Material( # done
     TEC=23.6e-6
 )
 
-Al2024T3 = Material( # done
+Al2024T3 = Material(
     name='Al2024-T3',
     Youngs_Modulus=73.1 * 10 ** 9,
     yield_stress=345 * 10 ** 6,
@@ -95,7 +95,7 @@ St4130 = Material(
 )
 # http://www.matweb.com/search/DataSheet.aspx?MatGUID=e1ccebe90cf94502b35c2a4745f63593
 
-Ti6Al4V = Material(         # done
+Ti6Al4V = Material(
     name='Ti-6Al-4V',
     Youngs_Modulus=120e9,
     yield_stress=924e6,
@@ -104,7 +104,7 @@ Ti6Al4V = Material(         # done
 )
 #http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=MTP641
 
-MgAZ91CT6 = Material( # done
+MgAZ91CT6 = Material(
     name='MgAZ91C-T6',
     Youngs_Modulus=44.8 * 10 ** 9,
     yield_stress=145 * 10 ** 6,
