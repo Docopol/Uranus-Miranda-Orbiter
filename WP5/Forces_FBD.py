@@ -13,7 +13,7 @@ def reaction_moments(h):
     Rx = Px
     Ry = Py
     Rz = Pz
-    Mx = Pz*h
+    Mx = Pz * h
     My = 0
-    Mz = Px*h
+    Mz = Px * h
     return Rx, Ry, Rz, Mx, My, Mz
