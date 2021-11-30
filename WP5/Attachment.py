@@ -131,21 +131,21 @@ def mass(density, w, t, d, l):
 
 
 n = 10  # Steps in the iteration
-trange = np.linspace(0.01, 0.0005, n)
-wrange = np.linspace(0.1, 0.008, n)
-drange = np.linspace(0.08, 0.005, n)
-lrange = np.linspace(0.1, 0.02, n)
-srange = np.linspace(0.05, 0.01, n)
+trange = np.linspace(10, 0.5, n)
+wrange = np.linspace(100, 8, n)
+drange = np.linspace(80, 5, n)
+lrange = np.linspace(100, 20, n)
+srange = np.linspace(50, 10, n)
 
 nrange = np.array([40, 32, 24, 16, 8])
 m_i = 10000000
 
 # Volume can be calculated as t(wl + (pi/8)(w^2-d^2))
 w1, l1 = np.meshgrid(wrange, lrange)
-w2, d1 = np.meshgrid(wrange, drange)
+d1 = np.meshgrid(wrange, drange)[1]
 
 wl = w1*l1
-wd = (np.pi/8)*(w2**2 - d1**2)
+wd = (np.pi/8)*(w1**2 - d1**2)
 t_arr = np.tile(trange, (len(trange), 1))
 
 # Decompose the arrays into arrays of the same size made out of its columns
@@ -163,4 +163,20 @@ for i in range(len(wl)-1):
 t_array = np.tile(t_array, (n, 1)).transpose()
 wld = np.tile(wld, (n, 1))
 volumes = t_array * wld
+
+# Physical constraints
+volumes = np.where(volumes <= 0, np.nan, volumes)
+m = 0
+for i in range(len(volumes)):
+    if m == n:
+        m = 0
+    w_value = wrange[m]
+    greater_d = np.where(drange>w_value)
+    smaller_l = np.where(lrange<w_value/2) * np.array([n])
+    for j in range(n):
+        sl = smaller_l + j
+        volumes[i, sl] = np.nan
+        volumes[i, greater_d] = np.nan
+        greater_d += np.array([n])
+    m += 1
 
