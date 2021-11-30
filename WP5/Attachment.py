@@ -1,17 +1,12 @@
 import numpy as np
+from materials import material_dict
 import time
-# Assumptions:
-    # The distribution of the attachment system will be symmetrical
-    # At least two attachments will be present on each side of the wall (min = 16)
 
-# Variables for the lug design: w, d, l, t, sep, number
-# Use the same program for back plate
-
+t1 = time.time()
 fx, fy, fz, my = 353.0394, 1059.1182, 1105.570752631579, 0
 
 
-def K_t(material, w, d):
-    matn = material.get_name()
+def K_t(matn, w, d):
     x = w/d
     c1 = 0.0006 * x ** 6 - 0.0099 * x ** 5 + 0.0636 * x ** 4 - 0.1779 * x ** 3 + 0.1932 * x ** 2 - 0.0412 * x + 0.9727
     c2 = -0.0045 * x ** 5 + 0.0414 * x ** 4 - 0.129 * x ** 3 + 0.1296 * x ** 2 + 0.0066 * x + 0.9568
@@ -95,50 +90,28 @@ def K_bry(t, w, d):
     return k
 
 
-def check_failure(material, t, w, d, l, sep):
-    sigma = fz / (t * (w - d) * K_t(material, w, d))
-    sigma_t = fy / ((d * t) * K_ty( t, w, d))
-    sigma_br = fz / ((d * t) * K_bry(t, w, d))
-    sigma_ben_x = 6 * (fx * l) / (w * t ** 2) + \
-                  my * (sep / 2 + t) / (w * t ** 3 / 6 + 2 * w * t * (sep + t) ** 2 / 4)
-    sigma_ben_y = 6 * fy * l / (t * w ** 2)
-    if sigma*1.5 >= material.get_stress():
-        failure = True
-        stress = sigma
-    elif sigma_t*1.5 >= material.get_stress():
-        failure = True
-        stress = sigma_t
-    elif sigma_br*1.5 >= material.get_stress():
-        failure = True
-        stress = sigma_br
-    elif sigma_ben_x*1.5 >= material.get_stress():
-        failure = True
-        stress = sigma_ben_x
-    elif sigma_ben_y*1.5 >= material.get_stress():
-        failure = True
-        stress = sigma_ben_y
-    else:
-        failure = False
-        stress = int()
-
-    return failure, stress
+def lmax(sigma, w, t, sep):
+    l1 = w*t**2 / (6*fx) * (sigma - 6*my*(sep/2 + t)/(w*t**3 + 3*w*t*(sep+t)))
+    l2 = sigma * t * w**2 / (6*fy)
+    return min([l1, l2])
 
 
-def mass(density, w, t, d, l):
-    area = 1/2 * np.pi * (w / 2) ** 2 - np.pi * (d / 2) ** 2 + w * l
-    volume = area * t
-    return volume * density
+def dmin(t, sigma, kty, kbry):
+    d1 = fy / (t * sigma * kty)
+    d2 = fz / (t * sigma * kbry)
+    return max([d1, d2])
 
 
-n = 10  # Steps in the iteration
-trange = np.linspace(10, 0.5, n)
-wrange = np.linspace(100, 8, n)
-drange = np.linspace(80, 5, n)
-lrange = np.linspace(100, 20, n)
-srange = np.linspace(50, 10, n)
+n = 50  # Steps in the iteration
+trange = np.linspace(10/1000, 0.5/1000, n)
+wrange = np.linspace(100/1000, 8/1000, n)
+drange = np.linspace(80/1000, 5/1000, n)
+lrange = np.linspace(100/1000, 20/1000, n)
+# srange = np.linspace(50, 10, n)
 
-nrange = np.array([40, 32, 24, 16, 8])
-m_i = 10000000
+# nrange = np.array([40, 32, 24, 16, 8])
+mat = material_dict['Al2014T6']
+separation = 500
 
 # Volume can be calculated as t(wl + (pi/8)(w^2-d^2))
 w1, l1 = np.meshgrid(wrange, lrange)
@@ -165,7 +138,7 @@ wld = np.tile(wld, (n, 1))
 volumes = t_array * wld
 
 # Physical constraints
-volumes = np.where(volumes <= 0, np.nan, volumes)
+volumes = np.where(volumes <= 0, 0, volumes)
 m = 0
 for i in range(len(volumes)):
     if m == n:
@@ -175,8 +148,38 @@ for i in range(len(volumes)):
     smaller_l = np.where(lrange<w_value/2) * np.array([n])
     for j in range(n):
         sl = smaller_l + j
-        volumes[i, sl] = np.nan
-        volumes[i, greater_d] = np.nan
+        volumes[i, sl] = 0
+        volumes[i, greater_d] = 0
         greater_d += np.array([n])
     m += 1
 
+# Check for failure
+m = 0
+for i in range(len(volumes)):
+    if m == n:
+        m = 0
+
+    w_value = wrange[m]
+    t_value = trange[int(str(i/n).split('.')[0])]
+    l_max = lmax(mat['t_yield_stress'], w_value, t_value, separation)
+    greater_l = np.where(lrange > l_max) * np.array([n])
+    for j in range(n):
+        gl = greater_l + j
+        volumes[i, greater_l] = 0
+
+        k_t = K_t(mat['name'], w_value, drange[j])
+        d_max = w_value - fz / (t_value * mat['t_yield_stress'] * k_t)
+
+        k_ty = K_ty(t_value, w_value, drange[j])
+        k_bry = K_bry(t_value, w_value, drange[j])
+        d_min = dmin(t_value, mat['t_yield_stress'], k_ty, k_bry)
+
+        if drange[j] < d_min or drange[j] > d_max:
+            volumes[i, j] = 0
+
+    m += 1
+
+mass = mat['density'] * volumes
+for i in range(len(mass)):
+    mass[i, np.where(mass[i] == 0)] = 100000
+print(np.min(mass), np.where(mass == np.min(mass)), time.time()-t1)
