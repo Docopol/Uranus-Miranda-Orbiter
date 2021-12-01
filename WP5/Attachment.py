@@ -182,4 +182,14 @@ for i in range(len(volumes)):
 mass = mat['density'] * volumes
 for i in range(len(mass)):
     mass[i, np.where(mass[i] == 0)] = 100000
-print(np.min(mass), np.where(mass == np.min(mass)), time.time()-t1)
+
+min_mass = np.min(mass)
+row, column = np.where(mass == min_mass)
+
+w_opt = wrange[row - n*int(str(row/n).split('.')[0])]
+t_opt = trange[int(str(row/n).split('.')[0])]
+
+d_opt = drange[column - n*int(str(column/n).split('.')[0])]
+l_opt = lrange[int(str(column/n).split('.')[0])]
+
+print(min_mass, w_opt, t_opt, d_opt, l_opt, time.time()-t1)
