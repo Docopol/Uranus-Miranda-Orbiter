@@ -2,7 +2,7 @@ import numpy as np
 from Constants import *
 
 
-def frequency_SC(M, E, A, I, L):
+def frequency_SC(E, M, A, I, L):
     k_y = E * A / L  # Longitudinal direction
     k_xz = 3 * E * I / np.power(L, 3)  # Lateral direction
 
@@ -14,4 +14,4 @@ def frequency_SC(M, E, A, I, L):
     return f_nat, f_n1, f_n2
 
 
-print(frequency_SC(18119.35, 73.1e9, 2 * np.pi * 1.8 * 0.0005, np.pi * np.power(1.8, 3) * 0.0005, 8.235))
+print(frequency_SC(73.1e9, 18119.35, 2 * np.pi * 1.8 * 0.0005, np.pi * np.power(1.8, 3) * 0.0005, 8.235))
