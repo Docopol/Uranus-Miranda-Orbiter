@@ -84,10 +84,10 @@ def second_iteration(dob_lug):
 
 distance_to_rtgs_cg = 0.38
 
-w_initial = 0.04445
-t_initial = 0.01
-d_initial = 0.034925
-l_initial = 0.053975
+w_initial = 0.0977
+t_initial = 0.0005
+d_initial = 0.07625
+l_initial = 0.02
 
 flange = Flange(
         width=w_initial,
@@ -97,7 +97,7 @@ flange = Flange(
         length=l_initial
     )
 
-loads = [f_x_bot, f_y_bot/2, f_z_bot/2]
+loads = [f_x_bot, f_y_bot, f_z_bot]
 ms, tp = flange.margin_of_safety(loads, M_y_bot)
 print(f'Initial iteration has a safety factor of {ms}, and has a mass of {1000*flange.mass()} g')
 for item in material_dict:
