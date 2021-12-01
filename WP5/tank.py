@@ -3,12 +3,13 @@ import numpy as np
 from scipy.optimize import minimize
 
 class Tank:
-	def __init__(self, radius, length, thickness1, thickness2, material):
+	def __init__(self, radius, length, thickness1, thickness2, material, pressure):
 		self.r = radius
 		self.l = length
 		self.t1 = thickness1
 		self.t2 = thickness2
 		self.mat = material
+		self.p = pressure
 
 	def InnerPressureF(self, radius=None, length=None, thickness1=None, thickness2=None, material=None):
 		if(radius != None):
@@ -36,16 +37,19 @@ class Tank:
 
 	def ShellBuckling(self, pressure, radius=None, length=None, thickness1=None, material=None):
 		if(radius != None):
-			k = lambda fLambda : fLambda + (12*L**4)/(np.pi**4*radius**2*thickness1**2)*(1-material["poisson_ratio"]**2)/fLambda
+			k = lambda fLambda : fLambda + (12*length**4)/(np.pi**4*radius**2*thickness1**2)*(1-material["poisson_ratio"]**2)/fLambda
 			bestLambda = minimize(k, 1, method="BFGS", options={"gtol":1e-4, "disp": True}).x
 			Q = pressure/material["E_modulus"]*(radius/thickness1)**2
-			criticalStressS = (1.983-0.983*np.exp**(-23.14*Q))*bestLambda*(np.pi**2*material["E_modulus"]/(12*(1-materia["poisson_ratio"]**2)))*(thickness1/length)**2
+			criticalStressS = (1.983-0.983*np.exp(-23.14*Q))*bestLambda*(np.pi**2*material["E_modulus"]/(12*(1-material["poisson_ratio"]**2)))*(thickness1/length)**2
 		else:
-			k = lambda fLambda : fLambda + (12*L**4)/(np.pi**4*self.r**2*self.t1**2)*(1-self.mat["poisson_ratio"]**2)/fLambda
+			k = lambda fLambda : fLambda + (12*self.l**4)/(np.pi**4*self.r**2*self.t1**2)*(1-self.mat["poisson_ratio"]**2)/fLambda
 			bestLambda = minimize(k, 1, method="BFGS", options={"gtol":1e-4, "disp": True}).x
 			Q = pressure/self.mat["E_modulus"]*(self.r/self.t1)**2
-			criticalStressS = (1.983-0.983*np.exp**(-23.14*Q))*bestLambda*(np.pi**2*self.mat["E_modulus"]/(12*(1-self.mat["poisson_ratio"]**2)))*(self.t1/self.l)**2
+			criticalStressS = (1.983-0.983*np.exp(-23.14*Q))*bestLambda*(np.pi**2*self.mat["E_modulus"]/(12*(1-self.mat["poisson_ratio"]**2)))*(self.t1/self.l)**2
 
 		return criticalStressS
 
-
+	def MassOptimization(self, initialTank):
+		for material in materials.material_dict:
+			mass = lambda radius, length, thickness1, thickness2: (4*np.pi*r**2*thickness2+2*np.pi*radius*length)*material["density"] 
+			print(mass)
