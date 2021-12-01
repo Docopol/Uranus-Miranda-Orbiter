@@ -1,35 +1,8 @@
 import numpy as np
-import math
-from Constants import *
-fx, fy, fz, my = 353.0394,1059.1182,1105.570752631579,141.21576000000002
-sep = 0.020
+import math as m
 
 
-def check_failure(material, t, w, d, l):
-    sigma = fz / (t * (w - d) * K_t(material, w, d))
-    sigma_t = fy / ((d * t) * K_ty(material, t, w, d))
-    sigma_br = fz / ((d * t) * K_bry(t, w, d))
-    sigma_ben_x = 6 * (fx * l) / (w * t ** 2) + \
-         my * (sep / 2 + t) / (w * t ** 3 / 6 + 2 * w * t * (sep + t) ** 2 / 4)
-    sigma_ben_y = 6 * fy * l / (t * w ** 2)
-    if sigma*1.5 >= material.get_stress():  # From equation 3.1
-        failure = True
-    elif sigma_t*1.5 >= material.get_stress():  # From equation 3.3
-        failure = True
-    elif sigma_br*1.5 >= material.get_stress():  # From equation 3.5
-        failure = True
-    elif sigma_ben_x*1.5 >= material.get_stress():
-        failure = True
-    elif sigma_ben_y*1.5 >= material.get_stress():
-        failure = True
-    else:
-        failure = False
-
-    return failure, sigma/10**6, sigma_t/10**6, sigma_br/10**6, sigma_ben_x/10**6, sigma_ben_y/10**6
-
-
-def K_t(material, w, d):
-    matn = material.get_name()
+def K_t(matn, w, d):
     x = w/d
     c1 = 0.0006 * x ** 6 - 0.0099 * x ** 5 + 0.0636 * x ** 4 - 0.1779 * x ** 3 + 0.1932 * x ** 2 - 0.0412 * x + 0.9727
     c2 = -0.0045 * x ** 5 + 0.0414 * x ** 4 - 0.129 * x ** 3 + 0.1296 * x ** 2 + 0.0066 * x + 0.9568
@@ -58,9 +31,8 @@ def K_t(material, w, d):
     return k
 
 
-def K_ty(material, t, w, d):
-    matn = material.get_name()
-    A1 = t * (w - d * math.sqrt(1 / 2)) / 2
+def K_ty(t, w, d):
+    A1 = t * (w - d * np.sqrt(1 / 2)) / 2
     A2 = t * (w - d) / 2
     A_av = 6 / (4 / A1 + 2 / A2)
     A_br = t * d
@@ -112,42 +84,3 @@ def K_bry(t, w, d):
         k = 0.01
 
     return k
-
-
-def mass(material, w, t, d, l):
-    area = 1/2 * math.pi * (w / 2) ** 2 - math.pi * (d / 2) ** 2 + w * l
-    volume = area * t
-    return volume * material.get_density()
-
-
-mat = Al2014T6
-trange = np.linspace(10*10**(-3), 0.5*10**(-3), 41)
-wrange = np.linspace(100*10**(-3), 8*10**(-3), 41)
-drange = np.linspace(80*10**(-3), 5*10**(-3), 41)
-lrange = np.linspace(100*10**(-3), 20*10**(-3), 41)
-
-m_i = 10000000
-
-# check_failure(material, t, w, d, l)
-print(check_failure(mat, 0.0005, 0.0977, 0.07625, 0.02))
-
-
-for t in trange:
-    for w in wrange:
-        for d in drange:
-            if d >= w:
-                continue
-            for l in lrange:
-                if l <= w/2 or 1/2 * math.pi * (w / 2) ** 2 - math.pi * (d / 2) ** 2 + w * l <= 0:
-                    continue
-                else:
-                    fail = check_failure(mat, t, w, d, l)[0]
-                    if fail:
-                        break
-                    else:
-                        m = mass(mat, w, t, d, l)
-                        s, s_t, s_br, s_ben_x, s_ben_y = check_failure(mat, t, w, d, l)[1:]
-                        if m < m_i:
-                            m_i = m
-                            print("mass (g) - {}, thickness - {}, width - {}, diameter - {}, length - {}, sigma - {}, sigma_t - {}, sigma_br - {}, sigma_ben_x - {}, sigma_ben_y - {}".format(m_i*1000, t, w, d, l, s, s_t, s_br, s_ben_x, s_ben_y))
-
