@@ -1,13 +1,30 @@
 import numpy as np
 from Constants import *
+import cmath
 
-sc_mat = Al7075T6
+SC_mat = Al7075T6
+Tank_mat = Al7075T6
+r = 1.8
+d = r * 2
+t = 2.01 * 1e-3
+L_SC = 8.235
+L_Tank = 2
+A_SC = 2 * np.pi * 1.8 * 0.0005
+A_Tank = 0.002
 
-def frequency_SC(E, M, A, I, L):
+rho_SC = SC_mat.get_density()
+rho_Tank = Tank_mat.get_density()
+E_SC = SC_mat.get_E()
+E_Tank = Tank_mat.get_E()
+m_SC = 2 * np.pi * (np.power(d, 2) / 4 + d / 2 * L_SC) * t * rho_SC
+m_Tank = 100
+
+
+def frequency(E, M, A, L):
     k_y = E * A / L  # Longitudinal direction
 
     f_nat = np.sqrt(k_y / M) / (2 * np.pi)
-    f_launcher = 30
+    f_launcher = 25
 
     return f_nat, f_nat > f_launcher, k_y
 
