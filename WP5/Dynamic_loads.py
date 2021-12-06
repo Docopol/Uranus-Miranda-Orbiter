@@ -9,16 +9,32 @@ def frequency_SC(E, M, A, I, L):
     f_nat = np.sqrt(k_y / M) / (2 * np.pi)
     f_launcher = 30
 
-    return f_nat, f_nat > f_launcher
+    return f_nat, f_nat > f_launcher, k_y
 
-r = 1.8
-d = r*2
-t = 2.01 * 1e-3
-L = 8.235
-A = 2 * np.pi * 1.8 * 0.0005
 
-rho = sc_mat.get_density()
-E = sc_mat.get_E()
-m_SC = 2*np.pi*(np.power(d , 2)/4 + d / 2 * L) * t * rho
+print(f'Natural Frequency of S/C is {frequency(E_SC, m_SC, A_SC, L_SC)}')
+print(f'Natural Frequency of Tank is {frequency(E_Tank, m_Tank, A_Tank, L_Tank)}')
 
-print(frequency_SC(73.1e9, 18119.35, 2 * np.pi * 1.8 * 0.0005, np.pi * np.power(1.8, 3) * 0.0005, 8.235))
+k1 = frequency(E_SC, m_SC, A_SC, L_SC)[2]
+k2 = frequency(E_Tank, m_Tank, A_Tank, L_Tank)[2]
+
+"""
+M = np.matrix([[m_SC, 0], [0, m_Tank]])
+K = np.matrix([[k_1 + k_2, -k_2], [-k_2, k_2]])
+"""
+m1 = m_SC
+m2 = m_Tank
+
+a = m1 * m2
+b = m1 * k2 + m2 * k1 + m2 * k2
+c = k1 * k2
+
+d = b ** 2 - 4 * a * c
+
+omega_sq1 = (-b + cmath.sqrt(d))/(2*a)
+omega_sq2 = (-b - cmath.sqrt(d))/(2*a)
+
+omega1 = cmath.sqrt(-omega_sq1)/(2*np.pi)
+omega2 = cmath.sqrt(-omega_sq2)/(2*np.pi)
+
+print(omega1, omega2)
