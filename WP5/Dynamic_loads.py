@@ -102,9 +102,8 @@ def particular_vs_freq(fn):
     f_f = np.arange(0, 100, 0.1)
     om_f = f_f * 2 * np.pi
 
-    d_p = 2 * (a_0 / (om_n ** 2 - om_f ** 2))
+    d_p = 2 * (a_0 / abs((om_n ** 2 - om_f ** 2)))
 
-    d_p = abs(d_p)
     plt.title("Amplitude of Particular Solution vs Forcing Frequency")
     plt.plot(f_f, d_p)
     plt.ylim(0, 0.001)
