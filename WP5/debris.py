@@ -22,11 +22,10 @@ p4 = 4
 p5 = -0.36
 p6 = -0.85
 
+#other stuff
 A = 119.1
 thickness = 2
 mission_time = 20
-
-#other stuff
 K = 0.7
 v = 20
 
@@ -66,7 +65,7 @@ ax.xaxis.set_ticks_position('bottom')
 ax.yaxis.set_ticks_position('left')
 
 # plot the function
-plt.plot(x,y, 'k')
+plt.plot(x,t, 'k')
 
 # show the plot
 plt.show()
