@@ -2,6 +2,7 @@ import materials, standards, Forces_FBD
 import numpy as np
 from scipy.optimize import minimize
 
+
 class Tank:
 	def __init__(self, radius, length, thickness1, thickness2, material, pressure):
 		self.r = radius

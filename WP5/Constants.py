@@ -139,3 +139,9 @@ bolt_D_standarts = (
 
 
 hex_circ_Ratio = 1.10266
+
+import numpy as np
+coeff1 = [-2/3*np.pi, np.pi*8.235, 0, - 13.98544]
+print(np.roots(coeff1))
+coeff2 = [np.pi*1.8**2, -2/3*np.pi*1.8**3 - 13.98544]
+print(np.roots(coeff2))
