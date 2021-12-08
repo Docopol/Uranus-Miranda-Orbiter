@@ -49,18 +49,23 @@ class Tank:
 
 	# 	return criticalStressS
 
-	def InnerPressureF(self, params):
+	def InnerPressureFCase(self, params):
 		if(params.all() != None):
 			radius, length, thickness1, thickness2, tYieldStress, EMod, poissonR, pressure = params
 			radialBurstPressureCyl = tYieldStress*thickness1/radius
-			radialBurstPressureEnd = tYieldStress*thickness2/radius
 		else:
 			radialBurstPressureCyl = self.mat["t_yield_stress"]*self.t1/self.r
+
+		return radialBurstPressureCyl
+
+	def InnerPressureFCap(self, params):
+		if(params.all() != None):
+			radius, length, thickness1, thickness2, tYieldStress, EMod, poissonR, pressure = params
+			radialBurstPressureEnd = tYieldStress*thickness2/radius
+		else:
 			radialBurstPressureEnd = self.mat["t_yield_stress"]*self.t2/self.r
 
-		failurePressure = np.minimum(radialBurstPressureCyl, radialBurstPressureCyl)
-
-		return failurePressure
+		return radialBurstPressureEnd
 
 	def EulerColumnBucklingF(self, params):
 		if(params.all() != None):
@@ -90,23 +95,47 @@ class Tank:
 		return criticalStressS
 
 
-	def MassOptimization(self, initialTank):
-		for material in materials.material_dict.values():
-			def Mass(variables): 
-				radius, length, thickness1, thickness2, tYieldStress, EMod, poissonR, pressure = variables
-				massConfiguration = (4*np.pi*radius**2*thickness2+2*np.pi*radius*length)*material["density"]
+	# def MassOptimization(self, initialTank):
+	# 	for material in materials.material_dict.values():
+	# 		def Mass(variables): 
+	# 			radius, length, thickness1, thickness2, tYieldStress, EMod, poissonR, pressure = variables
+	# 			massConfiguration = (4*np.pi*radius**2*thickness2+2*np.pi*radius*length)*material["density"]
 
-				return massConfiguration
+	# 			return massConfiguration
 
-			bounds = sco.Bounds([0.4, 0.4, 5e-5, 5e-5, material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.p], [4, 20, 1e-1, 1e-1, material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.p])
+	# 		bounds = sco.Bounds([0.4, 0.4, 5e-5, 5e-5, material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.p], [4, 20, 1e-1, 1e-1, material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.p])
 
-			def ConstrainF(variables):
-				return [self.InnerPressureF(variables), self.EulerColumnBucklingF(variables), self.ShellBuckling(variables)]
+	# 		def ConstrainF(variables):
+	# 			return [self.InnerPressureF(variables), self.EulerColumnBucklingF(variables), self.ShellBuckling(variables)]
 
-			cons = sco.NonlinearConstraint(ConstrainF, [0, 1e8, 1e8], [5e7, np.inf, np.inf])
+	# 		cons = sco.NonlinearConstraint(ConstrainF, [0, 1e8, 1e8], [5e7, np.inf, np.inf])
 			
-			res = sco.minimize(Mass, [1, 1, 1e-4, 1e-4, material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.p], method="trust-constr", jac="2-point", hess = sco.SR1(), constraints=cons, options={'verbose':1}, bounds=bounds)
+	# 		res = sco.minimize(Mass, [1, 1, 1e-4, 1e-4, material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.p], method="trust-constr", jac="2-point", hess = sco.SR1(), constraints=cons, options={'verbose':1}, bounds=bounds)
 
-			print(res.x)
+	# 		print(res.x)
 
-			print(Mass([1, 1, 1e-3, 1e-3, material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.p]))
+	# 		print(Mass([1, 1, 1e-3, 1e-3, material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.p]))
+
+
+	def MassOptimization(self, initialTank):
+		material = materials.material_dict["Al6061T6"]
+		def Mass(variables): 
+			radius, length, thickness1, thickness2, tYieldStress, EMod, poissonR, pressure = variables
+			massConfiguration = (4*np.pi*radius**2*thickness2+2*np.pi*radius*length*thickness1)*material["density"]
+
+			return massConfiguration
+
+		bounds = sco.Bounds([0.4, 0.4, 5e-5, 5e-5, material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"],\
+		 initialTank.p], [4, 20, 1e-1, 1e-1, material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.p])
+
+		def ConstrainF(variables):
+			return [self.InnerPressureFCase(variables), self.InnerPressureFCap(variables), self.EulerColumnBucklingF(variables), self.ShellBuckling(variables)]
+
+		cons = sco.NonlinearConstraint(ConstrainF, [initialTank.p, initialTank.p, 1e8, 1e8], [np.inf, np.inf, np.inf, np.inf])
+		
+		res = sco.minimize(Mass, [1, 1, 1e-4, 1e-4, material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"],\
+		 initialTank.p], method="trust-constr", jac="2-point", hess = sco.SR1(), constraints=cons, options={'verbose':1}, bounds=bounds)
+
+		print(res.x)
+		print(self.InnerPressureFCase(res.x), self.InnerPressureFCap(res.x), self.EulerColumnBucklingF(res.x), self.ShellBuckling(res.x))
+		print(Mass(res.x))
