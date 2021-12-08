@@ -65,7 +65,6 @@ print(f'Natural Frequency of total system {calc_omega(m_SC, m_Tank, k1, k2)[0]}'
 
 fn = calc_omega(m_SC, m_Tank, k1, k2)[0]
 
-
 def displacement(fn, ff):
     x_0 = 0
     v_0 = 0
@@ -80,17 +79,19 @@ def displacement(fn, ff):
         d_h = (-om_f / om_n) * (a_0 / ((om_n ** 2) - (om_f ** 2))) * np.sin(om_n * t)
         d_p = (a_0 / (om_n ** 2 - om_f ** 2)) * np.sin(om_f * t)
         d = d_h + d_p
-        return d
+        return 10000*d
 
-    #def deriv(t):
-        #return derivative(function, t)
+    def deriv(t):
+        return 0.002*derivative(function, t,0.0001)
 
     plt.title("Displacement vs Time")
     plt.plot(t, function(t))
     #plt.plot(t, deriv(t),"red")
     plt.xlabel("Time")
-    plt.ylabel("Displacement")
+    plt.ylabel("Displacement x 10000")
     plt.xlim(0, 0.2)
+    plt.tight_layout()
+    plt.savefig('plot.svg', format='svg')
     plt.show()
 
 
@@ -101,15 +102,15 @@ def particular_vs_freq(fn):
     f_f = np.arange(0, 100, 0.1)
     om_f = f_f * 2 * np.pi
 
-    d_p = 2 * (a_0 / (om_n ** 2 - om_f ** 2))
+    d_p = 2 * (a_0 / abs((om_n ** 2 - om_f ** 2)))
 
-    d_p = abs(d_p)
     plt.title("Amplitude of Particular Solution vs Forcing Frequency")
     plt.plot(f_f, d_p)
     plt.ylim(0, 0.001)
     plt.xlabel("Forcing Frequency")
     plt.ylabel("Amplitude of Particular Solution")
     plt.tight_layout()
+    plt.savefig('plot2.svg', format='svg')
     plt.show()
 
 
@@ -123,6 +124,7 @@ def test():
     print(d_h, d_p)
     print(d_h + d_p)
 
+
 displacement(fn, 100)
-particular_vs_freq(fn)
+#particular_vs_freq(fn)
 test()
