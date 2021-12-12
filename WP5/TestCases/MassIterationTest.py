@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, '../')
 
 from materials import material_dict
-from tankBis import Tank
+from tank import Tank
 
 testTank = Tank(1, 1e-3, 1e-3, material_dict["Al2014T6"], 13.99, 1e7)
 
