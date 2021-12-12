@@ -2,7 +2,7 @@ import numpy as np
 
 
 def tresca(sigma_x, sigma_y, tau_xy, sigma_lim):
-    """Tresca function. Returns true if the elastic limit is NOT reached. (False means failure)h"""
+    """Tresca function. Returns true if the elastic limit is NOT reached. (False means failure)"""
     sigma_av = (sigma_x + sigma_y) / 2      # [Pa] average normal stress
     R = np.sqrt(((sigma_x + sigma_y) / 2) ** 2 + tau_xy ** 2)       # [Pa] Mohr circle radius
 
