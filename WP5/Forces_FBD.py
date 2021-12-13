@@ -10,7 +10,7 @@ Py = a_y * m
 Pz = a_z * m
 
 
-def reaction_forces(h):
+def reaction_moments(h):
     Rx = Px
     Ry = Py
     Rz = Pz
@@ -19,3 +19,4 @@ def reaction_forces(h):
     Mz = Px * h
     return Rx, Ry, Rz, Mx, My, Mz
 
+print(reaction_moments(0))
