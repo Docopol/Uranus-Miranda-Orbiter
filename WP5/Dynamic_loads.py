@@ -46,18 +46,11 @@ def calc_omega(m_SC, m_Tank, k1, k2):
     return [omega1.real, omega2.real]
 
 
-print(f'Natural Frequency of S/C is {frequency(E_SC, m_SC, A_SC, L_SC)[0]}')
-print(f'Natural Frequency of Tank is {frequency(E_Tank, m_Tank, A_Tank, L_Tank)[0]}')
-
-print(f'Natural Frequency of total system {calc_omega(m_SC, m_Tank, k1, k2)[0]}')
-
-fn = calc_omega(m_SC, m_Tank, k1, k2)[0]
-
-
 def displacement(fn, ff):
     x_0 = 0
     v_0 = 0
-    a_0 = 0.9 * 9.81
+    F_0 = 0.9 * 9.81
+    a_0 = F_0
 
     om_n = fn * 2 * np.pi
     om_f = ff * 2 * np.pi
@@ -81,7 +74,8 @@ def displacement(fn, ff):
 
 
 def particular_vs_freq(fn):
-    a_0 = 0.9 * 9.81
+    F_0 = 0.9 * 9.81
+    a_0 = F_0
 
     om_n = fn * 2 * np.pi
     f_f = np.arange(0, 100, 0.1)
