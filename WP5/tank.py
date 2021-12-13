@@ -16,28 +16,7 @@ class Tank:
 		self.m = 18119.35
 		self.ay = cts.g*6
 		self.ax = cts.g*2
-
-	# def InnerPressureFCase(self, params, matProp):
-	# 	if(params.all() != None):
-	# 		radius, thickness1, thickness2 = params
-	# 		tYieldStress, EMod, poissonR, volume, pressure = matProp
-
-	# 		radialBurstPressureCyl = tYieldStress*thickness1/radius
-	# 	else:
-	# 		radialBurstPressureCyl = self.mat["t_yield_stress"]*self.t1/self.r
-
-	# 	return radialBurstPressureCyl
-
-	# def InnerPressureFCap(self, params, matProp):
-	# 	if(params.all() != None):
-	# 		radius, thickness1, thickness2 = params
-	# 		tYieldStress, EMod, poissonR, volume, pressure = matProp
-
-	# 		radialBurstPressureEnd = tYieldStress*thickness2/radius
-	# 	else:
-	# 		radialBurstPressureEnd = self.mat["t_yield_stress"]*self.t2/self.r
-
-	# 	return radialBurstPressureEnd
+		self.maxdeg = 0
 
 	def StressCap(self, params, matProp):
 		if(params.all() != None):
@@ -57,26 +36,38 @@ class Tank:
 			radius, thickness1, thickness2 = params
 			tYieldStress, EMod, poissonR, volume, pressure = matProp
 
+			length = (volume-4/3*np.pi*radius**3)/(np.pi*radius**2)
+
 			hoopStress = pressure*radius/thickness1
 			longitudinalStress = pressure*radius/(2*thickness1)
 			compressiveStress = self.ay*self.m/(2*np.pi*radius*thickness1)
-			bendingStress = 10e6 #for now has to be changed for biaxial bending at the end
+
+			I = np.pi*thickness1*radius**3/64
+			mx = self.ax*self.m*(2*radius+length)
+			vx = self.ax*self.m
+			bendingStress = (mx*np.sin(np.radians(self.maxdeg))+mx*np.cos(np.radians(self.maxdeg)))/I
 
 			sigmaX = hoopStress
 			sigmaY = np.amax(np.abs([(longitudinalStress - compressiveStress - bendingStress), (longitudinalStress - compressiveStress + bendingStress)]))
 
-			tauXY = 15e6 #for now but has to be changed for biaxial bending at the end
+			tauXY = radius**2/I*(vx*np.cos(np.radians(self.maxdeg))-vx*np.sin(np.radians(self.maxdeg)))
 
 		else:
 			hoopStress = self.p*self.r/self.t1
 			longitudinalStress = self.p*self.r/(2*self.t1)
 			compressiveStress = self.ay*self.m/(2*np.pi*self.r*self.t1)
-			bendingStress = 10e6 #for now has to be changed for biaxial bending at the end
+
+			length = (self.v-4/3*np.pi*self.r**3)/(np.pi*self.r**2)
+
+			I = np.pi*self.t1*self.r**3/64
+			mx = self.ax*self.m*(2*self.r+length)
+			vx = self.ax*self.m
+			bendingStress = (mx*np.sin(np.radians(self.maxdeg))+mx*np.cos(np.radians(self.maxdeg)))/I
 
 			sigmaX = hoopStress
 			sigmaY = np.amax(np.abs(np.array[(longitudinalStress - compressiveStress - bendingStress), (longitudinalStress - compressiveStress + bendingStress)]))
 
-			tauXY = 15e6 #for now but has to be changed for biaxial bending at the end
+			tauXY = self.r**2/I*(vx*np.cos(np.radians(self.maxdeg))-vx*np.sin(np.radians(self.maxdeg))) 
 
 		return sigmaX, sigmaY, tauXY, longitudinalStress
 
@@ -92,6 +83,39 @@ class Tank:
 	    tau_max_x2 = np.abs(np.array([sigma1 - sigma2, sigma2 - sigma3, sigma1 - sigma3]))
 	    actualStress = np.amax(tau_max_x2)
 	    return actualStress
+
+	def TrescaFindHighestStress(self, params, matProp): #only gets called once
+		radius, thickness1, thickness2 = params
+		tYieldStress, EMod, poissonR, volume, pressure = matProp
+
+		length = (volume-4/3*np.pi*radius**3)/(np.pi*radius**2)
+
+		hoopStress = pressure*radius/thickness1
+		longitudinalStress = pressure*radius/(2*thickness1)
+		compressiveStress = self.ay*self.m/(2*np.pi*radius*thickness1)
+
+		I = np.pi*thickness1*radius**3/64
+		mx = self.ax*self.m*(2*radius+length)
+		vx = self.ax*self.m
+
+		theta = np.linspace(0, 2*np.pi, 360)
+		bendingStress = (mx*np.sin(theta)+mx*np.cos(theta))/I
+
+		tauXY = radius**2/I*(vx*np.cos(theta)-vx*np.sin(theta))
+
+		sigmaX = hoopStress
+		sigmaY = np.amax(np.abs([(longitudinalStress - compressiveStress - bendingStress), (longitudinalStress - compressiveStress + bendingStress)]))
+
+		sigma_av = (sigmaX + sigmaY) / 2
+		R = np.sqrt(sigma_av ** 2 + tauXY ** 2)
+		
+		sigma1 = sigma_av + R
+		sigma2 = sigma_av - R
+		sigma3 = 0
+
+		tau_max_x2 = np.abs(np.array([sigma1 - sigma2, sigma2 - sigma3, sigma1 - sigma3]))
+		locationMaxStress = np.where(tau_max_x2 == np.amax(tau_max_x2))
+		return locationMaxStress[1]       
 
 	def EulerColumnBuckling(self, params, matProp):
 		if(params.all() != None):
@@ -140,6 +164,7 @@ class Tank:
 		return difference
 
 	def MassOptimization(self, initialTank):
+		self.maxdeg = self.TrescaFindHighestStress([1, 1e-2, 1e-2], [400e8, 10e9, 0.33, initialTank.v, initialTank.p]) #dummy parameters to compute only geometric property
 		for material in materials.material_dict.values():
 
 			matProp = np.array([material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.v, initialTank.p])
@@ -169,15 +194,15 @@ class Tank:
 			bestConf = np.array([10, 1e-1, 1e-1])
 
 			for radiusTest in radiusRange:
-				res = sco.minimize(Mass, [radiusTest, 1e-2, 1e-2], method="trust-constr", jac="2-point", hess = sco.SR1(), options={'verbose':1}, constraints=cons, bounds=bounds)
+				res = sco.minimize(Mass, [radiusTest, 1e-2, 1e-2], method="trust-constr", jac="2-point", hess = sco.SR1(), options={'verbose':0}, constraints=cons, bounds=bounds)
 				
 				if(np.all(ConstrainF(res.x)>0) and (Mass(res.x) < Mass(bestConf))):
 					bestConf = res.x
 					print('Update of best conf\n')
 
-				print(f'\nParameters: {res.x}\n')
-				print(f'Tresca yield: {TrescaF_params(res.x)}\nColumn buckling stress margin:{EulerColumnBucklingF_params(res.x)}\nShell buckling stress margin: {ShellBuckling_params(res.x)}\n')
-				print(f'Mass : {Mass(res.x)}\n')
+				# print(f'\nParameters: {res.x}\n')
+				# print(f'Tresca yield: {TrescaF_params(res.x)}\nColumn buckling stress margin:{EulerColumnBucklingF_params(res.x)}\nShell buckling stress margin: {ShellBuckling_params(res.x)}\n')
+				# print(f'Mass : {Mass(res.x)}\n')
 			
-			print(f'\nMaterial: {material["name"]} \nRadius: {bestConf[0]} m\nThickness Body: {bestConf[1]} m\nThickness Cap: {bestConf[2]} m\n')
-			print(f'Case pressure failure: {TrescaF_params(bestConf)/1e6} MPa\nColumn buckling stress margin:{EulerColumnBucklingF_params(bestConf)/1e6} MPa\nShell buckling stress margin: {ShellBuckling_params(bestConf)/1e6} MPa\n')		
+			print(f'\nMaterial: {material["name"]} \nRadius: {bestConf[0]} m\nThickness Body: {bestConf[1]} m\nThickness Cap: {bestConf[2]} m\nMass: {Mass(bestConf)}')
+			print(f'Tresca failure: {TrescaF_params(bestConf)/1e6} MPa\nColumn buckling stress margin:{EulerColumnBucklingF_params(bestConf)/1e6} MPa\nShell buckling stress margin: {ShellBuckling_params(bestConf)/1e6} MPa\n')		
