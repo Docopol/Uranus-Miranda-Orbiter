@@ -88,7 +88,7 @@ def displacement(fn, ff):
     plt.plot(t, function(t))
     #plt.plot(t, deriv(t),"red")
     plt.xlabel("Time")
-    plt.ylabel("Displacement x 10000")
+    plt.ylabel("Displacement x $\mathregular{10^4}$")
     plt.xlim(0, 0.2)
     plt.tight_layout()
     plt.savefig('plot.svg', format='svg')
@@ -102,13 +102,13 @@ def particular_vs_freq(fn):
     f_f = np.arange(0, 100, 0.1)
     om_f = f_f * 2 * np.pi
 
-    d_p = 2 * (a_0 / abs((om_n ** 2 - om_f ** 2)))
+    d_p = 2 * (a_0 / abs((om_n ** 2 - om_f ** 2)))*1000
 
     plt.title("Amplitude of Particular Solution vs Forcing Frequency")
     plt.plot(f_f, d_p)
-    plt.ylim(0, 0.001)
+    plt.ylim(0, 2)
     plt.xlabel("Forcing Frequency")
-    plt.ylabel("Amplitude of Particular Solution")
+    plt.ylabel("Amplitude of Particular Solution x $\mathregular{10^3}$")
     plt.tight_layout()
     plt.savefig('plot2.svg', format='svg')
     plt.show()
