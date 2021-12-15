@@ -24,10 +24,12 @@ p6 = -0.85
 
 #other stuff
 A = 119.1
-thickness = 2
+thickness = 1.8
 mission_time = 20
 K = 0.7
 v = 20
+
+#t_double = 
 
 def F1(m):
     return k * np.power(k1 * np.power(m,p1) + k2 , p2)
@@ -37,8 +39,6 @@ def F3(m):
     return k * k6 * np.power(m + k7 * np.power(m,p3) , p6)
 
 x = np.log10(m)
-
-#F = np.piecewise(m , [m<10**-14 , np.logical_and(10**-14<=m , m<10**-9) , m>=10**-9], [lambda m: F3(m) , lambda m: F2(m) , lambda m: F1(m)])
 
 F = F1(m) + F2(m) + F3(m)
 F=F.astype(float)
@@ -57,15 +57,20 @@ print("# of particles that will penetrate fuel tank during mission: ", N_tot)
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
-ax.spines['right'].set_position('zero')
-#ax.spines['bottom'].set_position(('bottom'))
-ax.spines['right'].set_color('none')
-ax.spines['top'].set_color('none')
-ax.xaxis.set_ticks_position('bottom')
-ax.yaxis.set_ticks_position('left')
-
+ax.tick_params(axis="x", direction="inout")
+ax.tick_params(axis="y", direction="inout")
+ax.tick_params(bottom=True, top=True, left=True, right=True)
+#ax.spines['right'].set_position('zero')
+# #ax.spines['bottom'].set_position(('bottom'))
+# ax.spines['right'].set_color('none')
+# ax.spines['top'].set_color('none')
+# ax.xaxis.set_ticks_position('bottom')
+# ax.yaxis.set_ticks_position('left')
+plt.xlabel("log(m),log(g)")
+plt.ylabel("t, mm")
 # plot the function
 plt.plot(x,t, 'k')
+plt.axhline(y=thickness, color='r', linestyle='-')
 
 # show the plot
 plt.show()
