@@ -40,7 +40,7 @@ JupStuff=np.array([3.2330151867927355e-10
 , 7.817118593615538e-9
 , 5.440783965559054e-9
 ])
-
+print(7.817118593615538e-9/1.3841687302990775e-10)
 distance_correction = np.average(JupStuff)/JupStuff[3]
 
 def F1(m):
@@ -85,7 +85,7 @@ def NofPen(thickness):
     for j in range(len(F_f)):
         N.append(np.trapz(F_f[j], m_lim[j]))
     N = np.asarray(N)
-    return (N * A * mission_time)
+    return (distance_correction*N * A * mission_time)
 
 print("test ", NofPen(np.array([0.5])))
 
