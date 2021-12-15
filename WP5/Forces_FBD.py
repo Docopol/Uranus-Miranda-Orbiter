@@ -19,14 +19,14 @@ def reaction_moments(y):
     Mz = Px * y
     return Rx, Ry, Rz, Mx, My, Mz
 
-print(reaction_moments(0))
-
-
-V = 13.98544
-
-
-import numpy as np
-coeff1 = [-2/3*np.pi, np.pi*8.235, 0, - V]
-print(np.roots(coeff1))
-coeff2 = [np.pi*1.8**2, -2/3*np.pi*1.8**3 - V]
-print(np.roots(coeff2))
+# print(reaction_moments(0))
+#
+#
+# V = 13.98544
+#
+#
+# import numpy as np
+# coeff1 = [-2/3*np.pi, np.pi*8.235, 0, - V]
+# print(np.roots(coeff1))
+# coeff2 = [np.pi*1.8**2, -2/3*np.pi*1.8**3 - V]
+# print(np.roots(coeff2))
