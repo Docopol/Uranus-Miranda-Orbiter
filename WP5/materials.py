@@ -34,15 +34,6 @@ Al7075T6 = {        # done
     "TEC": 23.6e-6
 }
 
-# MgAM60 = {
-#     "name": 'Mg-Am60',
-#     "E_modulus": 45e9,
-#     "t_yield_stress": 130e6,
-#     "poisson_ratio": 0.35,
-#     "density": 1800,
-#     "TEC": 26e-6
-# }
-
 StA992 = {
     "name": 'St-A992',
     "E_modulus": 200e9,
@@ -61,7 +52,35 @@ SS301 = {
     "TEC": 17e-6
 }
 
+Ti6Al4V = {
+    "name": 'Ti-6Al-4V',
+    "E_modulus": 120e9,
+    "t_yield_stress": 924e6,
+    "poisson_ratio": 0.34,
+    "density": 4430,
+    "TEC": 9.4e-6
+}
 
+Ti5Al25Sn = {
+    "name": 'Ti-5Al-2.5Sn',
+    "E_modulus": 118e9,
+    "t_yield_stress": 827e6,
+    "poisson_ratio": 0.34,
+    "density": 4480,
+    "TEC": 9.4e-6
+}
+material_dict = {'Al2014T6': Al2014T6, 'Al7075T6': Al7075T6, 'Al6061T6': Al6061T6,
+                 'Al2219T6': Al2219T6, 'StA992': StA992, 'Ti6Al4V': Ti6Al4V,
+                 'SS301':SS301,'Ti5Al25Sn': Ti5Al25Sn}
+
+# MgAM60 = {
+#     "name": 'Mg-Am60',
+#     "E_modulus": 45e9,
+#     "t_yield_stress": 130e6,
+#     "poisson_ratio": 0.35,
+#     "density": 1800,
+#     "TEC": 26e-6
+# }
 
 # Al2024T3 = {
 #     "name": 'Al2024-T3',
@@ -98,25 +117,6 @@ SS301 = {
 # }
 # http://www.matweb.com/search/DataSheet.aspx?MatGUID=e1ccebe90cf94502b35c2a4745f63593
 
-Ti6Al4V = {
-    "name": 'Ti-6Al-4V',
-    "E_modulus": 120e9,
-    "t_yield_stress": 924e6,
-    "poisson_ratio": 0.34,
-    "density": 4430,
-    "TEC": 9.4e-6
-}
-
-Ti5Al25Sn = {
-    "name": 'Ti-5Al-2.5Sn',
-    "E_modulus": 118e9,
-    "t_yield_stress": 827e6,
-    "poisson_ratio": 0.34,
-    "density": 4480,
-    "TEC": 9.4e-6
-}
-#http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=MTP641
-
 # MgAZ91CT6 = {
 #     "name": 'MgAZ91C-T6',
 #     "E_modulus": 44.8 * 10 ** 9,
@@ -127,5 +127,3 @@ Ti5Al25Sn = {
 # }
 # http://www.matweb.com/search/DataSheet.aspx?MatGUID=8c8cad8fe20544508f41b4a1300af4a1
 
-material_dict = {'Al2014T6': Al2014T6, 'Al7075T6': Al7075T6, 'Al6061T6': Al6061T6, 'MgAM60': MgAM60,
-                 'StA992': StA992, 'St8630': St8630, 'St4130': St4130, 'MgAZ91CT6': MgAZ91CT6, 'Ti6Al4V': Ti6Al4V}
