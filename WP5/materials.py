@@ -106,6 +106,15 @@ Ti6Al4V = {
     "density": 4430,
     "TEC": 9.4e-6
 }
+
+Ti5Al25Sn = {
+    "name": 'Ti-5Al-2.5Sn',
+    "E_modulus": 118e9,
+    "t_yield_stress": 827e6,
+    "poisson_ratio": 0.34,
+    "density": 4480,
+    "TEC": 9.4e-6
+}
 #http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=MTP641
 
 # MgAZ91CT6 = {
