@@ -203,6 +203,6 @@ class Tank:
 				# print(f'\nParameters: {res.x}\n')
 				# print(f'Tresca yield: {TrescaF_params(res.x)}\nColumn buckling stress margin:{EulerColumnBucklingF_params(res.x)}\nShell buckling stress margin: {ShellBuckling_params(res.x)}\n', file=f)
 				# print(f'Mass : {Mass(res.x)}\n')
-			with open('test.txt', 'w') as f:
+			with open('iteration1.txt', 'a') as f:
 				print(f'\nMaterial: {material["name"]} \nRadius: {bestConf[0]} m\nLength: {(initialTank.v-4/3*np.pi*bestConf[0]**3)/(np.pi*bestConf[0]**2)} m\nThickness Body: {bestConf[1]} m\nThickness Cap: {bestConf[2]} m\nMass: {Mass(bestConf)}kg',file=f)
-				print(f'Tresca failure: {TrescaF_params(bestConf)/1e6} MPa\nColumn buckling stress margin:{EulerColumnBucklingF_params(bestConf)/1e6} MPa\nShell buckling stress margin: {ShellBuckling_params(bestConf)/1e6} MPa\n')		
+				print(f'Tresca failure: {TrescaF_params(bestConf)/1e6} MPa\nColumn buckling stress margin:{EulerColumnBucklingF_params(bestConf)/1e6} MPa\nShell buckling stress margin: {ShellBuckling_params(bestConf)/1e6} MPa\n', file=f)		
