@@ -1,0 +1,99 @@
+
+Material: Al2014-T6 
+Radius: 1.4028451598529592 m
+Length: 0.3923512264875664 m
+Thickness Body: 0.055120827550901356 m
+Thickness Cap: 0.010165544661537509 m
+Mass: 1233.2418262172616kg
+Tresca failure: 1.014962375164032e-06 MPa
+Column buckling stress margin:341560.0445235586 MPa
+Shell buckling stress margin: 1236.8533680435303 MPa
+
+
+Material: Al7075-T6 
+Radius: 1.4149699190906337 m
+Length: 0.3375713457352714 m
+Thickness Body: 0.0450359025715265 m
+Thickness Cap: 0.008442510686077348 m
+Mass: 976.675909629205kg
+Tresca failure: 1.0280677676200866e-06 MPa
+Column buckling stress margin:377183.05725179985 MPa
+Shell buckling stress margin: 1072.968697964232 MPa
+
+
+Material: Al6061-T6 
+Radius: 1.3661496166313094 m
+Length: 0.5644719756592786 m
+Thickness Body: 0.09156151733982267 m
+Thickness Cap: 0.01607234849443412 m
+Mass: 2223.811330820121kg
+Tresca failure: 1.007119357585907e-06 MPa
+Column buckling stress margin:241278.14029137767 MPa
+Shell buckling stress margin: 1668.7220762682637 MPa
+
+
+Material: Mg-Am60 
+Radius: 10.0 m
+Length: -13.288801780256222 m
+Thickness Body: 0.1 m
+Thickness Cap: 0.1 m
+Mass: 75901.86368615505kg
+Tresca failure: -320.8107569634533 MPa
+Column buckling stress margin:2327.5408345471574 MPa
+Shell buckling stress margin: 124.98909914855975 MPa
+
+
+Material: St-A992 
+Radius: 1.360552236508278 m
+Length: 0.5916078200217132 m
+Thickness Body: 0.06791849166607224 m
+Thickness Cap: 0.011830889047459181 m
+Mass: 4856.78073613236kg
+Tresca failure: 1.0014954209327698e-06 MPa
+Column buckling stress margin:483381.60531065194 MPa
+Shell buckling stress margin: 3355.8720723563706 MPa
+
+
+Material: St8630 
+Radius: 1.4295678354883843 m
+Length: 0.2729149469412978 m
+Thickness Body: 0.04083057189629052 m
+Thickness Cap: 0.0078027048609066165 m
+Mass: 2358.738652691012kg
+Tresca failure: 1.0004788637161256e-06 MPa
+Column buckling stress margin:1385515.3791044273 MPa
+Shell buckling stress margin: 2130.745618959154 MPa
+
+
+Material: St4130 
+Radius: 1.3849395346429132 m
+Length: 0.4751145669428401 m
+Thickness Body: 0.05015948997172487 m
+Thickness Cap: 0.00903449054528796 m
+Mass: 3337.319653245628kg
+Tresca failure: 1.0102185010910035e-06 MPa
+Column buckling stress margin:546443.5672976543 MPa
+Shell buckling stress margin: 2522.4069327059665 MPa
+
+
+Material: MgAZ91C-T6 
+Radius: 10.0 m
+Length: -13.288801780256222 m
+Thickness Body: 0.1 m
+Thickness Cap: 0.1 m
+Mass: 76323.54070663368kg
+Tresca failure: -305.8107569634533 MPa
+Column buckling stress margin:2316.5295419491695 MPa
+Shell buckling stress margin: 123.76692717779481 MPa
+
+
+Material: Ti-6Al-4V 
+Radius: 1.43852963176913 m
+Length: 0.23390078409837403 m
+Thickness Body: 0.024176261207315055 m
+Thickness Cap: 0.004678051490274288 m
+Mass: 765.334361677883kg
+Tresca failure: 1.0006599426269532e-06 MPa
+Column buckling stress margin:734022.5994757549 MPa
+Shell buckling stress margin: 1059.9040942164759 MPa
+
