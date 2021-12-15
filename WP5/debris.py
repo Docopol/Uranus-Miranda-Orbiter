@@ -29,8 +29,19 @@ mission_time = 20
 K = 0.7
 v = 20
 
-
-# t_double =
+JupStuff=np.array([3.2330151867927355e-10
+, 1.4588859177681435e-10
+, 1.2473321036407408e-10
+, 1.3841687302990775e-10 #Earth
+, 1.8805837894881414e-10
+, 3.9007492611832756e-10
+, 1.6097395495103783e-9
+, 5.207055305904407e-9
+, 7.817118593615538e-9
+, 5.440783965559054e-9
+])
+print(7.817118593615538e-9/1.3841687302990775e-10)
+distance_correction = np.average(JupStuff)/JupStuff[3]
 
 def F1(m):
     return k * np.power(k1 * np.power(m, p1) + k2, p2)
@@ -74,7 +85,7 @@ def NofPen(thickness):
     for j in range(len(F_f)):
         N.append(np.trapz(F_f[j], m_lim[j]))
     N = np.asarray(N)
-    return (N * A * mission_time)
+    return (distance_correction*N * A * mission_time)
 
 print("test ", NofPen(np.array([0.5])))
 
@@ -99,8 +110,11 @@ plt.xlabel("t, mm")
 plt.ylabel("# of penetrations")
 # plot the function
 plt.plot(thickness_range, NP, 'k')
-print(NofPen(np.array([10])))
+print(NofPen([0.5]))
 # plt.axhline(y=thickness, color='r', linestyle='-')
 
 # show the plot
 plt.show()
+
+
+
