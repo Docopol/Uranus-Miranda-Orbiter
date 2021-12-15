@@ -71,7 +71,7 @@ Ti5Al25Sn = {
 }
 material_dict = {'Al2014T6': Al2014T6, 'Al7075T6': Al7075T6, 'Al6061T6': Al6061T6,
                  'Al2219T6': Al2219T6, 'StA992': StA992, 'Ti6Al4V': Ti6Al4V,
-                 'SS301':SS301,'Ti5Al25Sn': Ti5Al25Sn}
+                 'SS301': SS301, 'Ti5Al25Sn': Ti5Al25Sn}
 
 # MgAM60 = {
 #     "name": 'Mg-Am60',
