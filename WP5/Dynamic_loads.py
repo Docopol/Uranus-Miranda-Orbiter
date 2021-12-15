@@ -3,21 +3,25 @@ from Constants import *
 import cmath
 import matplotlib.pyplot as plt
 
+Tank_V = 13.99
 SC_mat = Al7075T6
 Tank_mat = Al7075T6
 r = 1.8
+r_tank = 1.414
 d = r * 2
 t = 2.01 * 1e-3
+t_tank = 0.045
 L_SC = 8.235
-L_Tank = 2
+L_Tank = (Tank_V-(4/3)*np.pi*r_tank**3)/(np.pi*r_tank**2) + 2*r_tank
+print(L_Tank)
 A_SC = 2 * np.pi * 1.8 * 0.0005
-A_Tank = 0.002
+A_Tank = 2 * np.pi * r_tank * t_tank
 rho_SC = SC_mat.get_density()
 rho_Tank = Tank_mat.get_density()
 E_SC = SC_mat.get_E()
 E_Tank = Tank_mat.get_E()
 m_SC = 2 * np.pi * (np.power(d, 2) / 4 + d / 2 * L_SC) * t * rho_SC
-m_Tank = 100
+m_Tank = 978
 
 
 def frequency(E, M, A, L):
@@ -46,18 +50,9 @@ def calc_omega(m_SC, m_Tank, k1, k2):
     return [omega1.real, omega2.real]
 
 
-print(f'Natural Frequency of S/C is {frequency(E_SC, m_SC, A_SC, L_SC)[0]}')
-print(f'Natural Frequency of Tank is {frequency(E_Tank, m_Tank, A_Tank, L_Tank)[0]}')
-
-print(f'Natural Frequency of total system {calc_omega(m_SC, m_Tank, k1, k2)[0]}')
-
-fn = calc_omega(m_SC, m_Tank, k1, k2)[0]
-
-
 def displacement(fn, ff):
-    x_0 = 0
-    v_0 = 0
-    a_0 = 0.9 * 9.81
+    F_0 = 0.9 * 9.81
+    a_0 = F_0
 
     om_n = fn * 2 * np.pi
     om_f = ff * 2 * np.pi
@@ -81,7 +76,8 @@ def displacement(fn, ff):
 
 
 def particular_vs_freq(fn):
-    a_0 = 0.9 * 9.81
+    F_0 = 0.9 * 9.81
+    a_0 = F_0
 
     om_n = fn * 2 * np.pi
     f_f = np.arange(0, 100, 0.1)
@@ -118,9 +114,10 @@ print(f'Natural Frequency of S/C is {frequency(E_SC, m_SC, A_SC, L_SC)[0]}')
 print(f'Natural Frequency of Tank is {frequency(E_Tank, m_Tank, A_Tank, L_Tank)[0]}')
 print(f'Natural Frequency of total system {calc_omega(m_SC, m_Tank, k1, k2)}')
 
+
 fn = calc_omega(m_SC, m_Tank, k1, k2)[0]
 
 
-displacement(fn, 100)
-#particular_vs_freq(fn)
+#displacement(fn, 100)
+particular_vs_freq(fn)
 # test()
