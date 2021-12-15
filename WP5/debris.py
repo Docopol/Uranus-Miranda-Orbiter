@@ -24,7 +24,7 @@ p6 = -0.85
 
 #other stuff
 A = 119.1
-thickness = 1.8
+thickness = 2
 mission_time = 20
 K = 0.7
 v = 20
@@ -52,8 +52,23 @@ t_fail = np.piecewise(t, [t<thickness,t>thickness], [0,1])
 F_fail = F * t_fail
 N_fail = F_fail * A * mission_time
 
-N_tot = np.trapz(N_fail)
-print("# of particles that will penetrate fuel tank during mission: ", N_tot)
+
+def NofPen (thickness):
+    thickness=list(thickness)
+    idx = np.searchsorted(t,thickness)
+    F_f = F[idx:]
+    m_lim = m[idx:]
+    N = np.trapz(F_f,m_lim)
+    return(N*A*mission_time)
+
+print("test ",NofPen(0.5))
+
+thickness_range = np.linspace(0.05, 10,100).astype(float)
+NP = NofPen(thickness_range)
+
+
+#N_tot = np.trapz(N_fail)
+print("# of particles that will penetrate fuel tank during mission: ", NofPen(thickness))
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
@@ -69,8 +84,8 @@ ax.tick_params(bottom=True, top=True, left=True, right=True)
 plt.xlabel("log(m),log(g)")
 plt.ylabel("t, mm")
 # plot the function
-plt.plot(x,t, 'k')
-plt.axhline(y=thickness, color='r', linestyle='-')
+plt.plot(thickness_range,NP, 'k')
+#plt.axhline(y=thickness, color='r', linestyle='-')
 
 # show the plot
 plt.show()
