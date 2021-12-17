@@ -24,7 +24,7 @@ p6 = -0.85
 
 # other stuff
 A = 119.1
-thickness = 2
+thickness = 0.5
 mission_time = 20
 K = 0.7
 v = 20
@@ -42,12 +42,9 @@ F_r=np.array([3.3371149266726937e-10,1.4256083893648263e-10,1.225871302123046e-1
 # 4.058015639708228, 4.948367979701734e-9
 # 5.274106052409366, 7.521019073810325e-9
 # 5.989825196382176, 5.014810662418809e-9
-print(R.dtype)
 #dist_corr = np.mean(F_r,R)/F_r[3]
 dist_corr = np.trapz(F_r,R)/(R[len(R)-1]-R[0])/F_r[3]
 max_F = max(F_r)/F_r[3]
-print(dist_corr)
-print(max_F)
 
 def F1(m):
     return k * np.power(k1 * np.power(m, p1) + k2, p2)
@@ -59,7 +56,8 @@ def F2(m):
 
 def F3(m):
     return k * k6 * np.power(m + k7 * np.power(m, p3), p6)
-
+def Flux(m):
+    return F1(m) + F2(m) + F3(m)
 
 x = np.log10(m)
 
@@ -93,13 +91,22 @@ def NofPen(thickness):
     N = np.asarray(N)
     return (dist_corr*N * A * mission_time)
 
-print("test ", NofPen(np.array([0.5])))
+def NofPen_corr(thickness):
+    idx = np.searchsorted(t, thickness)
+    print(m[idx])
+    m_lim = m[idx]
+    N = Flux(m_lim)
+    return (dist_corr*N * A * mission_time)
+
+
+
+#print("test ", NofPen(np.array([0.5])))
 
 thickness_range = np.linspace(0.05, 100, 1000).astype(float)
 NP = NofPen(thickness_range)
 
 # N_tot = np.trapz(N_fail)
-print("# of particles that will penetrate fuel tank during mission: ", NofPen(np.array([thickness])))
+print("# of particles that will penetrate fuel tank during mission: ", NofPen_corr(np.array([thickness])))
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
@@ -116,7 +123,7 @@ plt.xlabel("t, mm")
 plt.ylabel("# of penetrations")
 # plot the function
 plt.plot(thickness_range, NP, 'k')
-print(NofPen([0.5]))
+#print(NofPen([0.5]))
 # plt.axhline(y=thickness, color='r', linestyle='-')
 
 # show the plot
