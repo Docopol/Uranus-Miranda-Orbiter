@@ -50,7 +50,7 @@ max_F = max(F_r)/F_r[3]
 def closest_value_idx(array, value):
     idx = []
     for val in value:
-        abs_diff = np.abs(array - value)
+        abs_diff = np.abs(array - val)
         idx.append(abs_diff.argmin())
     return idx
 
@@ -87,17 +87,23 @@ def NofPen(thickness):
 d = np.cbrt(6*m/rho/np.pi)
 rho_al = 2.8
 coef = 1.44
+L = 0.401
+def m_DP_2 (M, gap, rho):
+    return np.power( (coef * np.power(np.pi/6,1/3) * L * M * M * np.power(gap,2)) / (np.power(rho,2/3) * v) , 3/4)
 def NofPen_DP(thickness, gap):
+    thickness = np.array(thickness)
     #correction due to inability to use SI for some people
-    thickness = thickness * 10
-    gap = gap * 10
+    thickness = thickness / 10
+    gap = gap / 10
     #actual stuff
-    M = rho_al*thickness
-    L = 0.401
-    m_crit = coef * L * M * gap**2 / v
+    M = thickness * rho_al
+    #print(M)
+    #m_crit = coef * L * M * gap**2 / v
+    m_crit = m_DP_2(M,gap,2)
+    #print(m_crit)
     idx = closest_value_idx(m, m_crit)#idx = np.searchsorted(m, m_crit)
-    if M/rho[idx]/(d[idx]*10) < 1:
-        m_crit = np.power( (coef * np.power(np.pi/6,1/3) * L * M * M * np.power(gap,2)) / (np.power(rho[idx],2/3) * v) , 3/4)
+    #if M/rho[idx]/(d[idx]*10) < 1:
+    #    m_crit = 
     N = Flux(m_crit)
     return (dist_corr*N * A * mission_time)
     
@@ -119,7 +125,7 @@ thickness_range = np.linspace(0.5, 5, 1000).astype(float)
 NP = NofPen(thickness_range)
 
 # N_tot = np.trapz(N_fail)
-print("# of particles that will penetrate the wall during mission: ", NofPen_DP(0.25,2))
+print("# of particles that will penetrate the wall during mission: ", NofPen_DP([0.25],20))
 
 x = np.log10(m)
 y = np.log10(F)
