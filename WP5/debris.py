@@ -46,6 +46,8 @@ F_r=np.array([3.3371149266726937e-10,1.4256083893648263e-10,1.225871302123046e-1
 dist_corr = np.trapz(F_r,R)/(R[len(R)-1]-R[0])/F_r[3]
 max_F = max(F_r)/F_r[3]
 
+print(dist_corr)
+
 #closest value of an array
 def closest_value_idx(array, value):
     idx = []
@@ -144,13 +146,14 @@ ax.tick_params(bottom=True, top=True, left=True, right=True)
 plt.xlabel("t, mm")
 plt.ylabel("# of penetrations")
 plt.grid(True)
+
 # plot the function
-plt.plot(thickness_range, NofPen(thickness_range), 'k')
-plt.plot(thickness_range, NofPen_DP(thickness_range/2,20), 'r')
-plt.plot(thickness_range, NofPen_DP(thickness_range/2,40), 'b')
+plt.plot(thickness_range, NofPen(thickness_range), 'k', label = "Single plate with thickness t")
+plt.plot(thickness_range, NofPen_DP(thickness_range/2,20), 'r', label = "Two plates with thicknesses t/2 and 20mm gap")
+plt.plot(thickness_range, NofPen_DP(thickness_range/2,40), 'b', label = "Two plates with thicknesses t/2 and 40mm gap")
 #print(NofPen([0.5]))
 # plt.axhline(y=thickness, color='r', linestyle='-')
-
+plt.legend()
 # show the plot
 plt.show()
 
