@@ -14,7 +14,7 @@ l_rtg = 0.4
 m = 18119.35
 g = 9.81
 
-l = 0.197
+l = 0.2
 t = 0.005
 A = l**2 - (l-2*t)**2
 I = (1/12) * (l**4 - (l-2*t)**4)
@@ -135,7 +135,7 @@ for t in np.linspace(10,0.005,1001):
             plate_mat = Al7075T6
             w = w_lug + D
             if min(GetSFs(D, t, w,w,n, plate_mat, bolt_mat))>1.5:
-                print("test4")
+                # print("test4")
                 W = w + 4*D
                 mass_plate = massBackPlate(plate_mat, W, t,n,D)
                 mass_bolt = massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
@@ -144,7 +144,7 @@ for t in np.linspace(10,0.005,1001):
                 if mass<mass_min:
                     
                     optimal_Values=(D,t,w,W)
-                    print("test5")
+                    # print("test5")
                     mass_min = mass
                     mass_best_bolt = mass_bolt
                     mass_best_plate = mass_plate
