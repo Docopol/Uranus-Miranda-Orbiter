@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import math
 import numpy as np
 
 # All this based on grun IFM
@@ -78,7 +77,7 @@ t = K * np.power(m, 0.352) * np.power(v, 0.875) * np.power(rho, 0.167)
 
 #Number of penetrations single plate
 def NofPen(thickness):
-    idx = np.searchsorted(t, thickness)
+    idx = closest_value_idx(t, thickness)
     m_lim = m[idx]
     m_lim = np.asarray(m_lim, dtype=object)
     N = Flux(m_lim)
@@ -95,40 +94,20 @@ def m_DP_2 (M, gap):
     return np.power( (coef * np.power(np.pi/6,1/3) * L * M * M * np.power(gap,2)) / v , 3/4)
 def NofPen_DP(thickness, gap):
     thickness = np.array(thickness)
-    #correction due to inability to use SI for some people
     thickness = thickness / 10
     gap = gap / 10
-    #actual stuff
     M = thickness * rho_al
-    #print(M)
-    #m_crit = coef * L * M * gap**2 / v
     m_crit_sqrtrho = m_DP_2(M,gap)
-    #print(m_crit)
-    idx = closest_value_idx(m_sqrtrho, m_crit_sqrtrho)#idx = np.searchsorted(m, m_crit)
-    #if M/rho[idx]/(d[idx]*10) < 1:
+    idx = closest_value_idx(m_sqrtrho, m_crit_sqrtrho)
     m_crit = m[idx]
     N = Flux(m_crit)
     return (dist_corr*N * A * mission_time)
-    
 
-# def t_DP(gap):
-#     gap = gap/10
-#     return np.power( (d * np.power(rho,1/3) * np.power(rho_al,1/9) * np.power(v, 2/3)) / (coef * np.power(gap,1/3)) , 3/2)*10
-
-# def NofPen_DP(thickness, gap):
-#     idx = np.searchsorted(t_DP(gap), thickness)
-#     m_lim = m[idx]
-#     m_lim = np.asarray(m_lim, dtype=object)
-#     N = Flux(m_lim)
-#     return (dist_corr*N * A * mission_time)
-
-
-#Here starts plotting
+#Here begins plotting
 thickness_range = np.linspace(0.5, 5, 1000).astype(float)
 NP = NofPen(thickness_range)
 
-# N_tot = np.trapz(N_fail)
-print("# of particles that will penetrate the wall during mission: ", NofPen_DP([0.25],20))
+print("# of particles that will penetrate the wall during mission: ", NofPen([0.5]))
 
 x = np.log10(m)
 y = np.log10(F)
@@ -138,12 +117,6 @@ ax = fig.add_subplot(1, 1, 1)
 ax.tick_params(axis="x", direction="inout")
 ax.tick_params(axis="y", direction="inout")
 ax.tick_params(bottom=True, top=True, left=True, right=True)
-# ax.spines['right'].set_position('zero')
-# #ax.spines['bottom'].set_position(('bottom'))
-# ax.spines['right'].set_color('none')
-# ax.spines['top'].set_color('none')
-# ax.xaxis.set_ticks_position('bottom')
-# ax.yaxis.set_ticks_position('left')
 plt.xlabel("t, mm")
 plt.ylabel("# of penetrations")
 plt.grid(True)
@@ -153,8 +126,6 @@ plt.plot(thickness_range, NofPen(thickness_range), 'k', label = "Single plate wi
 plt.plot(thickness_range, NofPen_DP(thickness_range/2,10), 'g', label = "Two plates with thicknesses t/2 and 10mm gap")
 plt.plot(thickness_range, NofPen_DP(thickness_range/2,20), 'r', label = "Two plates with thicknesses t/2 and 20mm gap")
 plt.plot(thickness_range, NofPen_DP(thickness_range/2,40), 'b', label = "Two plates with thicknesses t/2 and 40mm gap")
-#print(NofPen([0.5]))
-# plt.axhline(y=thickness, color='r', linestyle='-')
 plt.legend()
 # show the plot
 plt.show()
