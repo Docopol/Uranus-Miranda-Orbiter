@@ -4,20 +4,38 @@ from Constants import *
 import math
 import numpy as np
 import time
+
+
 start_time = time.time()
 h_rtg = 0.456
 l_rtg = 0.4
 
-gap = 0.02
-thickness = 0.01
+# Adaptations made during WP5 (lines 16-32)
+m = 18119.35
+g = 9.81
 
-F = Loads(f_x_bot, f_y_bot, f_z_bot, 0, M_y_bot, 0)
+l = 0.197
+t = 0.005
+A = l**2 - (l-2*t)**2
+I = (1/12) * (l**4 - (l-2*t)**4)
+
+R = 1.414
+L = 0.386
+
+F_net = math.sqrt(2) * m * g
+F_xz = F_net/2 * 3*I / (3*I + A*L*(L+R))
+F_y = 133270
+
+F = Loads(F_xz, F_y, F_xz, F_xz*L, F_y*L, 0)
 print(F.F_z)
-n = 4 #number of bolts
+n = 4  # number of bolts
 
+gap = l/2
+thickness = 0.01
 
 def inch_to_m(l):
     return l*2.54/100
+
 
 def GetSFs (D_1st,thickness,w,h,n,material_plate, material_bolt):
     D_not_fail = Min_Fastener_Diameter_Tension(F,material_bolt, n, w, h, gap)
@@ -51,6 +69,7 @@ def GetSFs (D_1st,thickness,w,h,n,material_plate, material_bolt):
     SF_bearing_failure = material_plate.y/bearing_Stress_Max
 
     return SF_Shear_Failure, SF_bearing_failure, SF_Tension_Failure
+
 
 flange = Flange(inch_to_m(1+3/4),inch_to_m(1),inch_to_m(1+3/8),Al2014T6,inch_to_m(3))
 
