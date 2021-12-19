@@ -20,7 +20,7 @@ rho_SC = SC_mat.get_density()
 rho_Tank = Tank_mat.get_density()
 E_SC = SC_mat.get_E()
 E_Tank = Tank_mat.get_E()
-m_SC = 2 * np.pi * (np.power(d, 2) / 4 + d / 2 * L_SC) * t * rho_SC
+m_SC = 1217.90 #2 * np.pi * (np.power(d, 2) / 4 + d / 2 * L_SC) * t * rho_SC
 m_Tank = 978
 
 
@@ -85,11 +85,19 @@ def particular_vs_freq(fn):
 
     d_p = 2 * (a_0 / abs((om_n ** 2 - om_f ** 2))) * 1000
 
+    redlinex=[25,25]
+    redliney=[0,100]
+
+    fig,ax = plt.subplots()
+
     plt.title("Amplitude of Particular Solution vs Forcing Frequency")
-    plt.plot(f_f, d_p)
-    plt.ylim(0, 2)
+    plt.plot(f_f, d_p, label="amplitude of solution")
+    plt.plot(redlinex,redliney, color="red", label="25Hz")
+    plt.ylim(0, 20)
+    ax.grid()
     plt.xlabel("Forcing Frequency")
     plt.ylabel("Amplitude of Particular Solution x $\mathregular{10^3}$")
+    ax.legend()
     plt.tight_layout()
     plt.savefig('plot2.svg', format='svg')
     plt.show()
