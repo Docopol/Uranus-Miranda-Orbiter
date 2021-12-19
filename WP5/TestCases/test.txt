@@ -1,0 +1,11 @@
+
+Material: Al2014-T6 
+Radius: 1.4028451598529592 m
+Length: 0.3923512264875664 m
+Thickness Body: 0.055120827550901356 m
+Thickness Cap: 0.010165544661537509 m
+Mass: 1233.2418262172616kg
+Tresca failure: 1.014962375164032e-06 MPa
+Column buckling stress margin:341560.0445235586 MPa
+Shell buckling stress margin: 1236.8533680435303 MPa
+
