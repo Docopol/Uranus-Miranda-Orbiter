@@ -26,8 +26,8 @@ F_net = math.sqrt(2) * m * g
 F_xz = F_net/2 * 3*I / (3*I + A*L*(L+R))
 F_y = 133270
 
-F = Loads(F_xz, F_y, F_xz, F_xz*L, F_y*L, 0)
-print(F.F_z)
+F = Loads(0, 133270, 123160, 51460, 0, 0)
+#print(F.F_z)
 n = 4  # number of bolts
 
 gap = l/2
@@ -121,26 +121,30 @@ print("")
 print("")
 
 materials_all = (Al2014T6,Al6061T6,StA992,MgAM60,Ti6Al4V)
-w_lug = 0.0379
-mass_min = 100
+w_lug = 0.175
+mass_min = 100000
 mass_best_bolt = 100
 mass_best_plate = 100
 
-for t in np.linspace(0.01,0.0005,1001):
+for t in np.linspace(10,0.005,1001):
+    #print("test1")
     for bolt in bolt_D_standarts:
+        #print("test2")
         D=bolt[0]/1000
         for bolt_mat in materials_all:
             plate_mat = Al7075T6
             w = w_lug + D
             if min(GetSFs(D, t, w,w,n, plate_mat, bolt_mat))>1.5:
-                
+                print("test4")
                 W = w + 4*D
                 mass_plate = massBackPlate(plate_mat, W, t,n,D)
                 mass_bolt = massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
                 mass = mass_plate + n*mass_bolt
 
                 if mass<mass_min:
+                    
                     optimal_Values=(D,t,w,W)
+                    print("test5")
                     mass_min = mass
                     mass_best_bolt = mass_bolt
                     mass_best_plate = mass_plate
