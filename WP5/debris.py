@@ -90,8 +90,9 @@ d = np.cbrt(6*m/rho/np.pi)
 rho_al = 2.8
 coef = 1.44
 L = 0.401
-def m_DP_2 (M, gap, rho):
-    return np.power( (coef * np.power(np.pi/6,1/3) * L * M * M * np.power(gap,2)) / (np.power(rho,2/3) * v) , 3/4)
+m_sqrtrho = m*np.sqrt(rho)
+def m_DP_2 (M, gap):
+    return np.power( (coef * np.power(np.pi/6,1/3) * L * M * M * np.power(gap,2)) / v , 3/4)
 def NofPen_DP(thickness, gap):
     thickness = np.array(thickness)
     #correction due to inability to use SI for some people
@@ -101,11 +102,11 @@ def NofPen_DP(thickness, gap):
     M = thickness * rho_al
     #print(M)
     #m_crit = coef * L * M * gap**2 / v
-    m_crit = m_DP_2(M,gap,2)
+    m_crit_sqrtrho = m_DP_2(M,gap)
     #print(m_crit)
-    idx = closest_value_idx(m, m_crit)#idx = np.searchsorted(m, m_crit)
+    idx = closest_value_idx(m_sqrtrho, m_crit_sqrtrho)#idx = np.searchsorted(m, m_crit)
     #if M/rho[idx]/(d[idx]*10) < 1:
-    #    m_crit = 
+    m_crit = m[idx]
     N = Flux(m_crit)
     return (dist_corr*N * A * mission_time)
     
@@ -149,6 +150,7 @@ plt.grid(True)
 
 # plot the function
 plt.plot(thickness_range, NofPen(thickness_range), 'k', label = "Single plate with thickness t")
+plt.plot(thickness_range, NofPen_DP(thickness_range/2,10), 'g', label = "Two plates with thicknesses t/2 and 10mm gap")
 plt.plot(thickness_range, NofPen_DP(thickness_range/2,20), 'r', label = "Two plates with thicknesses t/2 and 20mm gap")
 plt.plot(thickness_range, NofPen_DP(thickness_range/2,40), 'b', label = "Two plates with thicknesses t/2 and 40mm gap")
 #print(NofPen([0.5]))
