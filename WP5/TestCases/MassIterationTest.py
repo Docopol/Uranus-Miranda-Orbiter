@@ -9,6 +9,4 @@ from tank import Tank
 
 testTank = Tank(1, 1e-3, 1e-3, material_dict["Al2014T6"], 13.99, 3e6)
 
-initialTank = Tank(1, 1e-3, 1e-3, material_dict["Al2014T6"], 13.99, 1e7)
-
 testTank.MassOptimization(testTank)

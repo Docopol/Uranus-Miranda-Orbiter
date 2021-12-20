@@ -15,7 +15,7 @@ class Tank:
 		self.v = volume
 
 		self.safetyfactor = 1.5
-		self.m = 18639.83
+		self.m = 18119.352
 		self.ay = cts.g*6*self.safetyfactor
 		self.ax = cts.g*2*self.safetyfactor
 		self.maxdeg = 0
@@ -209,7 +209,7 @@ class Tank:
 	def MassOptimizationMaterial(self, initialTank):
 			self.maxdeg = self.TrescaFindHighestStress([1, 1e-2, 1e-2], [400e8, 10e9, 0.33, initialTank.v, initialTank.p]) #dummy parameters to compute only geometric property
 
-			material = materials.material_dict["Ti6Al4V"]
+			material = materials.material_dict["StA992"]
 
 			matProp = np.array([material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.v, initialTank.p])
 
@@ -231,7 +231,7 @@ class Tank:
 				return np.array([StressCap_params(variables), TrescaF_params(variables), EulerColumnBucklingF_params(variables), ShellBuckling_params(variables)])
 
 			cons = sco.NonlinearConstraint(ConstrainF, [0, 0, 0, 0], [material["t_yield_stress"], material["t_yield_stress"], np.inf, np.inf])
-			radiusRange = np.linspace(1.4, 1.49, 100)
+			radiusRange = np.linspace(0.5, 1.49, 100)
 
 			massPlot = np.zeros(100)
 
@@ -248,13 +248,13 @@ class Tank:
 				# print(f'Tresca yield: {TrescaF_params(res.x)}\nColumn buckling stress margin:{EulerColumnBucklingF_params(res.x)}\nShell buckling stress margin: {ShellBuckling_params(res.x)}\nCap stress (due to pressure) margin: {StressCap_params(res.x)}\n')
 				# print(f'Mass : {Mass(res.x)}\n')
 
-			# 	if(np.all(ConstrainF(res.x)>0)):
-			# 		massPlot[radiusTest[0]] = Mass(res.x)
-
-			# plt.scatter(radiusRange, massPlot, color='blue')
-			# plt.xlabel("Initial condition radius [m]")
-			# plt.ylabel("Mass of the local optimum [kg]")
-			# plt.savefig("RadiusInfluenceSt-A992.pdf")
+				if(np.all(ConstrainF(res.x)>0)):
+					massPlot[radiusTest[0]] = Mass(res.x)
+			plt.scatter(radiusRange, massPlot, color='blue')
+			plt.xlabel("Initial condition radius [m]", fontsize=18)
+			plt.ylabel("Mass of the local optimum [kg]", fontsize=18)
+			plt.tight_layout( pad=1, h_pad=0.5, w_pad=0.5)
+			plt.savefig("RadiusInfluenceStA992.pdf")
 
 			print(f'\nMaterial: {material["name"]} \nRadius: {bestConf[0]} m\nLength: {(initialTank.v-4/3*np.pi*bestConf[0]**3)/(np.pi*bestConf[0]**2)} m\nThickness Body: {bestConf[1]} m\nThickness Cap: {bestConf[2]} m\nMass: {Mass(bestConf)}kg')
 			print(f'Tresca failure: {TrescaF_params(bestConf)/1e6} MPa\nColumn buckling stress margin:{EulerColumnBucklingF_params(bestConf)/1e6} MPa\nShell buckling stress margin: {ShellBuckling_params(bestConf)/1e6} MPa\nCap stress (due to pressure) margin: {StressCap_params(bestConf)/1e6} MPa\n')		
