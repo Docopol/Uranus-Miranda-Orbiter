@@ -2,6 +2,7 @@ import materials, standards, Forces_FBD
 import numpy as np
 import scipy.optimize as sco
 import scipy.constants as cts
+import matplotlib.pyplot as plt
 
 
 class Tank:
@@ -14,7 +15,7 @@ class Tank:
 		self.v = volume
 
 		self.safetyfactor = 1.5
-		self.m = 18119.35
+		self.m = 18
 		self.ay = cts.g*6*self.safetyfactor
 		self.ax = cts.g*2*self.safetyfactor
 		self.maxdeg = 0
@@ -170,8 +171,6 @@ class Tank:
 
 			matProp = np.array([material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.v, initialTank.p])
 
-			# InnerPressureFCase_params = lambda params: self.InnerPressureFCase(params, matProp)
-			# InnerPressureFCap_params = lambda params: self.InnerPressureFCap(params, matProp)
 			StressCap_params = lambda params: material["t_yield_stress"]-self.StressCap(params, matProp)
 			TrescaF_params = lambda params: material["t_yield_stress"]-self.TrescaF(params, matProp)
 			EulerColumnBucklingF_params = lambda params: self.EulerColumnBucklingF(params, matProp)
@@ -203,19 +202,17 @@ class Tank:
 				# print(f'\nParameters: {res.x}\n')
 				# print(f'Tresca yield: {TrescaF_params(res.x)}\nColumn buckling stress margin:{EulerColumnBucklingF_params(res.x)}\nShell buckling stress margin: {ShellBuckling_params(res.x)}\n', file=f)
 				# print(f'Mass : {Mass(res.x)}\n')
-			with open('iteration1_Corrected.txt', 'a') as f:
+			with open('test.txt', 'a') as f:
 				print(f'\nMaterial: {material["name"]} \nRadius: {bestConf[0]} m\nLength: {(initialTank.v-4/3*np.pi*bestConf[0]**3)/(np.pi*bestConf[0]**2)} m\nThickness Body: {bestConf[1]} m\nThickness Cap: {bestConf[2]} m\nMass: {Mass(bestConf)}kg',file=f)
 				print(f'Tresca failure margin: {TrescaF_params(bestConf)/1e6} MPa\nColumn buckling stress margin:{EulerColumnBucklingF_params(bestConf)/1e6} MPa\nShell buckling stress margin: {ShellBuckling_params(bestConf)/1e6} MPa\nCap stress (due to pressure) margin: {StressCap_params(bestConf)/1e6} MPa\n', file=f)		
 
 	def MassOptimizationMaterial(self, initialTank):
 			self.maxdeg = self.TrescaFindHighestStress([1, 1e-2, 1e-2], [400e8, 10e9, 0.33, initialTank.v, initialTank.p]) #dummy parameters to compute only geometric property
 
-			material = materials.material_dict["StA992"]
+			material = materials.material_dict["Ti6Al4V"]
 
 			matProp = np.array([material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.v, initialTank.p])
 
-			# InnerPressureFCase_params = lambda params: self.InnerPressureFCase(params, matProp)
-			# InnerPressureFCap_params = lambda params: self.InnerPressureFCap(params, matProp)
 			StressCap_params = lambda params: material["t_yield_stress"]-self.StressCap(params, matProp)
 			TrescaF_params = lambda params: material["t_yield_stress"]-self.TrescaF(params, matProp)
 			EulerColumnBucklingF_params = lambda params: self.EulerColumnBucklingF(params, matProp)
@@ -234,20 +231,82 @@ class Tank:
 				return np.array([StressCap_params(variables), TrescaF_params(variables), EulerColumnBucklingF_params(variables), ShellBuckling_params(variables)])
 
 			cons = sco.NonlinearConstraint(ConstrainF, [0, 0, 0, 0], [material["t_yield_stress"], material["t_yield_stress"], np.inf, np.inf])
-			radiusRange = np.linspace(0.5, 1.49, 20)
+			radiusRange = np.linspace(1, 1.49, 100)
+
+			massPlot = np.zeros(100)
 
 			bestConf = np.array([10, 1e-1, 1e-1])
 
-			for radiusTest in radiusRange:
-				res = sco.minimize(Mass, [radiusTest, 1e-2, 1e-2], method="trust-constr", jac="2-point", hess = sco.SR1(), options={'verbose':1}, constraints=cons, bounds=bounds)
+
+			for radiusTest in enumerate(radiusRange):
+				res = sco.minimize(Mass, [radiusTest[1], 1e-2, 1e-2], method="trust-constr", jac="2-point", hess = sco.SR1(), options={'verbose':1}, constraints=cons, bounds=bounds)
 				
 				if(np.all(ConstrainF(res.x)>0) and (Mass(res.x) < Mass(bestConf))):
 					bestConf = res.x
-					print('Update of best conf\n')
-				print(f'\nParameters: {res.x}\n')
-				print(f'Tresca yield: {TrescaF_params(res.x)}\nColumn buckling stress margin:{EulerColumnBucklingF_params(res.x)}\nShell buckling stress margin: {ShellBuckling_params(res.x)}\nCap stress (due to pressure) margin: {StressCap_params(res.x)}\n')
-				print(f'Mass : {Mass(res.x)}\n')
+					# print('Update of best conf\n')
+				# print(f'\nParameters: {res.x}\n')
+				# print(f'Tresca yield: {TrescaF_params(res.x)}\nColumn buckling stress margin:{EulerColumnBucklingF_params(res.x)}\nShell buckling stress margin: {ShellBuckling_params(res.x)}\nCap stress (due to pressure) margin: {StressCap_params(res.x)}\n')
+				# print(f'Mass : {Mass(res.x)}\n')
+
+				# if(np.all(ConstrainF(res.x)>0)):
+				# 	massPlot[radiusTest[0]] = Mass(res.x)
+
+			# plt.scatter(radiusRange, massPlot)
+			# plt.xlabel("Initial condition radius [m]")
+			# plt.ylabel("Mass of the local optimum [kg]")
+			# plt.savefig("RadiusInfluence.pdf")
 
 			print(f'\nMaterial: {material["name"]} \nRadius: {bestConf[0]} m\nLength: {(initialTank.v-4/3*np.pi*bestConf[0]**3)/(np.pi*bestConf[0]**2)} m\nThickness Body: {bestConf[1]} m\nThickness Cap: {bestConf[2]} m\nMass: {Mass(bestConf)}kg')
 			print(f'Tresca failure: {TrescaF_params(bestConf)/1e6} MPa\nColumn buckling stress margin:{EulerColumnBucklingF_params(bestConf)/1e6} MPa\nShell buckling stress margin: {ShellBuckling_params(bestConf)/1e6} MPa\nCap stress (due to pressure) margin: {StressCap_params(bestConf)/1e6} MPa\n')		
 
+	def RadiusConvergencePlotting(self, initialTank):
+		self.maxdeg = self.TrescaFindHighestStress([1, 1e-2, 1e-2], [400e8, 10e9, 0.33, initialTank.v, initialTank.p]) #dummy parameters to compute only geometric property
+
+		for material in materials.material_dict.values():
+
+			matProp = np.array([material["t_yield_stress"], material["E_modulus"], material["poisson_ratio"], initialTank.v, initialTank.p])
+
+			StressCap_params = lambda params: material["t_yield_stress"]-self.StressCap(params, matProp)
+			TrescaF_params = lambda params: material["t_yield_stress"]-self.TrescaF(params, matProp)
+			EulerColumnBucklingF_params = lambda params: self.EulerColumnBucklingF(params, matProp)
+			ShellBuckling_params = lambda params: self.ShellBucklingF(params, matProp)
+
+			def Mass(variables): 
+				radius, thickness1, thickness2 = variables
+				length = (initialTank.v-4/3*np.pi*radius**3)/(np.pi*radius**2)
+				massConfiguration = (4*np.pi*radius**2*thickness2+2*np.pi*radius*length*thickness1)*material["density"]
+
+				return massConfiguration
+
+			bounds = sco.Bounds([0.4, 5e-5, 5e-5], [1.49, 1e-1, 1e-1])
+
+			def ConstrainF(variables):
+				return np.array([StressCap_params(variables), TrescaF_params(variables), EulerColumnBucklingF_params(variables), ShellBuckling_params(variables)])
+
+			cons = sco.NonlinearConstraint(ConstrainF, [0, 0, 0, 0], [material["t_yield_stress"], material["t_yield_stress"], np.inf, np.inf])
+			radiusRange = np.linspace(0.5, 1.49, 100)
+
+			massPlot = np.zeros(100)
+
+			bestConf = np.array([10, 1e-1, 1e-1])
+
+
+			for radiusTest in enumerate(radiusRange):
+				res = sco.minimize(Mass, [radiusTest[1], 1e-2, 1e-2], method="trust-constr", jac="2-point", hess = sco.SR1(), options={'verbose':1}, constraints=cons, bounds=bounds)
+				
+				if(np.all(ConstrainF(res.x)>0) and (Mass(res.x) < Mass(bestConf))):
+					bestConf = res.x
+					# print('Update of best conf\n')
+				# print(f'\nParameters: {res.x}\n')
+				# print(f'Tresca yield: {TrescaF_params(res.x)}\nColumn buckling stress margin:{EulerColumnBucklingF_params(res.x)}\nShell buckling stress margin: {ShellBuckling_params(res.x)}\nCap stress (due to pressure) margin: {StressCap_params(res.x)}\n')
+				# print(f'Mass : {Mass(res.x)}\n')
+
+				if(np.all(ConstrainF(res.x)>0)):
+					massPlot[radiusTest[0]] = Mass(res.x)
+
+			figureName = material["name"]
+			plt.scatter(radiusRange, massPlot, color='blue')
+			plt.xlabel("Initial condition radius [m]")
+			plt.ylabel("Mass of the local optimum [kg]")
+			plt.savefig(f"RadiusInfluence{figureName}.pdf")
+			plt.close()
