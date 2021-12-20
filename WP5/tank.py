@@ -15,7 +15,7 @@ class Tank:
 		self.v = volume
 
 		self.safetyfactor = 1.5
-		self.m = 18636.07
+		self.m = 18639.83
 		self.ay = cts.g*6*self.safetyfactor
 		self.ax = cts.g*2*self.safetyfactor
 		self.maxdeg = 0
@@ -231,7 +231,7 @@ class Tank:
 				return np.array([StressCap_params(variables), TrescaF_params(variables), EulerColumnBucklingF_params(variables), ShellBuckling_params(variables)])
 
 			cons = sco.NonlinearConstraint(ConstrainF, [0, 0, 0, 0], [material["t_yield_stress"], material["t_yield_stress"], np.inf, np.inf])
-			radiusRange = np.linspace(1, 1.49, 100)
+			radiusRange = np.linspace(1.4, 1.49, 100)
 
 			massPlot = np.zeros(100)
 
