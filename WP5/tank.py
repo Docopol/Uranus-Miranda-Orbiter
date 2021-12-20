@@ -15,7 +15,7 @@ class Tank:
 		self.v = volume
 
 		self.safetyfactor = 1.5
-		self.m = 18
+		self.m = 18636.07
 		self.ay = cts.g*6*self.safetyfactor
 		self.ax = cts.g*2*self.safetyfactor
 		self.maxdeg = 0
@@ -248,13 +248,13 @@ class Tank:
 				# print(f'Tresca yield: {TrescaF_params(res.x)}\nColumn buckling stress margin:{EulerColumnBucklingF_params(res.x)}\nShell buckling stress margin: {ShellBuckling_params(res.x)}\nCap stress (due to pressure) margin: {StressCap_params(res.x)}\n')
 				# print(f'Mass : {Mass(res.x)}\n')
 
-				# if(np.all(ConstrainF(res.x)>0)):
-				# 	massPlot[radiusTest[0]] = Mass(res.x)
+			# 	if(np.all(ConstrainF(res.x)>0)):
+			# 		massPlot[radiusTest[0]] = Mass(res.x)
 
-			# plt.scatter(radiusRange, massPlot)
+			# plt.scatter(radiusRange, massPlot, color='blue')
 			# plt.xlabel("Initial condition radius [m]")
 			# plt.ylabel("Mass of the local optimum [kg]")
-			# plt.savefig("RadiusInfluence.pdf")
+			# plt.savefig("RadiusInfluenceSt-A992.pdf")
 
 			print(f'\nMaterial: {material["name"]} \nRadius: {bestConf[0]} m\nLength: {(initialTank.v-4/3*np.pi*bestConf[0]**3)/(np.pi*bestConf[0]**2)} m\nThickness Body: {bestConf[1]} m\nThickness Cap: {bestConf[2]} m\nMass: {Mass(bestConf)}kg')
 			print(f'Tresca failure: {TrescaF_params(bestConf)/1e6} MPa\nColumn buckling stress margin:{EulerColumnBucklingF_params(bestConf)/1e6} MPa\nShell buckling stress margin: {ShellBuckling_params(bestConf)/1e6} MPa\nCap stress (due to pressure) margin: {StressCap_params(bestConf)/1e6} MPa\n')		
