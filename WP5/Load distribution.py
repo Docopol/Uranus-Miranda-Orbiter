@@ -29,15 +29,14 @@ safety_factor = 1.5
 sigma_max = 480 / safety_factor
 tau_max = 331 / safety_factor
 
-trange = np.linspace(0.005, 0.05, 50)
-lrange = np.linspace(0.04, 0.2, 50)
+trange = np.linspace(0.0005, 0.02, 50)
+lrange = np.linspace(0.005, 0.2, 50)
 
 A = 10000
-L = 0.386
 R = 1.414
-m = 18119.35
-g = 9.81
-
+L = 1.8-R
+m = 18636.07
+g = 9.80665
 for length in lrange:
     for thick in trange:
         if thick > 0.1*length:

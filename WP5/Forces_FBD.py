@@ -19,7 +19,7 @@ def reaction_moments(y):
     Mz = Px * y
     return Rx, Ry, Rz, Mx, My, Mz
 
-# print(reaction_moments(0))
+print(reaction_moments(0))
 #
 #
 # V = 13.98544

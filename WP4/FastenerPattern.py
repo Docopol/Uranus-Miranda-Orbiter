@@ -11,27 +11,31 @@ h_rtg = 0.456
 l_rtg = 0.4
 
 # Adaptations made during WP5 (lines 16-32)
-m = 18119.35
-g = 9.81
+m = 18636.07321
+g = 9.80665
 
 l = 0.2
-t = 0.005
+t = 0.00408
 A = l**2 - (l-2*t)**2
 I = (1/12) * (l**4 - (l-2*t)**4)
 
-R = 1.414
-L = 0.386
+R = 1.447
+L = 1.8-R
 
 F_net = math.sqrt(2) * m * g
-F_xz = F_net/2 * 3*I / (3*I + A*L*(L+R))
-F_y = 133270
+F_t = F_net / 2 * 3 * I / (3 * I + A * L * (L + R))
+F_l = F_net / 2 - F_t
+F_y = 0.75 * m * g
+M_x = F_y * L
+M_y = F_t * L
 
-F = Loads(0, 133270, 123160, 51460, 0, 0)
-#print(F.F_z)
+F = Loads(F_l, F_y, F_l, M_x, M_y, 0)
+# print(F.F_x,F.F_y,F.F_z,F.M_x,F.M_y,F.M_z)
 n = 4  # number of bolts
 
 gap = l/2
 thickness = 0.01
+
 
 def inch_to_m(l):
     return l*2.54/100
@@ -167,4 +171,4 @@ wall_stress = pull_through_fail_standalone(4,best_bolt[0]/1000,best_bolt[1]/1000
 print(Al2024T3.y)
 print(max(wall_stress))
 
-print("--- runtime: %s seconds ---" % (time.time() - start_time))
+# print("--- runtime: %s seconds ---" % (time.time() - start_time))
