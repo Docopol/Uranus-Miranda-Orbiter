@@ -39,7 +39,6 @@ thickness = 0.01
 def inch_to_m(l):
     return l*2.54/100
 
-
 def GetSFs (D_1st,thickness,w,h,n,material_plate, material_bolt):
     D_not_fail = Min_Fastener_Diameter_Tension(F,material_bolt, n, w, h, gap)
 
