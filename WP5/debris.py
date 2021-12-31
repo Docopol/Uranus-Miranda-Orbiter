@@ -83,7 +83,7 @@ def NofPen(thickness):
     N = Flux(m_lim)
     return (dist_corr*N * A * mission_time)
 
-
+V = m/rho
 #Douple penetration stuff
 d = np.cbrt(6*m/rho/np.pi)
 rho_al = 2.8
@@ -107,7 +107,7 @@ def NofPen_DP(thickness, gap):
 thickness_range = np.linspace(0.5, 5, 1000).astype(float)
 NP = NofPen(thickness_range)
 
-print("# of particles that will penetrate the wall during mission: ", NofPen([0.5]))
+print("# of particles that will penetrate the wall during mission: ", NofPen([24.7]))
 
 x = np.log10(m)
 y = np.log10(F)
@@ -117,15 +117,16 @@ ax = fig.add_subplot(1, 1, 1)
 ax.tick_params(axis="x", direction="inout")
 ax.tick_params(axis="y", direction="inout")
 ax.tick_params(bottom=True, top=True, left=True, right=True)
-plt.xlabel("t, mm")
-plt.ylabel("# of penetrations")
+plt.xlabel("m, log(g)")
+plt.ylabel("f, log(1/m^2/year)")
 plt.grid(True)
 
 # plot the function
-plt.plot(thickness_range, NofPen(thickness_range), 'k', label = "Single plate with thickness t")
-plt.plot(thickness_range, NofPen_DP(thickness_range/2,10), 'g', label = "Two plates with thicknesses t/2 and 10mm gap")
-plt.plot(thickness_range, NofPen_DP(thickness_range/2,20), 'r', label = "Two plates with thicknesses t/2 and 20mm gap")
-plt.plot(thickness_range, NofPen_DP(thickness_range/2,40), 'b', label = "Two plates with thicknesses t/2 and 40mm gap")
+plt.plot(x, y,'k')
+# plt.plot(thickness_range, NofPen(thickness_range), 'k', label = "Single plate with thickness t")
+# plt.plot(thickness_range, NofPen_DP(thickness_range/2,10), 'g', label = "Two plates with thicknesses t/2 and 10mm gap")
+# plt.plot(thickness_range, NofPen_DP(thickness_range/2,20), 'r', label = "Two plates with thicknesses t/2 and 20mm gap")
+# plt.plot(thickness_range, NofPen_DP(thickness_range/2,40), 'b', label = "Two plates with thicknesses t/2 and 40mm gap")
 plt.legend()
 # show the plot
 plt.show()
