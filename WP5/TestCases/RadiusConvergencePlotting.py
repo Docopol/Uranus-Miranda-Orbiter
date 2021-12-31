@@ -1,4 +1,4 @@
-#Test case for the mass iteration of the tank
+#Test case for the test material iteration
 
 import sys
 
@@ -9,4 +9,4 @@ from tank import Tank
 
 testTank = Tank(1, 1e-3, 1e-3, material_dict["Al2014T6"], 13.99, 3e6)
 
-testTank.MassOptimization(testTank)
+testTank.RadiusConvergencePlotting(testTank)

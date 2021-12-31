@@ -11,31 +11,33 @@ h_rtg = 0.456
 l_rtg = 0.4
 
 # Adaptations made during WP5 (lines 16-32)
-m = 18119.35
-g = 9.81
-
-l = 0.197
-t = 0.005
+m = 18639.82476
+g = 9.80665
+l = 0.1861
+t = 0.0046785714285714295
 A = l**2 - (l-2*t)**2
 I = (1/12) * (l**4 - (l-2*t)**4)
 
-R = 1.414
-L = 0.386
+R = 1.4478
+L = 1.8-R
 
 F_net = math.sqrt(2) * m * g
-F_xz = F_net/2 * 3*I / (3*I + A*L*(L+R))
-F_y = 133270
+F_t = F_net / 2 * 3 * I / (3 * I + A * L * (L + R))
+F_l = F_net / 2 - F_t
+F_y = 0.75 * m * g
+M_x = F_y * L
+M_y = F_t * L
 
-F = Loads(0, 133270, 123160, 51460, 0, 0)
-#print(F.F_z)
+F = Loads(F_l, F_y, F_l, M_x, M_y, 0)
+# print(F.F_x,F.F_y,F.F_z,F.M_x,F.M_y,F.M_z)
 n = 4  # number of bolts
 
 gap = l/2
 thickness = 0.01
 
+
 def inch_to_m(l):
     return l*2.54/100
-
 
 def GetSFs (D_1st,thickness,w,h,n,material_plate, material_bolt):
     D_not_fail = Min_Fastener_Diameter_Tension(F,material_bolt, n, w, h, gap)
@@ -135,7 +137,7 @@ for t in np.linspace(10,0.005,1001):
             plate_mat = Al7075T6
             w = w_lug + D
             if min(GetSFs(D, t, w,w,n, plate_mat, bolt_mat))>1.5:
-                print("test4")
+                # print("test4")
                 W = w + 4*D
                 mass_plate = massBackPlate(plate_mat, W, t,n,D)
                 mass_bolt = massBolt(bolt_mat, D, bolt[1], bolt[2], t*2000+bolt[2]*2 + 2*bolt[3])
@@ -144,7 +146,7 @@ for t in np.linspace(10,0.005,1001):
                 if mass<mass_min:
                     
                     optimal_Values=(D,t,w,W)
-                    print("test5")
+                    # print("test5")
                     mass_min = mass
                     mass_best_bolt = mass_bolt
                     mass_best_plate = mass_plate
@@ -167,4 +169,4 @@ wall_stress = pull_through_fail_standalone(4,best_bolt[0]/1000,best_bolt[1]/1000
 print(Al2024T3.y)
 print(max(wall_stress))
 
-print("--- runtime: %s seconds ---" % (time.time() - start_time))
+# print("--- runtime: %s seconds ---" % (time.time() - start_time))

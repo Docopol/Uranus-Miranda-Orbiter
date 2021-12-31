@@ -1,0 +1,10 @@
+Material: Ti-6Al-4V 
+Radius: 1.4480910788126842 m
+Length: 0.19282836915715998 m
+Thickness Body: 0.02467338503064789 m
+Thickness Cap: 0.004709025888076559 m
+Mass: 741.4828511866053kg
+Tresca failure: 1.0038084983825683e-06 MPa
+Column buckling stress margin:1109203.6662948146 MPa
+Shell buckling stress margin: 1065.1044860972634 MPa
+Cap stress (due to pressure) margin: 1.4581963038415908 MPa

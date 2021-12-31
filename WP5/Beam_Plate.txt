@@ -1,0 +1,23 @@
+2:
+
+thickness, length = (0.004081632653061225, 0.2) m, maximum stress = [264.99673896826727, 297.7587913314739] MPa, mass = 3.469466389004582 kg
+Max shear stress = 100.43173387135718 MPa
+
+Plate material: Al7075-T6, Bolt material: Ti-6Al-4V
+Optimal fastener diameter, thickness, distance between fasteners, width
+(0.024, 0.024990000000000734, 0.19899999999999998, 0.295)
+Total mass: 6.166744595038977, Plate mass: 5.60277862120895, single Bolt mass: 0.14099149345750664, total Bolt mass: 0.5639659738300266
+Bolt diameter: 24, Bolt length: 84.98000000000147, Nut/head width: 35, Nut/head thickness: 15
+
+3:
+
+thickness, length = (0.0046785714285714295, 0.18607142857142858) m, maximum stress = [246.90696674881647, 278.26482518595975] MPa, mass = 3.6820277874489853 kg
+Max shear stress = 95.55271836963965 MPa
+
+Plate material: Al7075-T6, Bolt material: Ti-6Al-4V
+Optimal fastener diameter, thickness, distance between fasteners, width
+(0.024, 0.024990000000000734, 0.19899999999999998, 0.295)
+Total mass: 6.166744595038977, Plate mass: 5.60277862120895, single Bolt mass: 0.14099149345750664, total Bolt mass: 0.5639659738300266
+Bolt diameter: 24, Bolt length: 84.98000000000147, Nut/head width: 35, Nut/head thickness: 15
+
+
